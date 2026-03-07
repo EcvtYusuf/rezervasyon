@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Airport Transfer Reservation</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #111a2e;
+      --panel-2: #18233d;
+      --line: #2b395d;
+      --text: #eef3ff;
+      --muted: #aebbd8;
+      --accent: #d9b56d;
+      --accent-2: #f3d79d;
+      --white: #ffffff;
+      --danger: #ef4444;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(217, 181, 109, 0.10), transparent 30%),
+        linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+      color: var(--text);
+    }
+
+    .app {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 420px minmax(0, 1fr);
+      gap: 24px;
+      min-height: 100vh;
+    }
+
+    .panel {
+      background: rgba(17, 26, 46, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .form-panel {
+      padding: 22px;
+      position: sticky;
+      top: 24px;
+      height: fit-content;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+      line-height: 1.15;
+    }
+
+    .sub {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      margin: 18px 0 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      color: var(--accent-2);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      color: var(--white);
+      border-radius: 12px;
+      padding: 12px 13px;
+      outline: none;
+      font: inherit;
+      transition: border-color .2s ease, background .2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(217, 181, 109, 0.7);
+      background: rgba(255,255,255,0.07);
+    }
+
+    textarea {
+      min-height: 76px;
+      resize: vertical;
+    }
+
+    .radio-row,
+    .checkbox-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .radio-card,
+    .check-card {
+      position: relative;
+      flex: 1 1 110px;
+      min-width: 0;
+    }
+
+    .radio-card input,
+    .check-card input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio-card span,
+    .check-card span {
+      display: block;
+      padding: 11px 12px;
+      text-align: center;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor: pointer;
+      user-select: none;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all .18s ease;
+    }
+
+    .radio-card input:checked + span,
+    .check-card input:checked + span {
+      border-color: rgba(217, 181, 109, 0.7);
+      background: rgba(217, 181, 109, 0.14);
+      color: var(--accent-2);
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      appearance: none;
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 16px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .2s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, #b98c3a 100%);
+      color: #1d1405;
+      flex: 1;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .preview-wrap {
+      padding: 24px;
+      overflow: auto;
+    }
+
+    .preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .preview-head h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .preview-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .page-shell {
+      display: flex;
+      justify-content: center;
+      padding-bottom: 24px;
+    }
+
+    .voucher-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #fff;
+      color: #172033;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.28);
+      border-radius: 8px;
+      padding: 9mm;
+      font-size: 11.2px;
+      line-height: 1.3;
+    }
+
+    .voucher-header {
+      border: 1px solid #1a2438;
+      background: linear-gradient(135deg, #11192b 0%, #1b2740 100%);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+
+    .voucher-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin: 0 0 4px;
+    }
+
+    .voucher-subtitle {
+      margin: 0;
+      font-size: 10.6px;
+      color: #d7dfef;
+    }
+
+    .voucher-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .voucher-section {
+      border: 1px solid #d8dfeb;
+      border-radius: 10px;
+      padding: 8px 9px;
+      background: #fff;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .voucher-section.full {
+      grid-column: 1 / -1;
+    }
+
+    .voucher-section-title {
+      margin: 0 0 6px;
+      font-size: 10.2px;
+      font-weight: 800;
+      color: #8b6a2c;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e7ecf5;
+      padding-bottom: 5px;
+    }
+
+    .info-table {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 4px 10px;
+      align-items: start;
+    }
+
+    .info-table.compact {
+      grid-template-columns: 112px 1fr;
+    }
+
+    .label-cell {
+      color: #5b6882;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .value-cell {
+      color: #18243a;
+      font-weight: 700;
+      min-width: 0;
+      word-break: break-word;
+    }
+
+    .muted-value {
+      color: #6b7280;
+      font-weight: 600;
+    }
+
+    .service-notes {
+      margin: 0;
+      padding-left: 16px;
+      color: #1c2940;
+    }
+
+    .service-notes li {
+      margin-bottom: 4px;
+    }
+
+    .service-notes li:last-child {
+      margin-bottom: 0;
+    }
+
+    .hidden { display: none !important; }
+
+    .empty-placeholder {
+      color: #7a869d;
+    }
+
+    @media (max-width: 1200px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .form-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app,
+      .preview-wrap,
+      .form-panel {
+        padding: 16px;
+      }
+
+      .grid,
+      .voucher-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .page-shell {
+        justify-content: flex-start;
+        overflow-x: auto;
+      }
+
+      .voucher-page {
+        transform-origin: top left;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .app {
+        display: block;
+        padding: 0;
+      }
+
+      .form-panel,
+      .preview-head {
+        display: none !important;
+      }
+
+      .preview-wrap {
+        padding: 0;
+      }
+
+      .voucher-page {
+        box-shadow: none;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="panel form-panel">
+      <h1> Reservation PDF Generator</h1>
+      <p class="sub">Create a clean single-page airport transfer voucher with live preview and one-click PDF download.</p>
+
+      <form id="voucherForm">
+        <div class="section-title">Service</div>
+        <div class="field full">
+          <label>Service Type</label>
+          <div class="radio-row">
+            <label class="radio-card"><input type="radio" name="serviceType" value="Transfer" checked><span>Transfer</span></label>
+            <label class="radio-card"><input type="radio" name="serviceType" value="Exit"><span>Exit</span></label>
+            <label class="radio-card"><input type="radio" name="serviceType" value="Tour"><span>Tour</span></label>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Transfer Options</label>
+          <div class="checkbox-row">
+            <label class="check-card"><input type="checkbox" id="hasReturn"><span>Return Transfer</span></label>
+          </div>
+        </div>
+
+        <div class="section-title">Passenger & Booking</div>
+        <div class="grid">
+          <div class="field">
+            <label for="flyCode">Fly Code</label>
+            <input id="flyCode" name="flyCode" type="text" placeholder="XQ933" />
+          </div>
+          <div class="field">
+            <label for="bookingDate">Booking Date</label>
+            <input id="bookingDate" name="bookingDate" type="date" />
+          </div>
+          <div class="field full">
+            <label for="nameSurname">Name Surname</label>
+            <input id="nameSurname" name="nameSurname" type="text" placeholder="Thomas Van Nieuwenhuyze" />
+          </div>
+          <div class="field full">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="text" placeholder="+32 555 555 555" />
+          </div>
+          <div class="field full">
+            <label for="passengerCount">Passenger Count</label>
+            <input id="passengerCount" name="passengerCount" type="number" min="1" placeholder="3" />
+          </div>
+        </div>
+
+        <div class="section-title">Trip Details</div>
+        <div class="grid">
+          <div class="field full">
+            <label for="vehicle">Vehicle</label>
+            <select id="vehicle" name="vehicle">
+              <option value="">Select vehicle</option>
+              <option>Economic</option>
+              <option>Mercedes Vito</option>
+              <option>Mercedes Luxury Vito</option>
+              <option>Mercedes Sprinter</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="pickup">Pickup</label>
+            <input id="pickup" name="pickup" type="text" placeholder="Izmir Airport" />
+          </div>
+          <div class="field full">
+            <label for="dropoff">Dropoff</label>
+            <input id="dropoff" name="dropoff" type="text" placeholder="Aqua Fantasy Hotel Kusadasi" />
+          </div>
+          <div class="field full">
+            <label for="dateTime">Date Time</label>
+            <input id="dateTime" name="dateTime" type="datetime-local" />
+          </div>
+          <div class="field">
+            <label for="amount">Amount</label>
+            <input id="amount" name="amount" type="number" step="0.01" placeholder="140" />
+          </div>
+          <div class="field">
+            <label for="currency">Currency</label>
+            <select id="currency" name="currency">
+              <option>EUR</option>
+              <option>USD</option>
+              <option>GBP</option>
+              <option>TRY</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="paymentMethod">Payment Method</label>
+            <select id="paymentMethod" name="paymentMethod">
+              <option value="">Select payment method</option>
+              <option>CASH</option>
+              <option>CREDIT CARD</option>
+              <option>BANK TRANSFER</option>
+              <option>ONLINE</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="note">Note</label>
+            <textarea id="note" name="note" placeholder="Cash / hotel gate / extra details"></textarea>
+          </div>
+        </div>
+
+        <div id="returnFields" class="hidden">
+          <div class="section-title">Return Details</div>
+          <div class="grid">
+            <div class="field">
+              <label for="returnFlyCode">Return Fly Code</label>
+              <input id="returnFlyCode" name="returnFlyCode" type="text" placeholder="PC120" />
+            </div>
+            <div class="field full">
+              <label for="returnPickup">Return Pickup</label>
+              <input id="returnPickup" name="returnPickup" type="text" placeholder="Hotel / Resort" />
+            </div>
+            <div class="field full">
+              <label for="returnDropoff">Return Dropoff</label>
+              <input id="returnDropoff" name="returnDropoff" type="text" placeholder="Izmir Airport" />
+            </div>
+            <div class="field full">
+              <label for="returnDateTime">Return Date Time</label>
+              <input id="returnDateTime" name="returnDateTime" type="datetime-local" />
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn-primary" id="downloadPdfBtn">Download PDF</button>
+          <button type="reset" class="btn-secondary">Reset</button>
+        </div>
+      </form>
+    </aside>
+
+    <main class="panel preview-wrap">
+      <div class="preview-head">
+        <div>
+          <h2>Live Voucher Preview</h2>
+          <div class="preview-note">Single A4 layout optimized for html2pdf.js</div>
+        </div>
+      </div>
+
+      <div class="page-shell">
+        <div id="voucher" class="voucher-page">
+          <header class="voucher-header">
+            <h3 class="voucher-title">PREMIUM VIP TRANSFER</h3>
+            <p class="voucher-subtitle">Luxury Airport Chauffeur Service • WhatsApp: +90 543 634 25 47</p>
+          </header>
+
+          <div class="voucher-grid">
+            <section class="voucher-section full">
+              <h4 class="voucher-section-title">Summary</h4>
+              <div class="info-table compact">
+                <div class="label-cell">Booking No</div><div class="value-cell" id="pvBookingNo"></div>
+                <div class="label-cell row-booking-vehicle">Vehicle</div><div class="value-cell row-booking-vehicle" id="pvVehicle"></div>
+                <div class="label-cell row-passenger-count">Passengers</div><div class="value-cell row-passenger-count" id="pvPassengerCount"></div>
+                <div class="label-cell">Service Type</div><div class="value-cell" id="pvServiceType"></div>
+                <div class="label-cell">Transfer Type</div><div class="value-cell" id="pvTransferType"></div>
+                <div class="label-cell row-final-amount">Final Amount</div><div class="value-cell row-final-amount" id="pvFinalAmount"></div>
+                <div class="label-cell row-booking-date">Booking Date</div><div class="value-cell row-booking-date" id="pvBookingDate"></div>
+              </div>
+            </section>
+
+            <section class="voucher-section">
+              <h4 class="voucher-section-title">Arrival</h4>
+              <div class="info-table compact">
+                <div class="label-cell row-arrival-route">Route</div><div class="value-cell row-arrival-route" id="pvArrivalRoute"></div>
+                <div class="label-cell row-arrival-datetime">Date Time</div><div class="value-cell row-arrival-datetime" id="pvArrivalDateTime"></div>
+                <div class="label-cell row-arrival-flight">Flight Number</div><div class="value-cell row-arrival-flight" id="pvArrivalFlight"></div>
+              </div>
+            </section>
+
+            <section class="voucher-section hidden" id="returnSection">
+              <h4 class="voucher-section-title">Return</h4>
+              <div class="info-table compact">
+                <div class="label-cell row-return-route">Route</div><div class="value-cell row-return-route" id="pvReturnRoute"></div>
+                <div class="label-cell row-return-datetime">Date Time</div><div class="value-cell row-return-datetime" id="pvReturnDateTime"></div>
+                <div class="label-cell row-return-flight">Flight Number</div><div class="value-cell row-return-flight" id="pvReturnFlight"></div>
+              </div>
+            </section>
+
+            <section class="voucher-section full">
+              <h4 class="voucher-section-title">Passenger</h4>
+              <div class="info-table compact">
+                <div class="label-cell row-passenger-name">Name</div><div class="value-cell row-passenger-name" id="pvName"></div>
+                <div class="label-cell row-passenger-phone">Phone</div><div class="value-cell row-passenger-phone" id="pvPhone"></div>
+                <div class="label-cell row-passenger-note">Note</div><div class="value-cell row-passenger-note" id="pvNote"></div>
+              </div>
+            </section>
+
+            <section class="voucher-section full">
+              <h4 class="voucher-section-title">Service Notes</h4>
+              <ul class="service-notes">
+                <li>Driver will meet you at the airport arrival gate with a name sign.</li>
+                <li>Free waiting time included for flight delays.</li>
+                <li>After landing please turn on your phone.</li>
+                <li>If you have no internet, ask someone at the airport for help and contact us via the phone number on this voucher.</li>
+                <li>WhatsApp / Phone: +90 543 634 25 47</li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const form = document.getElementById('voucherForm');
+    const hasReturn = document.getElementById('hasReturn');
+    const returnFields = document.getElementById('returnFields');
+    const returnSection = document.getElementById('returnSection');
+    const voucher = document.getElementById('voucher');
+    const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+
+    let bookingNumber = generateBookingNumber();
+
+    function generateBookingNumber() {
+      return Math.floor(100000 + Math.random() * 900000);
+    }
+
+    function pad(value) {
+      return String(value).padStart(2, '0');
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString + 'T00:00:00');
+      if (Number.isNaN(date.getTime())) return '';
+      return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}`;
+    }
+
+    function formatDateTime(value) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      return `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} / ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+    }
+
+    function sanitizeFileNamePart(value) {
+      return (value || 'Voucher')
+        .trim()
+        .replace(/\s+/g, '_')
+        .replace(/[^a-zA-Z0-9_\-ğüşöçıİĞÜŞÖÇ]/g, '');
+    }
+
+    function getFormData() {
+      const fd = new FormData(form);
+      return {
+        serviceType: fd.get('serviceType') || 'Transfer',
+        hasReturn: hasReturn.checked,
+        flyCode: (fd.get('flyCode') || '').trim(),
+        bookingDate: fd.get('bookingDate') || '',
+        nameSurname: (fd.get('nameSurname') || '').trim(),
+        phone: (fd.get('phone') || '').trim(),
+        passengerCount: (fd.get('passengerCount') || '').toString().trim(),
+        vehicle: (fd.get('vehicle') || '').trim(),
+        pickup: (fd.get('pickup') || '').trim(),
+        dropoff: (fd.get('dropoff') || '').trim(),
+        dateTime: fd.get('dateTime') || '',
+        amount: (fd.get('amount') || '').toString().trim(),
+        currency: (fd.get('currency') || 'EUR').trim(),
+        paymentMethod: (fd.get('paymentMethod') || '').trim(),
+        note: (fd.get('note') || '').trim(),
+        returnFlyCode: (fd.get('returnFlyCode') || '').trim(),
+        returnPickup: (fd.get('returnPickup') || '').trim(),
+        returnDropoff: (fd.get('returnDropoff') || '').trim(),
+        returnDateTime: fd.get('returnDateTime') || ''
+      };
+    }
+
+    function setText(id, value, placeholder = '-') {
+      const el = document.getElementById(id);
+      el.textContent = value || placeholder;
+      el.classList.toggle('muted-value', !value);
+    }
+
+    function toggleRow(className, hasValue) {
+      document.querySelectorAll(`.${className}`).forEach(el => {
+        el.classList.toggle('hidden', !hasValue);
+      });
+    }
+
+    function updateReturnVisibility(data) {
+      returnFields.classList.toggle('hidden', !data.hasReturn);
+
+      const hasReturnContent = !!(data.returnPickup || data.returnDropoff || data.returnDateTime || data.returnFlyCode);
+      returnSection.classList.toggle('hidden', !(data.hasReturn && hasReturnContent));
+
+      toggleRow('row-return-route', !!(data.returnPickup || data.returnDropoff));
+      toggleRow('row-return-datetime', !!data.returnDateTime);
+      toggleRow('row-return-flight', !!data.returnFlyCode);
+    }
+
+    function updatePreview() {
+      const data = getFormData();
+
+      const arrivalRoute = [data.pickup, data.dropoff].filter(Boolean).join(' → ');
+      const returnRoute = [data.returnPickup, data.returnDropoff].filter(Boolean).join(' → ');
+      const transferType = data.hasReturn ? 'Arrival + Return' : 'One Way';
+      const finalAmount = data.amount
+        ? `${data.amount} ${data.currency}${data.paymentMethod ? ` / ${data.paymentMethod}` : ''}`
+        : '';
+
+      setText('pvBookingNo', String(bookingNumber));
+      setText('pvVehicle', data.vehicle);
+      setText('pvPassengerCount', data.passengerCount);
+      setText('pvServiceType', data.serviceType);
+      setText('pvTransferType', transferType);
+      setText('pvFinalAmount', finalAmount);
+      setText('pvBookingDate', formatDate(data.bookingDate));
+
+      setText('pvArrivalRoute', arrivalRoute);
+      setText('pvArrivalDateTime', formatDateTime(data.dateTime));
+      setText('pvArrivalFlight', data.flyCode);
+
+      setText('pvReturnRoute', returnRoute);
+      setText('pvReturnDateTime', formatDateTime(data.returnDateTime));
+      setText('pvReturnFlight', data.returnFlyCode);
+
+      setText('pvName', data.nameSurname);
+      setText('pvPhone', data.phone);
+      setText('pvNote', data.note);
+
+      toggleRow('row-booking-vehicle', !!data.vehicle);
+      toggleRow('row-passenger-count', !!data.passengerCount);
+      toggleRow('row-final-amount', !!finalAmount);
+      toggleRow('row-booking-date', !!data.bookingDate);
+
+      toggleRow('row-arrival-route', !!arrivalRoute);
+      toggleRow('row-arrival-datetime', !!data.dateTime);
+      toggleRow('row-arrival-flight', !!data.flyCode);
+
+      toggleRow('row-passenger-name', !!data.nameSurname);
+      toggleRow('row-passenger-phone', !!data.phone);
+      toggleRow('row-passenger-note', !!data.note);
+
+      updateReturnVisibility(data);
+    }
+
+    function getPdfFileName() {
+      const data = getFormData();
+      const namePart = sanitizeFileNamePart(data.nameSurname || 'Passenger');
+
+      let datePart = 'NoDate';
+      let timePart = 'NoTime';
+
+      if (data.dateTime) {
+        const dt = new Date(data.dateTime);
+        if (!Number.isNaN(dt.getTime())) {
+          datePart = `${pad(dt.getDate())}-${pad(dt.getMonth() + 1)}-${dt.getFullYear()}`;
+          timePart = `${pad(dt.getHours())}-${pad(dt.getMinutes())}`;
+        }
+      }
+
+      return `${namePart}_${datePart}_${timePart}.pdf`;
+    }
+
+    async function downloadPdf() {
+      updatePreview();
+
+      const opt = {
+        margin: [0, 0, 0, 0],
+        filename: getPdfFileName(),
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          scrollY: 0,
+          backgroundColor: '#ffffff'
+        },
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4',
+          orientation: 'portrait'
+        },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+
+      await html2pdf().set(opt).from(voucher).save();
+    }
+
+    form.addEventListener('input', updatePreview);
+    form.addEventListener('change', updatePreview);
+
+    form.addEventListener('reset', () => {
+      setTimeout(() => {
+        bookingNumber = generateBookingNumber();
+        hasReturn.checked = false;
+        updatePreview();
+      }, 0);
+    });
+
+    downloadPdfBtn.addEventListener('click', downloadPdf);
+
+    updatePreview();
+  </script>
+</body>
+</html>
