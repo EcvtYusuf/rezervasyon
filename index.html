@@ -503,6 +503,115 @@
       color: #7a869d;
     }
 
+
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0 14px;
+    }
+
+    .filter-btn {
+      padding: 9px 11px;
+      font-size: 12px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .filter-btn.active {
+      background: rgba(217, 181, 109, 0.16);
+      color: var(--accent-2);
+      border-color: rgba(217, 181, 109, 0.45);
+    }
+
+    .search-input {
+      width: 100%;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .cards-list {
+      display: none;
+      gap: 12px;
+      flex-direction: column;
+    }
+
+    .reservation-card {
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .reservation-card-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .reservation-name {
+      font-weight: 900;
+      font-size: 15px;
+      color: var(--accent-2);
+    }
+
+    .reservation-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .reservation-route {
+      font-size: 13px;
+      line-height: 1.45;
+      margin: 8px 0;
+      color: var(--text);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .mini-info {
+      background: rgba(11,18,32,0.55);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 9px;
+    }
+
+    .mini-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .mini-value {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+      word-break: break-word;
+    }
+
+    .card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .card-actions button {
+      padding: 10px;
+      font-size: 12px;
+    }
+
     iframe[name="sheetFrame"] {
       width: 0;
       height: 0;
@@ -547,6 +656,29 @@
       .voucher-page {
         transform-origin: top left;
       }
+
+      .table-wrap.mobile-hide {
+        display: none;
+      }
+
+      .cards-list {
+        display: flex;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .tab-btn {
+        width: 100%;
+      }
+
     }
 
     @media print {
@@ -742,6 +874,7 @@
           <button type="button" class="tab-btn active" data-tab="pdfTab">PDF Önizleme</button>
           <button type="button" class="tab-btn" data-tab="textTab">Rezervasyon Metni</button>
           <button type="button" class="tab-btn" data-tab="controlTab">Günlük Kontrol</button>
+          <button type="button" class="tab-btn" data-tab="allTab">Tüm Rezervasyonlar</button>
         </div>
       </div>
 
@@ -848,6 +981,53 @@
           <textarea id="dailySummary" class="daily-summary" readonly></textarea>
         </div>
       </section>
+
+
+      <section id="allTab" class="tab-panel">
+        <div class="control-card">
+          <div class="control-toolbar">
+            <button type="button" class="btn-primary" id="loadAllBtn">Tümünü Yükle</button>
+            <button type="button" class="btn-secondary" id="copyAllSummaryBtn">Liste Özetini Kopyala</button>
+          </div>
+
+          <input id="allSearchInput" class="search-input" type="text" placeholder="İsim, telefon, otel, rota, araç ara..." />
+
+          <div class="filter-row">
+            <button type="button" class="filter-btn active" data-filter="all">Tümü</button>
+            <button type="button" class="filter-btn" data-filter="today">Bugün</button>
+            <button type="button" class="filter-btn" data-filter="tomorrow">Yarın</button>
+            <button type="button" class="filter-btn" data-filter="seven">7 Gün</button>
+            <button type="button" class="filter-btn" data-filter="month">Bu Ay</button>
+            <button type="button" class="filter-btn" data-filter="missing">Eksik</button>
+          </div>
+
+          <div class="status-line" id="allStatus">Tüm rezervasyonları görmek için yükle butonuna bas.</div>
+
+          <div class="table-wrap mobile-hide">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tarih</th>
+                  <th>Saat</th>
+                  <th>Ad Soyad</th>
+                  <th>Telefon</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Araç</th>
+                  <th>Fiyat</th>
+                  <th>Durum</th>
+                </tr>
+              </thead>
+              <tbody id="allTableBody">
+                <tr><td colspan="9" class="empty-placeholder">Henüz veri yüklenmedi.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="allCards" class="cards-list"></div>
+        </div>
+      </section>
+
     </main>
   </div>
 
@@ -874,12 +1054,19 @@
     const sheetStatus = document.getElementById('sheetStatus');
     const dailyTableBody = document.getElementById('dailyTableBody');
     const dailySummary = document.getElementById('dailySummary');
+    const loadAllBtn = document.getElementById('loadAllBtn');
+    const copyAllSummaryBtn = document.getElementById('copyAllSummaryBtn');
+    const allSearchInput = document.getElementById('allSearchInput');
+    const allStatus = document.getElementById('allStatus');
+    const allTableBody = document.getElementById('allTableBody');
+    const allCards = document.getElementById('allCards');
     const sheetPostForm = document.getElementById('sheetPostForm');
     const missingInfoBox = document.getElementById('missingInfoBox');
     const okInfoBox = document.getElementById('okInfoBox');
 
     let bookingNumber = generateBookingNumber();
     let sheetRows = [];
+    let currentAllFilter = 'all';
 
     function generateBookingNumber() {
       return Math.floor(100000 + Math.random() * 900000);
@@ -1205,6 +1392,7 @@
       window[callbackName] = function(response) {
         sheetRows = response && response.rows ? response.rows : [];
         renderDailyControl(sheetRows);
+        renderAllReservations();
         sheetStatus.textContent = `${sheetRows.length} rezervasyon satırı yüklendi.`;
         delete window[callbackName];
         script.remove();
@@ -1310,6 +1498,149 @@
       return `${formatDateDots(todayKey)} Günlük Transfer Kontrolü\n\n${lines('Bugün', todayRows)}\n\n${lines('Yarın', tomorrowRows)}`;
     }
 
+
+
+    function getFilteredAllRows() {
+      const q = (allSearchInput ? allSearchInput.value : '').toLowerCase().trim();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+      const plusSeven = new Date(today);
+      plusSeven.setDate(today.getDate() + 7);
+
+      return sheetRows.filter(row => {
+        const text = [
+          row['Passenger Name'], row.Phone, row.From, row.To, row.Car,
+          row.Date, row.Time, row.Price, row.Currency, row.Status, row.Note
+        ].join(' ').toLowerCase();
+
+        if (q && !text.includes(q)) return false;
+
+        const d = parseDateRow(row);
+        if (currentAllFilter === 'today') return d && dayKey(d) === dayKey(today);
+        if (currentAllFilter === 'tomorrow') return d && dayKey(d) === dayKey(tomorrow);
+        if (currentAllFilter === 'seven') return d && d >= today && d <= plusSeven;
+        if (currentAllFilter === 'month') return d && d.getFullYear() === today.getFullYear() && d.getMonth() === today.getMonth();
+        if (currentAllFilter === 'missing') return !!(row['Missing Info'] || row['Driver Missing'] || row['Plate Missing']);
+        return true;
+      }).sort((a, b) => {
+        const da = parseDateRow(a);
+        const db = parseDateRow(b);
+        if (!da && !db) return 0;
+        if (!da) return 1;
+        if (!db) return -1;
+        return da - db;
+      });
+    }
+
+    function buildReservationTextFromRow(row) {
+      const dateTime = row.Date
+        ? `${formatDateDots(row.Date)} / ${row.Time || '-'} / ${row['Flight Code'] || '-'}`
+        : `(tarih belirtilmedi) / ${row.Time || '-'} / ${row['Flight Code'] || '-'}`;
+      const returnLine = row['Return Date'] || row['Return Time']
+        ? `\nReturn: ${row['Return Date'] ? formatDateDots(row['Return Date']) : '(belirtilmedi)'} / ${row['Return Time'] || '-'}${row['Return Flight Code'] ? ` / ${row['Return Flight Code']}` : ''}\n`
+        : '';
+      const price = row.Price ? `${row.Price} ${row.Currency || ''}`.trim() : '(belirtilmedi)';
+      return `${dateTime}\n\n${row['Passenger Name'] || '(isim belirtilmedi)'}\n\n${row.Phone || '(telefon belirtilmedi)'}\n\nFrom: ${row.From || '(belirtilmedi)'}\nTo: ${row.To || '(belirtilmedi)'}\n\nPerson: ${row.Person || '(belirtilmedi)'}\n\nNote: ${row.Note || '(belirtilmedi)'}\n\nPrice: ${price}\n\nCar: ${row.Car || '(belirtilmedi)'}\n${returnLine}\n${row.Brand || 'ANTALYA VIP TRANSFER'}`.trim();
+    }
+
+    function renderAllReservations() {
+      if (!allTableBody || !allCards) return;
+      const rows = getFilteredAllRows();
+      if (!rows.length) {
+        allTableBody.innerHTML = '<tr><td colspan="9" class="empty-placeholder">Bu filtreye uygun rezervasyon bulunamadı.</td></tr>';
+        allCards.innerHTML = '<div class="reservation-card empty-placeholder">Bu filtreye uygun rezervasyon bulunamadı.</div>';
+        if (allStatus) allStatus.textContent = `${sheetRows.length} kayıt yüklendi, filtrede 0 kayıt görünüyor.`;
+        return;
+      }
+
+      allTableBody.innerHTML = rows.map((row, index) => {
+        const urgency = getRowUrgency(row);
+        const price = row.Price ? `${row.Price} ${row.Currency || ''}`.trim() : '-';
+        return `<tr>
+          <td>${row.Date || '-'}</td>
+          <td>${row.Time || '-'}</td>
+          <td>${row['Passenger Name'] || '-'}</td>
+          <td>${row.Phone || '-'}</td>
+          <td>${row.From || '-'}</td>
+          <td>${row.To || '-'}</td>
+          <td>${row.Car || '-'}</td>
+          <td>${price}</td>
+          <td><span class="pill ${urgency.cls}">${urgency.text}</span></td>
+        </tr>`;
+      }).join('');
+
+      allCards.innerHTML = rows.map((row, index) => {
+        const urgency = getRowUrgency(row);
+        const price = row.Price ? `${row.Price} ${row.Currency || ''}`.trim() : '-';
+        const missing = row['Missing Info'] || 'OK';
+        return `<div class="reservation-card">
+          <div class="reservation-card-head">
+            <div>
+              <div class="reservation-name">${row['Passenger Name'] || '-'}</div>
+              <div class="reservation-meta">${row.Date || '-'} / ${row.Time || '-'} / ${row.Phone || 'telefon yok'}</div>
+            </div>
+            <span class="pill ${urgency.cls}">${urgency.text}</span>
+          </div>
+          <div class="reservation-route"><strong>From:</strong> ${row.From || '-'}<br><strong>To:</strong> ${row.To || '-'}</div>
+          <div class="card-grid">
+            <div class="mini-info"><div class="mini-label">Araç</div><div class="mini-value">${row.Car || '-'}</div></div>
+            <div class="mini-info"><div class="mini-label">Fiyat</div><div class="mini-value">${price}</div></div>
+            <div class="mini-info"><div class="mini-label">Kişi</div><div class="mini-value">${row.Person || '-'}</div></div>
+            <div class="mini-info"><div class="mini-label">Eksik</div><div class="mini-value">${missing}</div></div>
+          </div>
+          <div class="card-actions">
+            <button type="button" class="btn-secondary" onclick="copyRowText(${sheetRows.indexOf(row)})">Metni Kopyala</button>
+            <button type="button" class="btn-primary" onclick="fillFormFromRow(${sheetRows.indexOf(row)})">Forma Al</button>
+          </div>
+        </div>`;
+      }).join('');
+
+      if (allStatus) allStatus.textContent = `${sheetRows.length} kayıt yüklendi, filtrede ${rows.length} kayıt gösteriliyor.`;
+    }
+
+    async function copyRowText(index) {
+      const row = sheetRows[index];
+      if (!row) return;
+      await navigator.clipboard.writeText(buildReservationTextFromRow(row));
+      if (allStatus) allStatus.textContent = 'Rezervasyon metni kopyalandı.';
+    }
+
+    function fillFormFromRow(index) {
+      const row = sheetRows[index];
+      if (!row) return;
+      document.getElementById('nameSurname').value = row['Passenger Name'] || '';
+      document.getElementById('phone').value = row.Phone || '';
+      document.getElementById('pickup').value = row.From || '';
+      document.getElementById('dropoff').value = row.To || '';
+      document.getElementById('passengerCount').value = row.Person || '';
+      document.getElementById('vehicle').value = row.Car || '';
+      document.getElementById('amount').value = row.Price || '';
+      document.getElementById('currency').value = row.Currency || 'EUR';
+      document.getElementById('flyCode').value = row['Flight Code'] || '';
+      document.getElementById('note').value = row.Note || '';
+      document.getElementById('driver').value = row.Driver || '';
+      document.getElementById('plate').value = row.Plate || '';
+      document.getElementById('brand').value = row.Brand || 'ANTALYA VIP TRANSFER';
+      document.getElementById('status').value = row.Status || 'Yeni';
+      if (row.Date && row.Time) document.getElementById('dateTime').value = `${row.Date}T${row.Time}`;
+      hasReturn.checked = !!(row['Return Date'] || row['Return Time']);
+      if (row['Return Date'] && row['Return Time']) document.getElementById('returnDateTime').value = `${row['Return Date']}T${row['Return Time']}`;
+      document.getElementById('returnFlyCode').value = row['Return Flight Code'] || '';
+      activateTab('pdfTab');
+      updatePreview();
+    }
+
+    async function copyAllSummary() {
+      const rows = getFilteredAllRows();
+      const text = rows.length
+        ? rows.map(row => `- ${row.Date || '-'} / ${row.Time || '-'} / ${row['Passenger Name'] || '-'} / ${row.From || '-'} → ${row.To || '-'} / ${row.Car || '-'} / ${row.Price ? `${row.Price} ${row.Currency || ''}`.trim() : '-'}`).join('\n')
+        : 'Bu filtrede rezervasyon yok.';
+      await navigator.clipboard.writeText(text);
+      if (allStatus) allStatus.textContent = 'Liste özeti kopyalandı.';
+    }
+
     async function copyDailySummary() {
       await navigator.clipboard.writeText(dailySummary.value || '');
       sheetStatus.textContent = 'Günlük özet kopyalandı. WhatsApp grubuna yapıştırmaya hazır.';
@@ -1334,6 +1665,16 @@
     copyTextBtn.addEventListener('click', copyReservationText);
     saveSheetBtn.addEventListener('click', saveToSheet);
     loadSheetBtn.addEventListener('click', loadSheetRows);
+    if (loadAllBtn) loadAllBtn.addEventListener('click', loadSheetRows);
+    if (copyAllSummaryBtn) copyAllSummaryBtn.addEventListener('click', copyAllSummary);
+    if (allSearchInput) allSearchInput.addEventListener('input', renderAllReservations);
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentAllFilter = btn.dataset.filter || 'all';
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b === btn));
+        renderAllReservations();
+      });
+    });
     copyDailySummaryBtn.addEventListener('click', copyDailySummary);
 
     if (!isScriptReady()) {
