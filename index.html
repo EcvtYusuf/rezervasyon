@@ -28,7 +28,8 @@
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: radial-gradient(circle at top left, rgba(217,181,109,.10), transparent 30%), linear-gradient(180deg, #0b1220, #0f172a);
+      background: radial-gradient(circle at top left, rgba(217,181,109,.10), transparent 30%),
+                  linear-gradient(180deg, #0b1220, #0f172a);
       color: var(--text);
     }
 
@@ -57,10 +58,7 @@
       overflow: auto;
     }
 
-    .work-panel {
-      padding: 22px;
-      overflow: hidden;
-    }
+    .work-panel { padding: 22px; overflow: hidden; }
 
     h1 { margin: 0 0 8px; font-size: 26px; }
     .sub, .hint { color: var(--muted); font-size: 13px; line-height: 1.45; }
@@ -76,26 +74,12 @@
       text-transform: uppercase;
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      margin-bottom: 12px;
-    }
-
+    .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
     .field.full { grid-column: 1 / -1; }
 
-    label {
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 700;
-    }
+    label { font-size: 13px; color: var(--muted); font-weight: 700; }
 
     input, select, textarea {
       width: 100%;
@@ -159,11 +143,11 @@
 
     button:hover { transform: translateY(-1px); }
 
-    .btn-primary { background: linear-gradient(135deg, var(--gold), #b98c3a); color: #1d1405; }
+    .btn-primary   { background: linear-gradient(135deg, var(--gold), #b98c3a); color: #1d1405; }
     .btn-secondary { background: rgba(255,255,255,.08); color: var(--text); border: 1px solid rgba(255,255,255,.10); }
-    .btn-success { background: rgba(34,197,94,.16); color: #bbf7d0; border: 1px solid rgba(34,197,94,.32); }
-    .btn-warning { background: rgba(245,158,11,.16); color: #fde68a; border: 1px solid rgba(245,158,11,.32); }
-    .btn-danger { background: rgba(239,68,68,.16); color: #fecaca; border: 1px solid rgba(239,68,68,.32); }
+    .btn-success   { background: rgba(34,197,94,.16); color: #bbf7d0; border: 1px solid rgba(34,197,94,.32); }
+    .btn-warning   { background: rgba(245,158,11,.16); color: #fde68a; border: 1px solid rgba(245,158,11,.32); }
+    .btn-danger    { background: rgba(239,68,68,.16); color: #fecaca; border: 1px solid rgba(239,68,68,.32); }
 
     .topbar {
       display: flex;
@@ -192,6 +176,7 @@
 
     .hidden { display: none !important; }
 
+    /* ── Voucher ── */
     .voucher-scroll { overflow: auto; }
     .voucher-page {
       width: 210mm;
@@ -215,18 +200,31 @@
       margin-bottom: 8px;
     }
 
-    .voucher-title { font-size: 20px; font-weight: 900; letter-spacing: .04em; margin: 0 0 4px; }
+    .voucher-title    { font-size: 20px; font-weight: 900; letter-spacing: .04em; margin: 0 0 4px; }
     .voucher-subtitle { margin: 0; font-size: 10.6px; color: #d7dfef; }
-    .voucher-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .voucher-section { border: 1px solid #d8dfeb; border-radius: 10px; padding: 8px 9px; background: #fff; break-inside: avoid; }
+    .voucher-grid     { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+    .voucher-section      { border: 1px solid #d8dfeb; border-radius: 10px; padding: 8px 9px; background: #fff; break-inside: avoid; }
     .voucher-section.full { grid-column: 1 / -1; }
-    .voucher-section-title { margin: 0 0 6px; font-size: 10.2px; font-weight: 900; color: #8b6a2c; letter-spacing: .12em; text-transform: uppercase; border-bottom: 1px solid #e7ecf5; padding-bottom: 5px; }
+
+    .voucher-section-title {
+      margin: 0 0 6px;
+      font-size: 10.2px;
+      font-weight: 900;
+      color: #8b6a2c;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e7ecf5;
+      padding-bottom: 5px;
+    }
+
     .info-table { display: grid; grid-template-columns: 112px 1fr; gap: 4px 10px; }
-    .label-cell { color: #5b6882; font-weight: 800; }
-    .value-cell { color: #18243a; font-weight: 800; word-break: break-word; }
+    .label-cell  { color: #5b6882; font-weight: 800; }
+    .value-cell  { color: #18243a; font-weight: 800; word-break: break-word; }
     .service-notes { margin: 0; padding-left: 16px; color: #1c2940; }
     .service-notes li { margin-bottom: 4px; }
 
+    /* ── Text/Summary outputs ── */
     .text-output, .summary-output {
       width: 100%;
       min-height: 340px;
@@ -251,36 +249,40 @@
     }
 
     .missing-box { background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.28); color: #fde68a; }
-    .ok-box { background: rgba(34,197,94,.12); border: 1px solid rgba(34,197,94,.28); color: #bbf7d0; }
+    .ok-box      { background: rgba(34,197,94,.12);  border: 1px solid rgba(34,197,94,.28);  color: #bbf7d0; }
     .edit-banner { background: rgba(217,181,109,.14); border: 1px solid rgba(217,181,109,.35); color: #f8e5b4; margin-bottom: 12px; }
 
+    /* ── Table ── */
     .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
-    .search { flex: 1 1 280px; }
-    .filter-btn { padding: 9px 11px; font-size: 12px; }
+    .search  { flex: 1 1 280px; }
+    .filter-btn        { padding: 9px 11px; font-size: 12px; }
     .filter-btn.active { background: rgba(217,181,109,.18); color: var(--gold2); border-color: rgba(217,181,109,.45); }
 
     .table-wrap { overflow: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,.09); }
-    table { width: 100%; border-collapse: collapse; min-width: 980px; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; min-width: 1200px; font-size: 13px; }
     th, td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; vertical-align: top; }
     th { color: var(--gold2); background: rgba(255,255,255,.05); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
     td { color: var(--text); }
     .empty { color: #8b98b8; padding: 16px; }
 
-    .pill { border-radius: 999px; padding: 7px 10px; font-size: 12px; font-weight: 900; display: inline-flex; }
+    .pill        { border-radius: 999px; padding: 7px 10px; font-size: 12px; font-weight: 900; display: inline-flex; }
     .pill-orange { background: rgba(245,158,11,.14); color: #fde68a; border: 1px solid rgba(245,158,11,.28); }
-    .pill-green { background: rgba(34,197,94,.14); color: #bbf7d0; border: 1px solid rgba(34,197,94,.28); }
+    .pill-green  { background: rgba(34,197,94,.14);  color: #bbf7d0; border: 1px solid rgba(34,197,94,.28); }
 
+    /* ── Mobile cards ── */
     .mobile-cards { display: none; }
-    .res-card { background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.10); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
-    .res-card-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-    .res-name { font-weight: 900; color: #fff; }
-    .res-time { font-weight: 900; color: var(--gold2); text-align: right; }
-    .res-line { color: #dbe5ff; margin: 7px 0; font-size: 13px; }
+    .res-card     { background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.10); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+    .res-card-head{ display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .res-name  { font-weight: 900; color: #fff; }
+    .res-time  { font-weight: 900; color: var(--gold2); text-align: right; }
+    .res-line  { color: #dbe5ff; margin: 7px 0; font-size: 13px; }
+    .res-return{ color: #fde68a; margin: 5px 0; font-size: 12px; }
     .res-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
-    .mini-btn { font-size: 12px; padding: 9px 10px; }
+    .mini-btn  { font-size: 12px; padding: 9px 10px; }
 
     iframe[name="sheetFrame"] { width: 0; height: 0; border: 0; position: absolute; opacity: 0; pointer-events: none; }
 
+    /* ── Responsive ── */
     @media (max-width: 1200px) {
       .app { grid-template-columns: 1fr; }
       .form-panel { position: static; max-height: none; }
@@ -294,7 +296,6 @@
       .topbar { align-items: flex-start; }
       .tabs { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
       .tab-btn { font-size: 12px; padding: 10px; }
-      .voucher-page { transform-origin: top left; }
       .voucher-scroll { overflow-x: auto; }
       .table-wrap { display: none; }
       .mobile-cards { display: block; }
@@ -316,455 +317,464 @@
   </style>
 </head>
 <body>
-  <div class="app">
-    <aside class="panel form-panel">
-      <h1>Rezervasyon Sistemi</h1>
-      <p class="sub">PDF oluştur, WhatsApp metni hazırla, Google Sheets’e kaydet ve rezervasyonu sistem içinde takip et.</p>
+<div class="app">
 
-      <div id="editBanner" class="edit-banner hidden"></div>
+  <!-- ══════════════ FORM PANELİ ══════════════ -->
+  <aside class="panel form-panel">
+    <h1>Rezervasyon Sistemi</h1>
+    <p class="sub">PDF oluştur, WhatsApp metni hazırla, Google Sheets'e kaydet ve rezervasyonu sistem içinde takip et.</p>
 
-      <form id="voucherForm">
-        <div class="section-title">Servis</div>
+    <div id="editBanner" class="edit-banner hidden"></div>
 
-        <div class="field full">
-          <label>Servis Tipi</label>
-          <div class="radio-row">
-            <label class="radio-card"><input type="radio" name="serviceType" value="Transfer" checked><span>Transfer</span></label>
-            <label class="radio-card"><input type="radio" name="serviceType" value="Exit"><span>Exit</span></label>
-            <label class="radio-card"><input type="radio" name="serviceType" value="Tour"><span>Tour</span></label>
-          </div>
-        </div>
+    <form id="voucherForm">
+      <div class="section-title">Servis</div>
 
-        <div class="field full">
-          <label>Transfer Seçenekleri</label>
-          <div class="checkbox-row">
-            <label class="check-card"><input id="hasReturn" type="checkbox"><span>Return Transfer</span></label>
-          </div>
-        </div>
-
-        <div class="section-title">Yolcu & Rezervasyon</div>
-
-        <div class="grid">
-          <div class="field">
-            <label for="flyCode">Uçuş Kodu</label>
-            <input id="flyCode" name="flyCode" placeholder="XQ933" type="text">
-          </div>
-          <div class="field">
-            <label for="bookingDate">Rezervasyon Tarihi</label>
-            <input id="bookingDate" name="bookingDate" type="date">
-          </div>
-          <div class="field full">
-            <label for="nameSurname">Ad Soyad</label>
-            <input id="nameSurname" name="nameSurname" placeholder="Jean-Paul Philipsen" type="text">
-          </div>
-          <div class="field full">
-            <label for="phone">Telefon</label>
-            <input id="phone" name="phone" placeholder="+49 555 555 555" type="text">
-          </div>
-          <div class="field full">
-            <label for="passengerCount">Kişi Sayısı</label>
-            <input id="passengerCount" min="1" name="passengerCount" placeholder="4" type="number">
-          </div>
-        </div>
-
-        <div class="section-title">Transfer Bilgileri</div>
-
-        <div class="grid">
-          <div class="field full">
-            <label for="vehicle">Araç</label>
-            <select id="vehicle" name="vehicle">
-              <option value="">Araç seçiniz</option>
-              <option>Economic Sedan</option>
-              <option>Mercedes Vito</option>
-              <option>Mercedes VIP Vito</option>
-              <option>Mercedes Luxury Vito</option>
-              <option>Mercedes Sprinter</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label for="pickup">Alış / From</label>
-            <input id="pickup" name="pickup" placeholder="Antalya Airport" type="text">
-          </div>
-          <div class="field full">
-            <label for="dropoff">Bırakış / To</label>
-            <input id="dropoff" name="dropoff" placeholder="Belek Hotel" type="text">
-          </div>
-          <div class="field full">
-            <label for="dateTime">Tarih Saat</label>
-            <input id="dateTime" name="dateTime" type="datetime-local">
-          </div>
-          <div class="field">
-            <label for="amount">Fiyat</label>
-            <input id="amount" name="amount" placeholder="70" step="0.01" type="number">
-          </div>
-          <div class="field">
-            <label for="currency">Para Birimi</label>
-            <select id="currency" name="currency">
-              <option>EUR</option>
-              <option>USD</option>
-              <option>GBP</option>
-              <option>TRY</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label for="paymentMethod">Ödeme Şekli</label>
-            <select id="paymentMethod" name="paymentMethod">
-              <option value="">Ödeme seçiniz</option>
-              <option>CASH</option>
-              <option>CREDIT CARD</option>
-              <option>BANK TRANSFER</option>
-              <option>ONLINE</option>
-              <option>PAID</option>
-              <option>NOT PAID</option>
-            </select>
-          </div>
-          <div class="field full">
-            <label for="note">Not</label>
-            <textarea id="note" name="note" placeholder="Important Guests / child seat / luggage / extra details"></textarea>
-          </div>
-        </div>
-
-        <div id="returnFields" class="hidden">
-          <div class="section-title">Dönüş Bilgileri</div>
-          <div class="grid">
-            <div class="field">
-              <label for="returnFlyCode">Dönüş Uçuş Kodu</label>
-              <input id="returnFlyCode" name="returnFlyCode" placeholder="PC120" type="text">
-            </div>
-            <div class="field full">
-              <label for="returnPickup">Dönüş Alış Noktası</label>
-              <input id="returnPickup" name="returnPickup" placeholder="Hotel / Resort" type="text">
-            </div>
-            <div class="field full">
-              <label for="returnDropoff">Dönüş Bırakış Noktası</label>
-              <input id="returnDropoff" name="returnDropoff" placeholder="Airport / Address" type="text">
-            </div>
-            <div class="field full">
-              <label for="returnDateTime">Dönüş Tarih Saat</label>
-              <input id="returnDateTime" name="returnDateTime" type="datetime-local">
-            </div>
-          </div>
-        </div>
-
-        <div id="missingInfoBox" class="missing-box hidden"></div>
-        <div id="okInfoBox" class="ok-box hidden">Kontrol alanları tamam görünüyor.</div>
-
-        <div class="actions">
-          <button type="button" class="btn-success" id="saveSheetBtn">Kaydet</button>
-          <button type="button" class="btn-secondary" id="newReservationBtn">Yeni Kayıt</button>
-          <button type="button" class="btn-primary" id="downloadPdfBtn">PDF İndir</button>
-          <button type="button" class="btn-secondary" id="copyTextBtn">Metni Kopyala</button>
-        </div>
-      </form>
-
-      <form id="sheetPostForm" method="POST" target="sheetFrame" class="hidden"></form>
-      <iframe name="sheetFrame"></iframe>
-    </aside>
-
-    <main class="panel work-panel">
-      <div class="topbar">
-        <div>
-          <h2>Rezervasyon Paneli</h2>
-          <div class="hint">PDF dili İngilizce, arayüz Türkçe. Sheets sadece arka plan kayıt deposu.</div>
-        </div>
-        <div class="tabs">
-          <button type="button" class="tab-btn active" data-tab="pdfTab">PDF Önizleme</button>
-          <button type="button" class="tab-btn" data-tab="textTab">Rezervasyon Metni</button>
-          <button type="button" class="tab-btn" data-tab="controlTab">Günlük Kontrol</button>
-          <button type="button" class="tab-btn" data-tab="allTab">Tüm Rezervasyonlar</button>
+      <div class="field full">
+        <label>Servis Tipi</label>
+        <div class="radio-row">
+          <label class="radio-card"><input type="radio" name="serviceType" value="Transfer" checked><span>Transfer</span></label>
+          <label class="radio-card"><input type="radio" name="serviceType" value="Exit"><span>Exit</span></label>
+          <label class="radio-card"><input type="radio" name="serviceType" value="Tour"><span>Tour</span></label>
         </div>
       </div>
 
-      <section id="pdfTab" class="tab-panel active">
-        <div class="voucher-scroll">
-          <div id="voucher" class="voucher-page">
-            <header class="voucher-header">
-              <h3 class="voucher-title">PREMIUM VIP TRANSFER</h3>
-              <p class="voucher-subtitle">Luxury Airport Chauffeur Service • WhatsApp: +90 506 056 18 94</p>
-            </header>
+      <div class="field full">
+        <label>Transfer Seçenekleri</label>
+        <div class="checkbox-row">
+          <label class="check-card"><input id="hasReturn" type="checkbox"><span>Return Transfer</span></label>
+        </div>
+      </div>
 
-            <div class="voucher-grid">
-              <section class="voucher-section full">
-                <h4 class="voucher-section-title">Summary</h4>
-                <div class="info-table">
-                  <div class="label-cell pdf-row row-booking-no">Booking No</div><div class="value-cell pdf-row row-booking-no" id="pvBookingNo"></div>
-                  <div class="label-cell pdf-row row-vehicle">Vehicle</div><div class="value-cell pdf-row row-vehicle" id="pvVehicle"></div>
-                  <div class="label-cell pdf-row row-passengers">Passengers</div><div class="value-cell pdf-row row-passengers" id="pvPassengerCount"></div>
-                  <div class="label-cell pdf-row row-service-type">Service Type</div><div class="value-cell pdf-row row-service-type" id="pvServiceType"></div>
-                  <div class="label-cell pdf-row row-transfer-type">Transfer Type</div><div class="value-cell pdf-row row-transfer-type" id="pvTransferType"></div>
-                  <div class="label-cell pdf-row row-final-amount">Final Amount</div><div class="value-cell pdf-row row-final-amount" id="pvFinalAmount"></div>
-                  <div class="label-cell pdf-row row-booking-date">Booking Date</div><div class="value-cell pdf-row row-booking-date" id="pvBookingDate"></div>
-                </div>
-              </section>
+      <div class="section-title">Yolcu &amp; Rezervasyon</div>
 
-              <section class="voucher-section" id="arrivalSection">
-                <h4 class="voucher-section-title">Arrival</h4>
-                <div class="info-table">
-                  <div class="label-cell pdf-row row-arrival-route">Route</div><div class="value-cell pdf-row row-arrival-route" id="pvArrivalRoute"></div>
-                  <div class="label-cell pdf-row row-arrival-datetime">Date Time</div><div class="value-cell pdf-row row-arrival-datetime" id="pvArrivalDateTime"></div>
-                  <div class="label-cell pdf-row row-arrival-flight">Flight Number</div><div class="value-cell pdf-row row-arrival-flight" id="pvArrivalFlight"></div>
-                </div>
-              </section>
+      <div class="grid">
+        <div class="field">
+          <label for="flyCode">Uçuş Kodu</label>
+          <input id="flyCode" name="flyCode" placeholder="XQ933" type="text">
+        </div>
+        <div class="field">
+          <label for="bookingDate">Rezervasyon Tarihi</label>
+          <input id="bookingDate" name="bookingDate" type="date">
+        </div>
+        <div class="field full">
+          <label for="nameSurname">Ad Soyad</label>
+          <input id="nameSurname" name="nameSurname" placeholder="Jean-Paul Philipsen" type="text">
+        </div>
+        <div class="field full">
+          <label for="phone">Telefon</label>
+          <input id="phone" name="phone" placeholder="+49 555 555 555" type="text">
+        </div>
+        <div class="field full">
+          <label for="passengerCount">Kişi Sayısı</label>
+          <input id="passengerCount" min="1" name="passengerCount" placeholder="4" type="number">
+        </div>
+      </div>
 
-              <section class="voucher-section hidden" id="returnSection">
-                <h4 class="voucher-section-title">Return</h4>
-                <div class="info-table">
-                  <div class="label-cell pdf-row row-return-route">Route</div><div class="value-cell pdf-row row-return-route" id="pvReturnRoute"></div>
-                  <div class="label-cell pdf-row row-return-datetime">Date Time</div><div class="value-cell pdf-row row-return-datetime" id="pvReturnDateTime"></div>
-                  <div class="label-cell pdf-row row-return-flight">Flight Number</div><div class="value-cell pdf-row row-return-flight" id="pvReturnFlight"></div>
-                </div>
-              </section>
+      <div class="section-title">Transfer Bilgileri</div>
 
-              <section class="voucher-section full" id="passengerSection">
-                <h4 class="voucher-section-title">Passenger</h4>
-                <div class="info-table">
-                  <div class="label-cell pdf-row row-name">Name</div><div class="value-cell pdf-row row-name" id="pvName"></div>
-                  <div class="label-cell pdf-row row-phone">Phone</div><div class="value-cell pdf-row row-phone" id="pvPhone"></div>
-                  <div class="label-cell pdf-row row-note">Note</div><div class="value-cell pdf-row row-note" id="pvNote"></div>
-                </div>
-              </section>
+      <div class="grid">
+        <div class="field full">
+          <label for="vehicle">Araç</label>
+          <select id="vehicle" name="vehicle">
+            <option value="">Araç seçiniz</option>
+            <option>Economic Sedan</option>
+            <option>Mercedes Vito</option>
+            <option>Mercedes VIP Vito</option>
+            <option>Mercedes Luxury Vito</option>
+            <option>Mercedes Sprinter</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="pickup">Alış / From</label>
+          <input id="pickup" name="pickup" placeholder="Antalya Airport" type="text">
+        </div>
+        <div class="field full">
+          <label for="dropoff">Bırakış / To</label>
+          <input id="dropoff" name="dropoff" placeholder="Belek Hotel" type="text">
+        </div>
+        <div class="field full">
+          <label for="dateTime">Tarih Saat</label>
+          <input id="dateTime" name="dateTime" type="datetime-local">
+        </div>
+        <div class="field">
+          <label for="amount">Fiyat</label>
+          <input id="amount" name="amount" placeholder="70" step="0.01" type="number">
+        </div>
+        <div class="field">
+          <label for="currency">Para Birimi</label>
+          <select id="currency" name="currency">
+            <option>EUR</option>
+            <option>USD</option>
+            <option>GBP</option>
+            <option>TRY</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="paymentMethod">Ödeme Şekli</label>
+          <select id="paymentMethod" name="paymentMethod">
+            <option value="">Ödeme seçiniz</option>
+            <option>CASH</option>
+            <option>CREDIT CARD</option>
+            <option>BANK TRANSFER</option>
+            <option>ONLINE</option>
+            <option>PAID</option>
+            <option>NOT PAID</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="note">Not</label>
+          <textarea id="note" name="note" placeholder="Important Guests / child seat / luggage / extra details"></textarea>
+        </div>
+      </div>
 
-              <section class="voucher-section full">
-                <h4 class="voucher-section-title">Service Notes</h4>
-                <ul class="service-notes">
-                  <li>Driver will meet you at the airport arrival gate with a name sign.</li>
-                  <li>Free waiting time included for flight delays.</li>
-                  <li>After landing please turn on your phone.</li>
-                  <li>If you have no internet, ask someone at the airport for help and contact us via the phone number on this voucher.</li>
-                  <li>WhatsApp / Phone: +90 506 056 18 94</li>
-                </ul>
-              </section>
-            </div>
+      <div id="returnFields" class="hidden">
+        <div class="section-title">Dönüş Bilgileri</div>
+        <div class="grid">
+          <div class="field">
+            <label for="returnFlyCode">Dönüş Uçuş Kodu</label>
+            <input id="returnFlyCode" name="returnFlyCode" placeholder="PC120" type="text">
+          </div>
+          <div class="field full">
+            <label for="returnPickup">Dönüş Alış Noktası</label>
+            <input id="returnPickup" name="returnPickup" placeholder="Hotel / Resort" type="text">
+          </div>
+          <div class="field full">
+            <label for="returnDropoff">Dönüş Bırakış Noktası</label>
+            <input id="returnDropoff" name="returnDropoff" placeholder="Airport / Address" type="text">
+          </div>
+          <div class="field full">
+            <label for="returnDateTime">Dönüş Tarih Saat</label>
+            <input id="returnDateTime" name="returnDateTime" type="datetime-local">
           </div>
         </div>
-      </section>
+      </div>
 
-      <section id="textTab" class="tab-panel">
-        <div class="card">
-          <textarea id="reservationText" class="text-output" readonly></textarea>
-          <div id="copyStatus" class="status-line">Bu metin WhatsApp grupları için hazır.</div>
+      <div id="missingInfoBox" class="missing-box hidden"></div>
+      <div id="okInfoBox"      class="ok-box hidden">Kontrol alanları tamam görünüyor.</div>
+
+      <div class="actions">
+        <button type="button" class="btn-success"   id="saveSheetBtn">Kaydet</button>
+        <button type="button" class="btn-secondary" id="newReservationBtn">Yeni Kayıt</button>
+        <button type="button" class="btn-primary"   id="downloadPdfBtn">PDF İndir</button>
+        <button type="button" class="btn-secondary" id="copyTextBtn">Metni Kopyala</button>
+      </div>
+    </form>
+
+    <!-- POST formu (Sheets'e veri gönderme) -->
+    <form id="sheetPostForm" method="POST" target="sheetFrame" class="hidden"></form>
+    <iframe name="sheetFrame"></iframe>
+  </aside>
+
+  <!-- ══════════════ ÇALIŞMA PANELİ ══════════════ -->
+  <main class="panel work-panel">
+    <div class="topbar">
+      <div>
+        <h2>Rezervasyon Paneli</h2>
+        <div class="hint">PDF dili İngilizce, arayüz Türkçe. Sheets arka plan kayıt deposu.</div>
+      </div>
+      <div class="tabs">
+        <button type="button" class="tab-btn active" data-tab="pdfTab">PDF Önizleme</button>
+        <button type="button" class="tab-btn" data-tab="textTab">Rezervasyon Metni</button>
+        <button type="button" class="tab-btn" data-tab="controlTab">Günlük Kontrol</button>
+        <button type="button" class="tab-btn" data-tab="allTab">Tüm Rezervasyonlar</button>
+      </div>
+    </div>
+
+    <!-- PDF Tab -->
+    <section id="pdfTab" class="tab-panel active">
+      <div class="voucher-scroll">
+        <div id="voucher" class="voucher-page">
+          <header class="voucher-header">
+            <h3 class="voucher-title">PREMIUM VIP TRANSFER</h3>
+            <p class="voucher-subtitle">Luxury Airport Chauffeur Service • WhatsApp: +90 506 056 18 94</p>
+          </header>
+
+          <div class="voucher-grid">
+            <section class="voucher-section full">
+              <h4 class="voucher-section-title">Summary</h4>
+              <div class="info-table">
+                <div class="label-cell pdf-row row-booking-no">Booking No</div><div class="value-cell pdf-row row-booking-no" id="pvBookingNo"></div>
+                <div class="label-cell pdf-row row-vehicle">Vehicle</div><div class="value-cell pdf-row row-vehicle" id="pvVehicle"></div>
+                <div class="label-cell pdf-row row-passengers">Passengers</div><div class="value-cell pdf-row row-passengers" id="pvPassengerCount"></div>
+                <div class="label-cell pdf-row row-service-type">Service Type</div><div class="value-cell pdf-row row-service-type" id="pvServiceType"></div>
+                <div class="label-cell pdf-row row-transfer-type">Transfer Type</div><div class="value-cell pdf-row row-transfer-type" id="pvTransferType"></div>
+                <div class="label-cell pdf-row row-final-amount">Final Amount</div><div class="value-cell pdf-row row-final-amount" id="pvFinalAmount"></div>
+                <div class="label-cell pdf-row row-booking-date">Booking Date</div><div class="value-cell pdf-row row-booking-date" id="pvBookingDate"></div>
+              </div>
+            </section>
+
+            <section class="voucher-section" id="arrivalSection">
+              <h4 class="voucher-section-title">Arrival</h4>
+              <div class="info-table">
+                <div class="label-cell pdf-row row-arrival-route">Route</div><div class="value-cell pdf-row row-arrival-route" id="pvArrivalRoute"></div>
+                <div class="label-cell pdf-row row-arrival-datetime">Date Time</div><div class="value-cell pdf-row row-arrival-datetime" id="pvArrivalDateTime"></div>
+                <div class="label-cell pdf-row row-arrival-flight">Flight Number</div><div class="value-cell pdf-row row-arrival-flight" id="pvArrivalFlight"></div>
+              </div>
+            </section>
+
+            <section class="voucher-section hidden" id="returnSection">
+              <h4 class="voucher-section-title">Return</h4>
+              <div class="info-table">
+                <div class="label-cell pdf-row row-return-route">Route</div><div class="value-cell pdf-row row-return-route" id="pvReturnRoute"></div>
+                <div class="label-cell pdf-row row-return-datetime">Date Time</div><div class="value-cell pdf-row row-return-datetime" id="pvReturnDateTime"></div>
+                <div class="label-cell pdf-row row-return-flight">Flight Number</div><div class="value-cell pdf-row row-return-flight" id="pvReturnFlight"></div>
+              </div>
+            </section>
+
+            <section class="voucher-section full" id="passengerSection">
+              <h4 class="voucher-section-title">Passenger</h4>
+              <div class="info-table">
+                <div class="label-cell pdf-row row-name">Name</div><div class="value-cell pdf-row row-name" id="pvName"></div>
+                <div class="label-cell pdf-row row-phone">Phone</div><div class="value-cell pdf-row row-phone" id="pvPhone"></div>
+                <div class="label-cell pdf-row row-note">Note</div><div class="value-cell pdf-row row-note" id="pvNote"></div>
+              </div>
+            </section>
+
+            <section class="voucher-section full">
+              <h4 class="voucher-section-title">Service Notes</h4>
+              <ul class="service-notes">
+                <li>Driver will meet you at the airport arrival gate with a name sign.</li>
+                <li>Free waiting time included for flight delays.</li>
+                <li>After landing please turn on your phone.</li>
+                <li>If you have no internet, ask someone at the airport for help and contact us via the phone number on this voucher.</li>
+                <li>WhatsApp / Phone: +90 506 056 18 94</li>
+              </ul>
+            </section>
+          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="controlTab" class="tab-panel">
-        <div class="card">
-          <div class="toolbar">
-            <button type="button" class="btn-primary" id="loadSheetBtn">Verileri Yükle</button>
-            <button type="button" class="btn-secondary" id="copyDailySummaryBtn">Günlük Özeti Kopyala</button>
-            <span class="pill pill-orange">Eksik = temel rezervasyon bilgisi</span>
-          </div>
-          <div id="sheetStatus" class="status-line">Hazır.</div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Tarih</th><th>Saat</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th><th>Araç</th><th>Fiyat</th><th>İşlem</th></tr></thead>
-              <tbody id="dailyTableBody"><tr><td colspan="9" class="empty">Henüz veri yüklenmedi.</td></tr></tbody>
-            </table>
-          </div>
-          <div id="dailyMobileCards" class="mobile-cards"></div>
-          <textarea id="dailySummary" class="summary-output" readonly></textarea>
+    <!-- Text Tab -->
+    <section id="textTab" class="tab-panel">
+      <div class="card">
+        <textarea id="reservationText" class="text-output" readonly></textarea>
+        <div id="copyStatus" class="status-line">Bu metin WhatsApp grupları için hazır.</div>
+      </div>
+    </section>
+
+    <!-- Günlük Kontrol Tab -->
+    <section id="controlTab" class="tab-panel">
+      <div class="card">
+        <div class="toolbar">
+          <button type="button" class="btn-primary" id="loadSheetBtn">Verileri Yükle</button>
+          <button type="button" class="btn-secondary" id="copyDailySummaryBtn">Günlük Özeti Kopyala</button>
+          <span class="pill pill-orange">Eksik = temel rezervasyon bilgisi</span>
         </div>
-      </section>
-
-      <section id="allTab" class="tab-panel">
-        <div class="card">
-          <div class="toolbar">
-            <button type="button" class="btn-primary" id="loadAllBtn">Tümünü Yükle</button>
-            <button type="button" class="btn-secondary" id="copyListSummaryBtn">Liste Özetini Kopyala</button>
-            <input id="reservationSearch" class="search" type="text" placeholder="İsim, telefon, otel, rota, araç ara...">
-            <button type="button" class="btn-secondary filter-btn active" data-filter="all">Tümü</button>
-            <button type="button" class="btn-secondary filter-btn" data-filter="today">Bugün</button>
-            <button type="button" class="btn-secondary filter-btn" data-filter="tomorrow">Yarın</button>
-            <button type="button" class="btn-secondary filter-btn" data-filter="week">7 Gün</button>
-            <button type="button" class="btn-secondary filter-btn" data-filter="month">Bu Ay</button>
-            <button type="button" class="btn-secondary filter-btn" data-filter="missing">Eksik</button>
-          </div>
-          <div id="allStatus" class="status-line">Tüm rezervasyonları görmek için yükle.</div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Tarih</th><th>Saat</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th><th>Araç</th><th>Fiyat</th><th>İşlem</th></tr></thead>
-              <tbody id="allTableBody"><tr><td colspan="9" class="empty">Henüz veri yüklenmedi.</td></tr></tbody>
-            </table>
-          </div>
-          <div id="allMobileCards" class="mobile-cards"></div>
+        <div id="sheetStatus" class="status-line">Hazır.</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tarih</th><th>Saat</th><th>Ad Soyad</th><th>Telefon</th>
+                <th>From</th><th>To</th><th>Araç</th><th>Fiyat</th><th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="dailyTableBody"><tr><td colspan="9" class="empty">Henüz veri yüklenmedi.</td></tr></tbody>
+          </table>
         </div>
-      </section>
-    </main>
-  </div>
+        <div id="dailyMobileCards" class="mobile-cards"></div>
+        <textarea id="dailySummary" class="summary-output" readonly></textarea>
+      </div>
+    </section>
 
-  <script>
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDuoeiK-zh7gzjpB4ML44QgVcUsFdIHxbEbjho0VOHXDOuTLzXKSrXTIG0LK8RTjgk4A/exec';
-    const FIXED_BRAND = 'PREMIUM VIP TRANSFER';
+    <!-- Tüm Rezervasyonlar Tab -->
+    <section id="allTab" class="tab-panel">
+      <div class="card">
+        <div class="toolbar">
+          <button type="button" class="btn-primary" id="loadAllBtn">Tümünü Yükle</button>
+          <button type="button" class="btn-secondary" id="copyListSummaryBtn">Liste Özetini Kopyala</button>
+          <input id="reservationSearch" class="search" type="text" placeholder="İsim, telefon, otel, rota, araç ara...">
+          <button type="button" class="btn-secondary filter-btn active" data-filter="all">Tümü</button>
+          <button type="button" class="btn-secondary filter-btn" data-filter="today">Bugün</button>
+          <button type="button" class="btn-secondary filter-btn" data-filter="tomorrow">Yarın</button>
+          <button type="button" class="btn-secondary filter-btn" data-filter="week">7 Gün</button>
+          <button type="button" class="btn-secondary filter-btn" data-filter="month">Bu Ay</button>
+          <button type="button" class="btn-secondary filter-btn" data-filter="missing">Eksik</button>
+        </div>
+        <div id="allStatus" class="status-line">Tüm rezervasyonları görmek için yükle.</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tarih</th><th>Saat</th><th>Ad Soyad</th><th>Telefon</th>
+                <th>From</th><th>To</th><th>Araç</th><th>Fiyat</th>
+                <th>Dönüş Tarihi</th><th>Dönüş Saati</th><th>Dönüş From</th><th>Dönüş To</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="allTableBody"><tr><td colspan="13" class="empty">Henüz veri yüklenmedi.</td></tr></tbody>
+          </table>
+        </div>
+        <div id="allMobileCards" class="mobile-cards"></div>
+      </div>
+    </section>
+  </main>
+</div>
 
-    const $ = id => document.getElementById(id);
+<script>
+  // ─── Konfigürasyon ──────────────────────────────────────────────────────────
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDuoeiK-zh7gzjpB4ML44QgVcUsFdIHxbEbjho0VOHXDOuTLzXKSrXTIG0LK8RTjgk4A/exec';
+  const FIXED_BRAND     = 'PREMIUM VIP TRANSFER';
 
-    const form = $('voucherForm');
-    const hasReturn = $('hasReturn');
-    const returnFields = $('returnFields');
-    const returnSection = $('returnSection');
-    const voucher = $('voucher');
-    const saveSheetBtn = $('saveSheetBtn');
-    const newReservationBtn = $('newReservationBtn');
-    const downloadPdfBtn = $('downloadPdfBtn');
-    const copyTextBtn = $('copyTextBtn');
-    const loadSheetBtn = $('loadSheetBtn');
-    const loadAllBtn = $('loadAllBtn');
-    const copyDailySummaryBtn = $('copyDailySummaryBtn');
-    const copyListSummaryBtn = $('copyListSummaryBtn');
-    const reservationText = $('reservationText');
-    const copyStatus = $('copyStatus');
-    const sheetStatus = $('sheetStatus');
-    const allStatus = $('allStatus');
-    const dailyTableBody = $('dailyTableBody');
-    const allTableBody = $('allTableBody');
-    const dailyMobileCards = $('dailyMobileCards');
-    const allMobileCards = $('allMobileCards');
-    const dailySummary = $('dailySummary');
-    const sheetPostForm = $('sheetPostForm');
-    const missingInfoBox = $('missingInfoBox');
-    const okInfoBox = $('okInfoBox');
-    const editBanner = $('editBanner');
-    const reservationSearch = $('reservationSearch');
+  // ─── DOM referansları ───────────────────────────────────────────────────────
+  const $  = id => document.getElementById(id);
+  const form               = $('voucherForm');
+  const hasReturn          = $('hasReturn');
+  const returnFields       = $('returnFields');
+  const returnSection      = $('returnSection');
+  const voucher            = $('voucher');
+  const saveSheetBtn       = $('saveSheetBtn');
+  const newReservationBtn  = $('newReservationBtn');
+  const downloadPdfBtn     = $('downloadPdfBtn');
+  const copyTextBtn        = $('copyTextBtn');
+  const loadSheetBtn       = $('loadSheetBtn');
+  const loadAllBtn         = $('loadAllBtn');
+  const copyDailySummaryBtn= $('copyDailySummaryBtn');
+  const copyListSummaryBtn = $('copyListSummaryBtn');
+  const reservationText    = $('reservationText');
+  const copyStatus         = $('copyStatus');
+  const sheetStatus        = $('sheetStatus');
+  const allStatus          = $('allStatus');
+  const dailyTableBody     = $('dailyTableBody');
+  const allTableBody       = $('allTableBody');
+  const dailyMobileCards   = $('dailyMobileCards');
+  const allMobileCards     = $('allMobileCards');
+  const dailySummary       = $('dailySummary');
+  const sheetPostForm      = $('sheetPostForm');
+  const missingInfoBox     = $('missingInfoBox');
+  const okInfoBox          = $('okInfoBox');
+  const editBanner         = $('editBanner');
+  const reservationSearch  = $('reservationSearch');
 
-    let bookingNumber = generateBookingNumber();
-    let editingBookingNo = '';
-    let sheetRows = [];
-    let activeFilter = 'all';
+  // ─── State ─────────────────────────────────────────────────────────────────
+  let bookingNumber    = generateBookingNumber();
+  let editingBookingNo = '';
+  let sheetRows        = [];
+  let activeFilter     = 'all';
 
-    function generateBookingNumber() {
-      return String(Math.floor(100000 + Math.random() * 900000));
+  // ─── Util ──────────────────────────────────────────────────────────────────
+  function generateBookingNumber() {
+    return String(Math.floor(100000 + Math.random() * 900000));
+  }
+
+  function pad(v) { return String(v).padStart(2, '0'); }
+
+  function toDate(v) {
+    if (!v) return null;
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+  }
+
+  function formatDate(v) {
+    if (!v) return '';
+    const d = toDate(v + 'T00:00:00') || toDate(v);
+    return d ? `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}` : '';
+  }
+
+  function formatDateTime(v) {
+    const d = toDate(v);
+    return d ? `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()} / ${pad(d.getHours())}:${pad(d.getMinutes())}` : '';
+  }
+
+  function formatDateTimeDots(v) {
+    const d = toDate(v);
+    return d ? `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} / ${pad(d.getHours())}:${pad(d.getMinutes())}` : '';
+  }
+
+  function isoDate(v) {
+    const d = toDate(v);
+    return d ? `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}` : '';
+  }
+
+  function getTime(v) {
+    const d = toDate(v);
+    return d ? `${pad(d.getHours())}:${pad(d.getMinutes())}` : '';
+  }
+
+  function dateTimeFromRow(date, time) {
+    return date ? `${date}T${time || '00:00'}` : '';
+  }
+
+  function getCheckedService() {
+    return new FormData(form).get('serviceType') || 'Transfer';
+  }
+
+  function setService(v) {
+    document.querySelectorAll('input[name="serviceType"]').forEach(i => {
+      i.checked = i.value === (v || 'Transfer');
+    });
+  }
+
+  function val(id)       { return ($(id).value || '').trim(); }
+  function setVal(id, v) { $(id).value = v || ''; }
+
+  function getData() {
+    return {
+      bookingNo     : editingBookingNo || bookingNumber,
+      brand         : FIXED_BRAND,
+      serviceType   : getCheckedService(),
+      hasReturn     : hasReturn.checked,
+      flyCode       : val('flyCode'),
+      bookingDate   : val('bookingDate'),
+      nameSurname   : val('nameSurname'),
+      phone         : val('phone'),
+      passengerCount: val('passengerCount'),
+      vehicle       : val('vehicle'),
+      pickup        : val('pickup'),
+      dropoff       : val('dropoff'),
+      dateTime      : val('dateTime'),
+      amount        : val('amount'),
+      currency      : val('currency') || 'EUR',
+      paymentMethod : val('paymentMethod'),
+      note          : val('note'),
+      returnFlyCode : val('returnFlyCode'),
+      returnPickup  : val('returnPickup'),
+      returnDropoff : val('returnDropoff'),
+      returnDateTime: val('returnDateTime')
+    };
+  }
+
+  function priceText(data) {
+    return data.amount ? `${data.amount} ${data.currency}` : '';
+  }
+
+  function finalAmount(data) {
+    const price = priceText(data);
+    return price ? `${price}${data.paymentMethod ? ` / ${data.paymentMethod}` : ''}` : '';
+  }
+
+  function missing(data) {
+    const items = [];
+    if (!data.dateTime)      items.push('Tarih saat eksik');
+    if (!data.nameSurname)   items.push('Ad soyad eksik');
+    if (!data.pickup)        items.push('From eksik');
+    if (!data.dropoff)       items.push('To eksik');
+    if (!data.passengerCount)items.push('Kişi sayısı eksik');
+    if (!data.vehicle)       items.push('Araç eksik');
+    if (!data.amount)        items.push('Fiyat eksik');
+    return items;
+  }
+
+  function setPdfRow(rowClass, id, value) {
+    const has = !!value;
+    document.querySelectorAll(`.${rowClass}`).forEach(el => el.classList.toggle('hidden', !has));
+    if (id) $(id).textContent = value || '';
+  }
+
+  // ─── Rezervasyon metni ──────────────────────────────────────────────────────
+  function reservationTxt(data) {
+    const line = `${formatDateTimeDots(data.dateTime) || '(tarih belirtilmedi)'} / ${data.flyCode || '-'}`;
+
+    let returnLine = '';
+    if (data.hasReturn) {
+      const rm = `Return: ${formatDateTimeDots(data.returnDateTime) || '(belirtilmedi)'}${data.returnFlyCode ? ` / ${data.returnFlyCode}` : ''}`;
+      const rf = data.returnPickup  ? `\nReturn From: ${data.returnPickup}`  : '';
+      const rt = data.returnDropoff ? `\nReturn To: ${data.returnDropoff}`   : '';
+      returnLine = `\n${rm}${rf}${rt}\n`;
     }
 
-    function pad(value) {
-      return String(value).padStart(2, '0');
-    }
-
-    function toDate(value) {
-      if (!value) return null;
-      const date = new Date(value);
-      return Number.isNaN(date.getTime()) ? null : date;
-    }
-
-    function formatDate(value) {
-      if (!value) return '';
-      const date = toDate(value + 'T00:00:00') || toDate(value);
-      return date ? `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}` : '';
-    }
-
-    function formatDateTime(value) {
-      const date = toDate(value);
-      return date ? `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()} / ${pad(date.getHours())}:${pad(date.getMinutes())}` : '';
-    }
-
-    function formatDateTimeDots(value) {
-      const date = toDate(value);
-      return date ? `${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()} / ${pad(date.getHours())}:${pad(date.getMinutes())}` : '';
-    }
-
-    function isoDate(value) {
-      const date = toDate(value);
-      return date ? `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` : '';
-    }
-
-    function getTime(value) {
-      const date = toDate(value);
-      return date ? `${pad(date.getHours())}:${pad(date.getMinutes())}` : '';
-    }
-
-    function dateTimeFromRow(date, time) {
-      return date ? `${date}T${time || '00:00'}` : '';
-    }
-
-    function getCheckedService() {
-      return new FormData(form).get('serviceType') || 'Transfer';
-    }
-
-    function setService(value) {
-      document.querySelectorAll('input[name="serviceType"]').forEach(input => {
-        input.checked = input.value === (value || 'Transfer');
-      });
-    }
-
-    function val(id) {
-      return ($(id).value || '').trim();
-    }
-
-    function setVal(id, value) {
-      $(id).value = value || '';
-    }
-
-    function getData() {
-      return {
-        bookingNo: editingBookingNo || bookingNumber,
-        brand: FIXED_BRAND,
-        serviceType: getCheckedService(),
-        hasReturn: hasReturn.checked,
-        flyCode: val('flyCode'),
-        bookingDate: val('bookingDate'),
-        nameSurname: val('nameSurname'),
-        phone: val('phone'),
-        passengerCount: val('passengerCount'),
-        vehicle: val('vehicle'),
-        pickup: val('pickup'),
-        dropoff: val('dropoff'),
-        dateTime: val('dateTime'),
-        amount: val('amount'),
-        currency: val('currency') || 'EUR',
-        paymentMethod: val('paymentMethod'),
-        note: val('note'),
-        returnFlyCode: val('returnFlyCode'),
-        returnPickup: val('returnPickup'),
-        returnDropoff: val('returnDropoff'),
-        returnDateTime: val('returnDateTime')
-      };
-    }
-
-    function priceText(data) {
-      return data.amount ? `${data.amount} ${data.currency}` : '';
-    }
-
-    function finalAmount(data) {
-      const price = priceText(data);
-      return price ? `${price}${data.paymentMethod ? ` / ${data.paymentMethod}` : ''}` : '';
-    }
-
-    function missing(data) {
-      const items = [];
-      if (!data.dateTime) items.push('Tarih saat eksik');
-      if (!data.nameSurname) items.push('Ad soyad eksik');
-      if (!data.pickup) items.push('From eksik');
-      if (!data.dropoff) items.push('To eksik');
-      if (!data.passengerCount) items.push('Kişi sayısı eksik');
-      if (!data.vehicle) items.push('Araç eksik');
-      if (!data.amount) items.push('Fiyat eksik');
-      return items;
-    }
-
-    function setPdfRow(rowClass, id, value) {
-      const hasValue = !!value;
-      document.querySelectorAll(`.${rowClass}`).forEach(element => {
-        element.classList.toggle('hidden', !hasValue);
-      });
-      if (id) {
-        $(id).textContent = value || '';
-      }
-    }
-
-    function reservationTxt(data) {
-      const line = `${formatDateTimeDots(data.dateTime) || '(tarih belirtilmedi)'} / ${data.flyCode || '-'}`;
-
-      let returnLine = '';
-      if (data.hasReturn) {
-        const returnMain = `Return: ${formatDateTimeDots(data.returnDateTime) || '(belirtilmedi)'}${data.returnFlyCode ? ` / ${data.returnFlyCode}` : ''}`;
-        const returnFrom = data.returnPickup ? `
-Return From: ${data.returnPickup}` : '';
-        const returnTo = data.returnDropoff ? `
-Return To: ${data.returnDropoff}` : '';
-        returnLine = `
-${returnMain}${returnFrom}${returnTo}
-`;
-      }
-
-      return `${line}
+    return `${line}
 
 ${data.nameSurname || '(isim belirtilmedi)'}
 
@@ -782,243 +792,289 @@ Price: ${priceText(data) || '(belirtilmedi)'}
 Car: ${data.vehicle || '(belirtilmedi)'}
 ${returnLine}
 ${FIXED_BRAND}`.trim();
+  }
+
+  // ─── Preview güncellemesi ───────────────────────────────────────────────────
+  function updatePreview() {
+    const data        = getData();
+    const arrivalRoute = [data.pickup, data.dropoff].filter(Boolean).join(' → ');
+    const returnRoute  = [data.returnPickup, data.returnDropoff].filter(Boolean).join(' → ');
+    const transferType = data.hasReturn ? 'Arrival + Return' : 'One Way';
+
+    setPdfRow('row-booking-no',      'pvBookingNo',      data.bookingNo);
+    setPdfRow('row-vehicle',         'pvVehicle',        data.vehicle);
+    setPdfRow('row-passengers',      'pvPassengerCount', data.passengerCount);
+    setPdfRow('row-service-type',    'pvServiceType',    data.serviceType);
+    setPdfRow('row-transfer-type',   'pvTransferType',   transferType);
+    setPdfRow('row-final-amount',    'pvFinalAmount',    finalAmount(data));
+    setPdfRow('row-booking-date',    'pvBookingDate',    formatDate(data.bookingDate));
+    setPdfRow('row-arrival-route',   'pvArrivalRoute',   arrivalRoute);
+    setPdfRow('row-arrival-datetime','pvArrivalDateTime',formatDateTime(data.dateTime));
+    setPdfRow('row-arrival-flight',  'pvArrivalFlight',  data.flyCode);
+    setPdfRow('row-return-route',    'pvReturnRoute',    returnRoute);
+    setPdfRow('row-return-datetime', 'pvReturnDateTime', formatDateTime(data.returnDateTime));
+    setPdfRow('row-return-flight',   'pvReturnFlight',   data.returnFlyCode);
+    setPdfRow('row-name',            'pvName',           data.nameSurname);
+    setPdfRow('row-phone',           'pvPhone',          data.phone);
+    setPdfRow('row-note',            'pvNote',           data.note);
+
+    returnFields.classList.toggle('hidden', !data.hasReturn);
+    returnSection.classList.toggle('hidden', !(data.hasReturn && (returnRoute || data.returnDateTime || data.returnFlyCode)));
+    $('arrivalSection').classList.toggle('hidden',   !(arrivalRoute || data.dateTime || data.flyCode));
+    $('passengerSection').classList.toggle('hidden', !(data.nameSurname || data.phone || data.note));
+
+    reservationText.value = reservationTxt(data);
+
+    const mis = missing(data);
+    if (mis.length) {
+      missingInfoBox.innerHTML = '<strong>Eksik / Kontrol:</strong><br>' + mis.map(m => '• ' + m).join('<br>');
+      missingInfoBox.classList.remove('hidden');
+      okInfoBox.classList.add('hidden');
+    } else {
+      missingInfoBox.classList.add('hidden');
+      okInfoBox.classList.remove('hidden');
     }
 
-    function updatePreview() {
-      const data = getData();
-      const arrivalRoute = [data.pickup, data.dropoff].filter(Boolean).join(' → ');
-      const returnRoute = [data.returnPickup, data.returnDropoff].filter(Boolean).join(' → ');
-      const transferType = data.hasReturn ? 'Arrival + Return' : 'One Way';
+    if (editingBookingNo) {
+      editBanner.innerHTML = `Düzenleme modu: <strong>${editingBookingNo}</strong> numaralı rezervasyon güncellenecek.`;
+      editBanner.classList.remove('hidden');
+      saveSheetBtn.textContent = 'Güncelle';
+    } else {
+      editBanner.classList.add('hidden');
+      saveSheetBtn.textContent = 'Kaydet';
+    }
+  }
 
-      setPdfRow('row-booking-no', 'pvBookingNo', data.bookingNo);
-      setPdfRow('row-vehicle', 'pvVehicle', data.vehicle);
-      setPdfRow('row-passengers', 'pvPassengerCount', data.passengerCount);
-      setPdfRow('row-service-type', 'pvServiceType', data.serviceType);
-      setPdfRow('row-transfer-type', 'pvTransferType', transferType);
-      setPdfRow('row-final-amount', 'pvFinalAmount', finalAmount(data));
-      setPdfRow('row-booking-date', 'pvBookingDate', formatDate(data.bookingDate));
-      setPdfRow('row-arrival-route', 'pvArrivalRoute', arrivalRoute);
-      setPdfRow('row-arrival-datetime', 'pvArrivalDateTime', formatDateTime(data.dateTime));
-      setPdfRow('row-arrival-flight', 'pvArrivalFlight', data.flyCode);
-      setPdfRow('row-return-route', 'pvReturnRoute', returnRoute);
-      setPdfRow('row-return-datetime', 'pvReturnDateTime', formatDateTime(data.returnDateTime));
-      setPdfRow('row-return-flight', 'pvReturnFlight', data.returnFlyCode);
-      setPdfRow('row-name', 'pvName', data.nameSurname);
-      setPdfRow('row-phone', 'pvPhone', data.phone);
-      setPdfRow('row-note', 'pvNote', data.note);
+  // ─── PDF indir ──────────────────────────────────────────────────────────────
+  async function downloadPdf() {
+    updatePreview();
+    const data = getData();
+    const d    = toDate(data.dateTime);
+    const name = (data.nameSurname || 'Passenger')
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9_\-ğüşöçıİĞÜŞÖÇ]/g, '');
+    const fileName = `${name}_${d ? `${pad(d.getDate())}-${pad(d.getMonth()+1)}-${d.getFullYear()}_${pad(d.getHours())}-${pad(d.getMinutes())}` : 'NoDate'}.pdf`;
 
-      returnFields.classList.toggle('hidden', !data.hasReturn);
-      returnSection.classList.toggle('hidden', !(data.hasReturn && (returnRoute || data.returnDateTime || data.returnFlyCode)));
-      $('arrivalSection').classList.toggle('hidden', !(arrivalRoute || data.dateTime || data.flyCode));
-      $('passengerSection').classList.toggle('hidden', !(data.nameSurname || data.phone || data.note));
+    await html2pdf().set({
+      margin    : [0,0,0,0],
+      filename  : fileName,
+      image     : { type: 'jpeg', quality: .98 },
+      html2canvas: { scale: 2, useCORS: true, scrollY: 0, backgroundColor: '#fff' },
+      jsPDF     : { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak : { mode: ['avoid-all','css','legacy'] }
+    }).from(voucher).save();
+  }
 
-      reservationText.value = reservationTxt(data);
+  // ─── Metni kopyala ──────────────────────────────────────────────────────────
+  async function copyText() {
+    updatePreview();
+    await navigator.clipboard.writeText(reservationText.value);
+    copyStatus.textContent = 'Kopyalandı. WhatsApp grubuna yapıştırmaya hazır.';
+    setTimeout(() => copyStatus.textContent = 'Bu metin WhatsApp grupları için hazır.', 2200);
+  }
 
-      const missingItems = missing(data);
-      if (missingItems.length) {
-        missingInfoBox.innerHTML = '<strong>Eksik / Kontrol:</strong><br>' + missingItems.map(item => '• ' + item).join('<br>');
-        missingInfoBox.classList.remove('hidden');
-        okInfoBox.classList.add('hidden');
+  // ─── Sheets'e gönderilecek payload ─────────────────────────────────────────
+  function payload(data) {
+    return {
+      bookingNo        : data.bookingNo,
+      date             : isoDate(data.dateTime),
+      time             : getTime(data.dateTime),
+      passengerName    : data.nameSurname,
+      phone            : data.phone,             // Apps Script ' ekler
+      from             : data.pickup,
+      to               : data.dropoff,
+      person           : data.passengerCount,
+      car              : data.vehicle,
+      price            : data.amount,
+      currency         : data.amount ? data.currency : '',
+      flightCode       : data.flyCode,
+      returnDate       : isoDate(data.returnDateTime),
+      returnTime       : getTime(data.returnDateTime),
+      returnFrom       : data.returnPickup,
+      returnTo         : data.returnDropoff,
+      returnFlightCode : data.returnFlyCode,
+      note             : data.note,
+      serviceType      : data.serviceType,
+      transferType     : data.hasReturn ? 'Arrival + Return' : 'One Way'
+    };
+  }
+
+  // ─── Kaydet / Güncelle ──────────────────────────────────────────────────────
+  // doPost form gönderimi ile çalışır. Güncelleme için Apps Script booking no kontrolü yapar.
+  function save() {
+    updatePreview();
+    const data = getData();
+    sheetPostForm.innerHTML = '';
+    sheetPostForm.action    = APPS_SCRIPT_URL;
+
+    Object.entries(payload(data)).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.type  = 'hidden';
+      input.name  = key;
+      input.value = value || '';
+      sheetPostForm.appendChild(input);
+    });
+
+    sheetPostForm.submit();
+
+    const msg = editingBookingNo
+      ? `Güncellendi: ${data.bookingNo}`
+      : `Kaydedildi: ${data.bookingNo}`;
+    sheetStatus.textContent = msg;
+    allStatus.textContent   = msg + '. Listeyi yenileyebilirsin.';
+
+    // Kayıt sonrası listeyi tazele
+    setTimeout(loadRows, 1100);
+  }
+
+  // ─── Yeni kayıt ─────────────────────────────────────────────────────────────
+  function resetNew() {
+    form.reset();
+    editingBookingNo = '';
+    bookingNumber    = generateBookingNumber();
+    hasReturn.checked = false;
+    setService('Transfer');
+    setTimeout(updatePreview, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ─── Tab geçişi ─────────────────────────────────────────────────────────────
+  function activate(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === tab));
+  }
+
+  // ─── JSONP yardımcısı ───────────────────────────────────────────────────────
+  function jsonp(action, extraParams, onSuccess, onError) {
+    const cbName = `cb_${Date.now()}_${Math.floor(Math.random()*1000)}`;
+    const script = document.createElement('script');
+    const params = new URLSearchParams({ action, callback: cbName, ...extraParams });
+
+    window[cbName] = res => {
+      onSuccess(res || {});
+      delete window[cbName];
+      script.remove();
+    };
+
+    script.onerror = () => {
+      if (onError) onError();
+      delete window[cbName];
+      script.remove();
+    };
+
+    script.src = `${APPS_SCRIPT_URL}?${params}`;
+    document.body.appendChild(script);
+  }
+
+  // ─── Veri yükle ─────────────────────────────────────────────────────────────
+  function loadRows() {
+    sheetStatus.textContent = 'Veri yükleniyor...';
+    allStatus.textContent   = 'Veri yükleniyor...';
+
+    jsonp('list', {}, res => {
+      sheetRows = res.rows || [];
+      renderDaily();
+      renderAll();
+      sheetStatus.textContent = `${sheetRows.length} rezervasyon yüklendi.`;
+      allStatus.textContent   = `${sheetRows.length} rezervasyon yüklendi.`;
+    }, () => {
+      const errMsg = 'Veri yüklenemedi. Apps Script dağıtımını kontrol et.';
+      sheetStatus.textContent = errMsg;
+      allStatus.textContent   = errMsg;
+    });
+  }
+
+  // ─── SİL ────────────────────────────────────────────────────────────────────
+  // FIX: doGet action=delete ile JSONP üzerinden silme yapılıyor
+  function deleteReservation(bookingNo) {
+    if (!bookingNo) return;
+    if (!confirm(`${bookingNo} numaralı rezervasyon silinsin mi?`)) return;
+
+    jsonp('delete', { bookingNo }, res => {
+      if (res.deleted) {
+        allStatus.textContent   = `${bookingNo} silindi.`;
+        sheetStatus.textContent = `${bookingNo} silindi.`;
+        if (editingBookingNo === bookingNo) resetNew();
+        loadRows();
       } else {
-        missingInfoBox.classList.add('hidden');
-        okInfoBox.classList.remove('hidden');
+        allStatus.textContent = `Silinemedi: ${res.error || 'Kayıt bulunamadı'}`;
       }
+    }, () => {
+      allStatus.textContent = 'Silme başarısız. Apps Script dağıtımını kontrol et.';
+    });
+  }
 
-      if (editingBookingNo) {
-        editBanner.innerHTML = `Düzenleme modu: <strong>${editingBookingNo}</strong> numaralı rezervasyon güncellenecek.`;
-        editBanner.classList.remove('hidden');
-        saveSheetBtn.textContent = 'Güncelle';
-      } else {
-        editBanner.classList.add('hidden');
-        saveSheetBtn.textContent = 'Kaydet';
-      }
+  // ─── Tablo / kart render yardımcıları ──────────────────────────────────────
+  function rowDate(row) {
+    return row.Date ? toDate(`${row.Date}T${row.Time || '00:00'}`) : null;
+  }
+
+  function dayKey(d) {
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  }
+
+  function rowMissing(row) {
+    return !row.Date || !row.Time || !row['Passenger Name'] || !row.From ||
+           !row.To   || !row.Person || !row.Car || !row.Price;
+  }
+
+  // Günlük kontrol tablosu (Return kolonları yok – kısa tutuyoruz)
+  function renderDailyTable(rows, body) {
+    if (!rows.length) {
+      body.innerHTML = '<tr><td colspan="9" class="empty">Kayıt bulunamadı.</td></tr>';
+      return;
     }
+    body.innerHTML = rows.map(row => `
+      <tr>
+        <td>${row.Date || '-'}</td>
+        <td>${row.Time || '-'}</td>
+        <td>${row['Passenger Name'] || '-'}</td>
+        <td>${row.Phone || '-'}</td>
+        <td>${row.From || '-'}</td>
+        <td>${row.To   || '-'}</td>
+        <td>${row.Car  || '-'}</td>
+        <td>${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</td>
+        <td>
+          <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
+          <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
+        </td>
+      </tr>`).join('');
+  }
 
-    async function downloadPdf() {
-      updatePreview();
-      const data = getData();
-      const date = toDate(data.dateTime);
-      const name = (data.nameSurname || 'Passenger').replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_\-ğüşöçıİĞÜŞÖÇ]/g, '');
-      const fileName = `${name}_${date ? `${pad(date.getDate())}-${pad(date.getMonth() + 1)}-${date.getFullYear()}_${pad(date.getHours())}-${pad(date.getMinutes())}` : 'NoDate'}.pdf`;
-
-      await html2pdf().set({
-        margin: [0, 0, 0, 0],
-        filename: fileName,
-        image: { type: 'jpeg', quality: .98 },
-        html2canvas: { scale: 2, useCORS: true, scrollY: 0, backgroundColor: '#fff' },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-      }).from(voucher).save();
+  // Tüm rezervasyonlar tablosu – Return kolonları dahil
+  function renderAllTable(rows, body) {
+    if (!rows.length) {
+      body.innerHTML = '<tr><td colspan="13" class="empty">Kayıt bulunamadı.</td></tr>';
+      return;
     }
+    body.innerHTML = rows.map(row => `
+      <tr>
+        <td>${row.Date || '-'}</td>
+        <td>${row.Time || '-'}</td>
+        <td>${row['Passenger Name'] || '-'}</td>
+        <td>${row.Phone || '-'}</td>
+        <td>${row.From  || '-'}</td>
+        <td>${row.To    || '-'}</td>
+        <td>${row.Car   || '-'}</td>
+        <td>${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</td>
+        <td>${row['Return Date'] || '-'}</td>
+        <td>${row['Return Time'] || '-'}</td>
+        <td>${row['Return From'] || '-'}</td>
+        <td>${row['Return To']   || '-'}</td>
+        <td>
+          <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
+          <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
+        </td>
+      </tr>`).join('');
+  }
 
-    async function copyText() {
-      updatePreview();
-      await navigator.clipboard.writeText(reservationText.value);
-      copyStatus.textContent = 'Kopyalandı. WhatsApp grubuna yapıştırmaya hazır.';
-      setTimeout(() => copyStatus.textContent = 'Bu metin WhatsApp grupları için hazır.', 2200);
-    }
-
-    function payload(data) {
-      return {
-        bookingNo: data.bookingNo,
-        date: isoDate(data.dateTime),
-        time: getTime(data.dateTime),
-        passengerName: data.nameSurname,
-        phone: data.phone,
-        from: data.pickup,
-        to: data.dropoff,
-        person: data.passengerCount,
-        car: data.vehicle,
-        price: data.amount,
-        currency: data.amount ? data.currency : '',
-        flightCode: data.flyCode,
-        returnDate: isoDate(data.returnDateTime),
-        returnTime: getTime(data.returnDateTime),
-        returnFlightCode: data.returnFlyCode,
-        returnFrom: data.returnPickup,
-        returnTo: data.returnDropoff,
-        note: data.note,
-        serviceType: data.serviceType,
-        transferType: data.hasReturn ? 'Arrival + Return' : 'One Way'
-      };
-    }
-
-    function save() {
-      updatePreview();
-      const data = getData();
-      sheetPostForm.innerHTML = '';
-      sheetPostForm.action = APPS_SCRIPT_URL;
-
-      Object.entries(payload(data)).forEach(([key, value]) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = value || '';
-        sheetPostForm.appendChild(input);
-      });
-
-      sheetPostForm.submit();
-      sheetStatus.textContent = `Kayıt gönderildi: ${data.bookingNo}`;
-      allStatus.textContent = `Kayıt gönderildi: ${data.bookingNo}. Listeyi yenileyebilirsin.`;
-      setTimeout(loadRows, 900);
-    }
-
-    function resetNew() {
-      form.reset();
-      editingBookingNo = '';
-      bookingNumber = generateBookingNumber();
-      hasReturn.checked = false;
-      setService('Transfer');
-      setTimeout(updatePreview, 0);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function activate(tab) {
-      document.querySelectorAll('.tab-btn').forEach(button => {
-        button.classList.toggle('active', button.dataset.tab === tab);
-      });
-      document.querySelectorAll('.tab-panel').forEach(panel => {
-        panel.classList.toggle('active', panel.id === tab);
-      });
-    }
-
-    function jsonp(action, extraParams, onSuccess, onError) {
-      const callbackName = `cb_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-      const script = document.createElement('script');
-      const params = new URLSearchParams({ action, callback: callbackName, ...extraParams });
-
-      window[callbackName] = response => {
-        onSuccess(response || {});
-        delete window[callbackName];
-        script.remove();
-      };
-
-      script.onerror = () => {
-        if (onError) onError();
-        delete window[callbackName];
-        script.remove();
-      };
-
-      script.src = `${APPS_SCRIPT_URL}?${params.toString()}`;
-      document.body.appendChild(script);
-    }
-
-    function loadRows() {
-      sheetStatus.textContent = 'Veri yükleniyor...';
-      allStatus.textContent = 'Veri yükleniyor...';
-
-      jsonp('list', {}, response => {
-        sheetRows = response.rows || [];
-        renderDaily();
-        renderAll();
-        sheetStatus.textContent = `${sheetRows.length} rezervasyon yüklendi.`;
-        allStatus.textContent = `${sheetRows.length} rezervasyon yüklendi.`;
-      }, () => {
-        sheetStatus.textContent = 'Veri yüklenemedi. Apps Script dağıtımını kontrol et.';
-        allStatus.textContent = sheetStatus.textContent;
-      });
-    }
-
-    function deleteReservation(bookingNo) {
-      if (!bookingNo) return;
-      if (!confirm(`${bookingNo} numaralı rezervasyon silinsin mi?`)) return;
-
-      jsonp('delete', { bookingNo }, response => {
-        if (response.deleted) {
-          allStatus.textContent = `${bookingNo} numaralı rezervasyon silindi.`;
-          if (editingBookingNo === bookingNo) resetNew();
-          loadRows();
-        } else {
-          allStatus.textContent = `${bookingNo} numaralı rezervasyon bulunamadı.`;
-        }
-      }, () => {
-        allStatus.textContent = 'Silme işlemi başarısız. Apps Script dağıtımını kontrol et.';
-      });
-    }
-
-    function rowDate(row) {
-      return row.Date ? toDate(`${row.Date}T${row.Time || '00:00'}`) : null;
-    }
-
-    function dayKey(date) {
-      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-    }
-
-    function rowMissing(row) {
-      return !row.Date || !row.Time || !row['Passenger Name'] || !row.From || !row.To || !row.Person || !row.Car || !row.Price;
-    }
-
-    function renderTable(rows, body) {
-      if (!rows.length) {
-        body.innerHTML = '<tr><td colspan="9" class="empty">Kayıt bulunamadı.</td></tr>';
-        return;
-      }
-
-      body.innerHTML = rows.map(row => `
-        <tr>
-          <td>${row.Date || '-'}</td>
-          <td>${row.Time || '-'}</td>
-          <td>${row['Passenger Name'] || '-'}</td>
-          <td>${row.Phone || '-'}</td>
-          <td>${row.From || '-'}</td>
-          <td>${row.To || '-'}</td>
-          <td>${row.Car || '-'}</td>
-          <td>${row.Price ? `${row.Price} ${row.Currency || ''}` : '-'}</td>
-          <td>
-            <button class="btn-secondary mini-btn" onclick="editReservation('${row['Booking No']}')">Düzenle</button>
-            <button class="btn-danger mini-btn" onclick="deleteReservation('${row['Booking No']}')">Sil</button>
-          </td>
-        </tr>
-      `).join('');
-    }
-
-    function renderCards(rows, element) {
-      if (!rows.length) {
-        element.innerHTML = '<div class="empty">Kayıt bulunamadı.</div>';
-        return;
-      }
-
-      element.innerHTML = rows.map(row => `
+  function renderCards(rows, el) {
+    if (!rows.length) { el.innerHTML = '<div class="empty">Kayıt bulunamadı.</div>'; return; }
+    el.innerHTML = rows.map(row => {
+      const returnInfo = (row['Return Date'] || row['Return From'])
+        ? `<div class="res-return">↩ ${row['Return Date']||''} ${row['Return Time']||''} • ${row['Return From']||''} → ${row['Return To']||''}</div>`
+        : '';
+      return `
         <div class="res-card">
           <div class="res-card-head">
             <div>
@@ -1027,176 +1083,176 @@ ${FIXED_BRAND}`.trim();
             </div>
             <div class="res-time">${row.Date || '-'}<br>${row.Time || '-'}</div>
           </div>
-          <div class="res-line"><strong>From:</strong> ${row.From || '-'}</div>
-          <div class="res-line"><strong>To:</strong> ${row.To || '-'}</div>
-          <div class="res-line"><strong>Car:</strong> ${row.Car || '-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency || ''}` : '-'}</div>
+          <div class="res-line"><strong>From:</strong> ${row.From||'-'}</div>
+          <div class="res-line"><strong>To:</strong>   ${row.To  ||'-'}</div>
+          <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
+          ${returnInfo}
           <div class="res-actions">
-            <button class="btn-secondary mini-btn" onclick="copyRowText('${row['Booking No']}')">Metni Kopyala</button>
-            <button class="btn-primary mini-btn" onclick="editReservation('${row['Booking No']}')">Düzenle</button>
-            <button class="btn-danger mini-btn" onclick="deleteReservation('${row['Booking No']}')">Sil</button>
+            <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Metni Kopyala</button>
+            <button class="btn-primary   mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
+            <button class="btn-danger    mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
           </div>
-        </div>
-      `).join('');
-    }
+        </div>`;
+    }).join('');
+  }
 
-    function filteredRows() {
-      const query = (reservationSearch.value || '').toLowerCase().trim();
-      const now = new Date();
-      const today = dayKey(now);
-      const tomorrow = new Date(now);
-      tomorrow.setDate(now.getDate() + 1);
-      const plusSeven = new Date(now);
-      plusSeven.setDate(now.getDate() + 7);
+  function esc(v) { return String(v || '').replace(/'/g,"&#39;"); }
 
-      return sheetRows.filter(row => {
-        const date = rowDate(row);
-        let ok = true;
+  // ─── Filtreli satırlar ──────────────────────────────────────────────────────
+  function filteredRows() {
+    const query = (reservationSearch.value || '').toLowerCase().trim();
+    const now   = new Date();
+    const today = dayKey(now);
+    const tmrw  = new Date(now); tmrw.setDate(now.getDate() + 1);
+    const p7    = new Date(now); p7.setDate(now.getDate() + 7);
 
-        if (activeFilter === 'today') ok = date && dayKey(date) === today;
-        if (activeFilter === 'tomorrow') ok = date && dayKey(date) === dayKey(tomorrow);
-        if (activeFilter === 'week') ok = date && date >= new Date(today + 'T00:00') && date <= plusSeven;
-        if (activeFilter === 'month') ok = date && date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-        if (activeFilter === 'missing') ok = rowMissing(row);
+    return sheetRows.filter(row => {
+      const d = rowDate(row);
+      let ok  = true;
 
-        if (query) {
-          const text = [row['Passenger Name'], row.Phone, row.From, row.To, row.Car, row.Note].join(' ').toLowerCase();
-          ok = ok && text.includes(query);
-        }
+      if (activeFilter === 'today')    ok = d && dayKey(d) === today;
+      if (activeFilter === 'tomorrow') ok = d && dayKey(d) === dayKey(tmrw);
+      if (activeFilter === 'week')     ok = d && d >= new Date(today+'T00:00') && d <= p7;
+      if (activeFilter === 'month')    ok = d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      if (activeFilter === 'missing')  ok = rowMissing(row);
 
-        return ok;
-      }).sort((a, b) => (rowDate(a) || 0) - (rowDate(b) || 0));
-    }
+      if (query) {
+        const text = [row['Passenger Name'], row.Phone, row.From, row.To, row.Car, row.Note,
+                      row['Return From'], row['Return To']].join(' ').toLowerCase();
+        ok = ok && text.includes(query);
+      }
+      return ok;
+    }).sort((a, b) => (rowDate(a)||0) - (rowDate(b)||0));
+  }
 
-    function renderAll() {
-      const rows = filteredRows();
-      renderTable(rows, allTableBody);
-      renderCards(rows, allMobileCards);
-      allStatus.textContent = `${sheetRows.length} kayıt yüklendi, ${rows.length} kayıt gösteriliyor.`;
-    }
+  function renderAll() {
+    const rows = filteredRows();
+    renderAllTable(rows, allTableBody);
+    renderCards(rows, allMobileCards);
+    allStatus.textContent = `${sheetRows.length} kayıt yüklendi, ${rows.length} kayıt gösteriliyor.`;
+  }
 
-    function renderDaily() {
-      const now = new Date();
-      const start = new Date(dayKey(now) + 'T00:00');
-      const plusSeven = new Date(start);
-      plusSeven.setDate(start.getDate() + 7);
+  function renderDaily() {
+    const now   = new Date();
+    const start = new Date(dayKey(now) + 'T00:00');
+    const end   = new Date(start); end.setDate(start.getDate() + 7);
 
-      const rows = sheetRows
-        .filter(row => {
-          const date = rowDate(row);
-          return date && date >= start && date <= plusSeven;
-        })
-        .sort((a, b) => (rowDate(a) || 0) - (rowDate(b) || 0));
+    const rows = sheetRows
+      .filter(row => { const d = rowDate(row); return d && d >= start && d <= end; })
+      .sort((a, b) => (rowDate(a)||0) - (rowDate(b)||0));
 
-      renderTable(rows, dailyTableBody);
-      renderCards(rows, dailyMobileCards);
-      dailySummary.value = buildSummary(rows);
-    }
+    renderDailyTable(rows, dailyTableBody);
+    renderCards(rows, dailyMobileCards);
+    dailySummary.value = buildSummary(rows);
+  }
 
-    function buildSummary(rows) {
-      if (!rows.length) return 'Önümüzdeki 7 gün için rezervasyon yok.';
-      return rows.map(row => `- ${row.Date || '-'} / ${row.Time || '-'} / ${row['Passenger Name'] || '-'} / ${row.From || '-'} → ${row.To || '-'} / ${row.Car || '-'}${rowMissing(row) ? ' / Eksik kontrol var' : ' / OK'}`).join('\n');
-    }
+  function buildSummary(rows) {
+    if (!rows.length) return 'Önümüzdeki 7 gün için rezervasyon yok.';
+    return rows.map(row =>
+      `- ${row.Date||'-'} / ${row.Time||'-'} / ${row['Passenger Name']||'-'} / ${row.From||'-'} → ${row.To||'-'} / ${row.Car||'-'}${rowMissing(row) ? ' / Eksik kontrol var' : ' / OK'}`
+    ).join('\n');
+  }
 
-    function rowToData(row) {
-      return {
-        bookingNo: row['Booking No'],
-        serviceType: row['Service Type'] || 'Transfer',
-        hasReturn: row['Transfer Type'] === 'Arrival + Return' || !!row['Return Date'],
-        flyCode: row['Flight Code'],
-        bookingDate: '',
-        nameSurname: row['Passenger Name'],
-        phone: row.Phone,
-        passengerCount: row.Person,
-        vehicle: row.Car,
-        pickup: row.From,
-        dropoff: row.To,
-        dateTime: dateTimeFromRow(row.Date, row.Time),
-        amount: row.Price,
-        currency: row.Currency || 'EUR',
-        paymentMethod: '',
-        note: row.Note,
-        returnFlyCode: row['Return Flight Code'],
-        returnPickup: row['Return From'] || row.To,
-        returnDropoff: row['Return To'] || row.From,
-        returnDateTime: dateTimeFromRow(row['Return Date'], row['Return Time'])
-      };
-    }
-
-    function fillForm(data) {
-      editingBookingNo = data.bookingNo || '';
-      setService(data.serviceType);
-      hasReturn.checked = !!data.hasReturn;
-      setVal('flyCode', data.flyCode);
-      setVal('bookingDate', data.bookingDate);
-      setVal('nameSurname', data.nameSurname);
-      setVal('phone', data.phone);
-      setVal('passengerCount', data.passengerCount);
-      setVal('vehicle', data.vehicle);
-      setVal('pickup', data.pickup);
-      setVal('dropoff', data.dropoff);
-      setVal('dateTime', data.dateTime);
-      setVal('amount', data.amount);
-      setVal('currency', data.currency || 'EUR');
-      setVal('paymentMethod', data.paymentMethod);
-      setVal('note', data.note);
-      setVal('returnFlyCode', data.returnFlyCode);
-      setVal('returnPickup', data.returnPickup);
-      setVal('returnDropoff', data.returnDropoff);
-      setVal('returnDateTime', data.returnDateTime);
-      updatePreview();
-      activate('pdfTab');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    window.editReservation = bookingNo => {
-      const row = sheetRows.find(item => String(item['Booking No']) === String(bookingNo));
-      if (row) fillForm(rowToData(row));
+  // ─── Satırdan form doldur ───────────────────────────────────────────────────
+  function rowToData(row) {
+    return {
+      bookingNo     : row['Booking No'],
+      serviceType   : row['Service Type'] || 'Transfer',
+      hasReturn     : row['Transfer Type'] === 'Arrival + Return' || !!row['Return Date'],
+      flyCode       : row['Flight Code'],
+      bookingDate   : '',
+      nameSurname   : row['Passenger Name'],
+      phone         : row.Phone,
+      passengerCount: row.Person,
+      vehicle       : row.Car,
+      pickup        : row.From,
+      dropoff       : row.To,
+      dateTime      : dateTimeFromRow(row.Date, row.Time),
+      amount        : row.Price,
+      currency      : row.Currency || 'EUR',
+      paymentMethod : '',
+      note          : row.Note,
+      returnFlyCode : row['Return Flight Code'],
+      returnPickup  : row['Return From'] || '',
+      returnDropoff : row['Return To']   || '',
+      returnDateTime: dateTimeFromRow(row['Return Date'], row['Return Time'])
     };
+  }
 
-    window.deleteReservation = deleteReservation;
-
-    window.copyRowText = async bookingNo => {
-      const row = sheetRows.find(item => String(item['Booking No']) === String(bookingNo));
-      if (!row) return;
-      await navigator.clipboard.writeText(reservationTxt(rowToData(row)));
-      allStatus.textContent = 'Rezervasyon metni kopyalandı.';
-    };
-
-    document.querySelectorAll('.tab-btn').forEach(button => {
-      button.addEventListener('click', () => activate(button.dataset.tab));
-    });
-
-    document.querySelectorAll('.filter-btn').forEach(button => {
-      button.addEventListener('click', event => {
-        event.preventDefault();
-        activeFilter = button.dataset.filter;
-        document.querySelectorAll('.filter-btn').forEach(item => item.classList.toggle('active', item === button));
-        renderAll();
-      });
-    });
-
-    reservationSearch.addEventListener('input', renderAll);
-    form.addEventListener('input', updatePreview);
-    form.addEventListener('change', updatePreview);
-    saveSheetBtn.addEventListener('click', save);
-    newReservationBtn.addEventListener('click', resetNew);
-    downloadPdfBtn.addEventListener('click', downloadPdf);
-    copyTextBtn.addEventListener('click', copyText);
-    loadSheetBtn.addEventListener('click', loadRows);
-    loadAllBtn.addEventListener('click', loadRows);
-
-    copyDailySummaryBtn.addEventListener('click', async () => {
-      await navigator.clipboard.writeText(dailySummary.value || '');
-      sheetStatus.textContent = 'Günlük özet kopyalandı.';
-    });
-
-    copyListSummaryBtn.addEventListener('click', async () => {
-      const rows = filteredRows();
-      await navigator.clipboard.writeText(buildSummary(rows));
-      allStatus.textContent = 'Liste özeti kopyalandı.';
-    });
-
+  function fillForm(data) {
+    editingBookingNo = data.bookingNo || '';
+    setService(data.serviceType);
+    hasReturn.checked = !!data.hasReturn;
+    setVal('flyCode',        data.flyCode);
+    setVal('bookingDate',    data.bookingDate);
+    setVal('nameSurname',    data.nameSurname);
+    setVal('phone',          data.phone);
+    setVal('passengerCount', data.passengerCount);
+    setVal('vehicle',        data.vehicle);
+    setVal('pickup',         data.pickup);
+    setVal('dropoff',        data.dropoff);
+    setVal('dateTime',       data.dateTime);
+    setVal('amount',         data.amount);
+    setVal('currency',       data.currency || 'EUR');
+    setVal('paymentMethod',  data.paymentMethod);
+    setVal('note',           data.note);
+    setVal('returnFlyCode',  data.returnFlyCode);
+    setVal('returnPickup',   data.returnPickup);
+    setVal('returnDropoff',  data.returnDropoff);
+    setVal('returnDateTime', data.returnDateTime);
     updatePreview();
-  </script>
+    activate('pdfTab');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ─── Global fonksiyonlar (onclick="..." için) ───────────────────────────────
+  window.editReservation   = bookingNo => {
+    const row = sheetRows.find(r => String(r['Booking No']) === String(bookingNo));
+    if (row) fillForm(rowToData(row));
+  };
+  window.deleteReservation = deleteReservation;
+  window.copyRowText       = async bookingNo => {
+    const row = sheetRows.find(r => String(r['Booking No']) === String(bookingNo));
+    if (!row) return;
+    await navigator.clipboard.writeText(reservationTxt(rowToData(row)));
+    allStatus.textContent = 'Rezervasyon metni kopyalandı.';
+  };
+
+  // ─── Event listeners ────────────────────────────────────────────────────────
+  document.querySelectorAll('.tab-btn').forEach(b =>
+    b.addEventListener('click', () => activate(b.dataset.tab)));
+
+  document.querySelectorAll('.filter-btn').forEach(b =>
+    b.addEventListener('click', e => {
+      e.preventDefault();
+      activeFilter = b.dataset.filter;
+      document.querySelectorAll('.filter-btn').forEach(x => x.classList.toggle('active', x === b));
+      renderAll();
+    }));
+
+  reservationSearch.addEventListener('input', renderAll);
+  form.addEventListener('input',  updatePreview);
+  form.addEventListener('change', updatePreview);
+
+  saveSheetBtn.addEventListener('click', save);
+  newReservationBtn.addEventListener('click', resetNew);
+  downloadPdfBtn.addEventListener('click', downloadPdf);
+  copyTextBtn.addEventListener('click', copyText);
+  loadSheetBtn.addEventListener('click', loadRows);
+  loadAllBtn.addEventListener('click', loadRows);
+
+  copyDailySummaryBtn.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(dailySummary.value || '');
+    sheetStatus.textContent = 'Günlük özet kopyalandı.';
+  });
+
+  copyListSummaryBtn.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(buildSummary(filteredRows()));
+    allStatus.textContent = 'Liste özeti kopyalandı.';
+  });
+
+  // ─── İlk render ─────────────────────────────────────────────────────────────
+  updatePreview();
+</script>
 </body>
 </html>
