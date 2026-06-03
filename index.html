@@ -751,11 +751,37 @@
 
     function reservationTxt(data) {
       const line = `${formatDateTimeDots(data.dateTime) || '(tarih belirtilmedi)'} / ${data.flyCode || '-'}`;
-      const returnLine = data.hasReturn
-        ? `\nReturn: ${formatDateTimeDots(data.returnDateTime) || '(belirtilmedi)'}${data.returnFlyCode ? ` / ${data.returnFlyCode}` : ''}\n`
-        : '';
 
-      return `${line}\n\n${data.nameSurname || '(isim belirtilmedi)'}\n\n${data.phone || '(telefon belirtilmedi)'}\n\nFrom: ${data.pickup || '(belirtilmedi)'}\nTo: ${data.dropoff || '(belirtilmedi)'}\n\nPerson: ${data.passengerCount || '(belirtilmedi)'}\n\nNote: ${data.note || '(belirtilmedi)'}\n\nPrice: ${priceText(data) || '(belirtilmedi)'}\n\nCar: ${data.vehicle || '(belirtilmedi)'}\n${returnLine}\n${FIXED_BRAND}`.trim();
+      let returnLine = '';
+      if (data.hasReturn) {
+        const returnMain = `Return: ${formatDateTimeDots(data.returnDateTime) || '(belirtilmedi)'}${data.returnFlyCode ? ` / ${data.returnFlyCode}` : ''}`;
+        const returnFrom = data.returnPickup ? `
+Return From: ${data.returnPickup}` : '';
+        const returnTo = data.returnDropoff ? `
+Return To: ${data.returnDropoff}` : '';
+        returnLine = `
+${returnMain}${returnFrom}${returnTo}
+`;
+      }
+
+      return `${line}
+
+${data.nameSurname || '(isim belirtilmedi)'}
+
+${data.phone || '(telefon belirtilmedi)'}
+
+From: ${data.pickup || '(belirtilmedi)'}
+To: ${data.dropoff || '(belirtilmedi)'}
+
+Person: ${data.passengerCount || '(belirtilmedi)'}
+
+Note: ${data.note || '(belirtilmedi)'}
+
+Price: ${priceText(data) || '(belirtilmedi)'}
+
+Car: ${data.vehicle || '(belirtilmedi)'}
+${returnLine}
+${FIXED_BRAND}`.trim();
     }
 
     function updatePreview() {
@@ -849,6 +875,8 @@
         returnDate: isoDate(data.returnDateTime),
         returnTime: getTime(data.returnDateTime),
         returnFlightCode: data.returnFlyCode,
+        returnFrom: data.returnPickup,
+        returnTo: data.returnDropoff,
         note: data.note,
         serviceType: data.serviceType,
         transferType: data.hasReturn ? 'Arrival + Return' : 'One Way'
@@ -1088,8 +1116,8 @@
         paymentMethod: '',
         note: row.Note,
         returnFlyCode: row['Return Flight Code'],
-        returnPickup: row.To,
-        returnDropoff: row.From,
+        returnPickup: row['Return From'] || row.To,
+        returnDropoff: row['Return To'] || row.From,
         returnDateTime: dateTimeFromRow(row['Return Date'], row['Return Time'])
       };
     }
