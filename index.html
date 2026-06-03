@@ -1058,7 +1058,7 @@
       const data = getFormData();
       const arrivalRoute = [data.pickup, data.dropoff].filter(Boolean).join(' → ');
       const returnRoute = [data.returnPickup, data.returnDropoff].filter(Boolean).join(' → ');
-      const transferType = data.hasReturn ? 'Gidiş + Dönüş' : 'Tek Yön';
+      const transferType = data.hasReturn ? 'Arrival + Return' : 'One Way';
       const finalAmount = getFinalAmountText(data);
 
       setText('pvBookingNo', String(bookingNumber));
@@ -1138,7 +1138,7 @@
         groupMonth: getMonthGroup(data.dateTime),
         brand: data.brand,
         serviceType: data.serviceType,
-        transferType: data.hasReturn ? 'Gidiş + Dönüş' : 'Tek Yön',
+        transferType: data.hasReturn ? 'Arrival + Return' : 'One Way',
         date: getIsoDate(data.dateTime),
         time: getTime(data.dateTime),
         returnDate: getIsoDate(data.returnDateTime),
