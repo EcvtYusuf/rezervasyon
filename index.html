@@ -592,7 +592,19 @@
           <button type="button" class="btn-secondary filter-btn" data-filter="month">Bu Ay</button>
           <button type="button" class="btn-secondary filter-btn" data-filter="missing">Eksik</button>
         </div>
+        <div class="toolbar">
+          <div class="field" style="margin-bottom:0; flex:1 1 160px;">
+            <label for="rangeStart">Tarih Aralığı - Başlangıç</label>
+            <input id="rangeStart" type="date">
+          </div>
+          <div class="field" style="margin-bottom:0; flex:1 1 160px;">
+            <label for="rangeEnd">Bitiş</label>
+            <input id="rangeEnd" type="date">
+          </div>
+          <button type="button" class="btn-secondary" id="clearRangeBtn" style="align-self:flex-end;">Aralığı Temizle</button>
+        </div>
         <div id="allStatus" class="status-line">Tüm rezervasyonları görmek için yükle.</div>
+        <div id="todayCountBox" class="ok-box hidden"></div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -646,6 +658,10 @@
   const okInfoBox          = $('okInfoBox');
   const editBanner         = $('editBanner');
   const reservationSearch  = $('reservationSearch');
+  const rangeStart         = $('rangeStart');
+  const rangeEnd           = $('rangeEnd');
+  const clearRangeBtn      = $('clearRangeBtn');
+  const todayCountBox      = $('todayCountBox');
 
   // ─── State ─────────────────────────────────────────────────────────────────
   let bookingNumber    = generateBookingNumber();
@@ -895,7 +911,12 @@ ${FIXED_BRAND}`.trim();
       returnFlightCode : data.returnFlyCode,
       note             : data.note,
       serviceType      : data.serviceType,
-      transferType     : data.hasReturn ? 'Arrival + Return' : 'One Way'
+      transferType     : data.hasReturn ? 'Arrival + Return' : 'One Way',
+      // YENİ: rezervasyonun sisteme kaydedildiği an (otomatik, kullanıcı girmiyor).
+      // Sadece YENİ kayıtlarda gönderilir; Apps Script tarafında 'Created At' adında
+      // yeni bir kolon eklenip bu değeri yazacak şekilde güncellenmesi gerekir.
+      // Güncelleme (edit) durumunda tekrar gönderilmez, ilk kayıt anı korunur.
+      createdAt        : editingBookingNo ? '' : new Date().toISOString()
     };
   }
 
@@ -1039,6 +1060,7 @@ ${FIXED_BRAND}`.trim();
         <td>${row.Car  || '-'}</td>
         <td>${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</td>
         <td>
+          <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
           <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
           <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
         </td>
@@ -1066,6 +1088,7 @@ ${FIXED_BRAND}`.trim();
         <td>${row['Return From'] || '-'}</td>
         <td>${row['Return To']   || '-'}</td>
         <td>
+          <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
           <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
           <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
         </td>
@@ -1111,25 +1134,34 @@ ${FIXED_BRAND}`.trim();
     const p7    = new Date(now); p7.setDate(now.getDate() + 7);
     const start = new Date(today + 'T00:00');
 
+    // Manuel tarih aralığı (yeni, opsiyonel) - dolu ise preset butonların yerine geçer
+    const rStartVal = (rangeStart && rangeStart.value) || '';
+    const rEndVal   = (rangeEnd && rangeEnd.value) || '';
+    const customRangeActive = !!(rStartVal || rEndVal);
+    const rStart = rStartVal ? new Date(rStartVal + 'T00:00:00') : null;
+    const rEnd   = rEndVal   ? new Date(rEndVal   + 'T23:59:59') : null;
+
     return sheetRows.filter(row => {
       const d  = rowDate(row);
       const rd = rowReturnDate(row);
       let ok   = true;
 
-      if (activeFilter === 'today') {
+      if (customRangeActive) {
+        const inRange = v => v && (!rStart || v >= rStart) && (!rEnd || v <= rEnd);
+        ok = inRange(d) || inRange(rd);
+      } else if (activeFilter === 'today') {
         ok = (d && dayKey(d) === today) || (rd && dayKey(rd) === today);
-      }
-      if (activeFilter === 'tomorrow') {
+      } else if (activeFilter === 'tomorrow') {
         ok = (d && dayKey(d) === dayKey(tmrw)) || (rd && dayKey(rd) === dayKey(tmrw));
-      }
-      if (activeFilter === 'week') {
+      } else if (activeFilter === 'week') {
         ok = (d && d >= start && d <= p7) || (rd && rd >= start && rd <= p7);
-      }
-      if (activeFilter === 'month') {
+      } else if (activeFilter === 'month') {
         ok = (d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) ||
              (rd && rd.getMonth() === now.getMonth() && rd.getFullYear() === now.getFullYear());
       }
-      if (activeFilter === 'missing') ok = rowMissing(row);
+
+      // Eksik filtresi, aralık seçiliyken de birlikte çalışabilsin
+      if (activeFilter === 'missing') ok = ok && rowMissing(row);
 
       if (query) {
         const text = [row['Passenger Name'], row.Phone, row.From, row.To, row.Car, row.Note,
@@ -1140,11 +1172,33 @@ ${FIXED_BRAND}`.trim();
     }).sort((a, b) => (rowDate(a)||0) - (rowDate(b)||0));
   }
 
+  // ─── "Bugün alınan rezervasyon" sayacı ─────────────────────────────────────
+  // Not: Bu sayaç, kayıt Sheet'e 'Created At' kolonu ile düşerse çalışır.
+  // Eski kayıtlarda bu kolon yoksa otomatik olarak yok sayılır, hata vermez.
+  function renderTodayCreatedCount() {
+    const today = dayKey(new Date());
+    const countToday = sheetRows.filter(row => {
+      const raw = row['Created At'];
+      if (!raw) return false;
+      const d = toDate(raw);
+      return d && dayKey(d) === today;
+    }).length;
+
+    const anyCreatedAtField = sheetRows.some(row => row['Created At']);
+    if (!anyCreatedAtField) {
+      todayCountBox.classList.add('hidden');
+      return;
+    }
+    todayCountBox.textContent = `Bugün alınan rezervasyon: ${countToday}`;
+    todayCountBox.classList.remove('hidden');
+  }
+
   function renderAll() {
     const rows = filteredRows();
     renderAllTable(rows, allTableBody);
     renderCards(rows, allMobileCards);
     allStatus.textContent = `${sheetRows.length} kayıt yüklendi, ${rows.length} kayıt gösteriliyor.`;
+    renderTodayCreatedCount();
   }
 
   function renderDaily() {
@@ -1246,6 +1300,13 @@ ${FIXED_BRAND}`.trim();
     }));
 
   reservationSearch.addEventListener('input', renderAll);
+  rangeStart.addEventListener('change', renderAll);
+  rangeEnd.addEventListener('change', renderAll);
+  clearRangeBtn.addEventListener('click', () => {
+    rangeStart.value = '';
+    rangeEnd.value   = '';
+    renderAll();
+  });
   form.addEventListener('input',  updatePreview);
   form.addEventListener('change', updatePreview);
 
