@@ -769,10 +769,15 @@
   const todayTransfersMobile = $('todayTransfersMobile');
 
   // ─── State ─────────────────────────────────────────────────────────────────
-  let bookingNumber    = generateBookingNumber();
-  let editingBookingNo = '';
-  let sheetRows        = [];
-  let activeFilter     = 'all';
+  let bookingNumber      = generateBookingNumber();
+  let editingBookingNo   = '';
+  let sheetRows          = [];
+  let activeFilter       = 'all';
+  // YENİ: Bu formda daha önce başarıyla kaydedilmiş (yeni) booking no'yu takip eder.
+  // Amaç: aynı kaydı ikinci kez (küçük bir değişiklikle) kaydederken sistemin bunu
+  // "başkasıyla çakışma" sanıp booking no'yu değiştirmesini engellemek — aksi halde
+  // ikinci Kaydet, güncelleme yerine yepyeni bir satır oluşturuyordu.
+  let savedOnceBookingNo = '';
 
   // ─── Util ──────────────────────────────────────────────────────────────────
   function generateBookingNumber() {
@@ -899,7 +904,9 @@
   function findDuplicateContent(data) {
     if (!sheetRows.length) return null;
     return sheetRows.find(row => {
-      if (editingBookingNo && String(row['Booking No']) === String(editingBookingNo)) return false;
+      // DÜZELTME: sadece 'düzenleme modu'nu değil, mevcut aktif booking no'yu (yeni kaydın
+      // tekrar kaydedilme durumunu da) hariç tutuyoruz — kendi kaydımızı mükerrer sanmasın.
+      if (String(row['Booking No']) === String(data.bookingNo)) return false;
       const sameDate = dateTimeFromRow(row.Date, row.Time) === data.dateTime;
       const samePhone = (row.Phone || '').replace(/\s+/g,'') === (data.phone || '').replace(/\s+/g,'');
       const sameFrom = (row.From || '').trim().toLowerCase() === data.pickup.trim().toLowerCase();
@@ -908,10 +915,11 @@
     }) || null;
   }
 
-  // YENİ: Yeni kayıtta booking numarası tesadüfen zaten var olan bir numarayla çakışırsa
-  // (ekstra güvenlik, ihtimal düşük ama bedava) otomatik olarak yeni bir numara üretilir.
+  // YENİ: Yeni kayıtta booking numarası tesadüfen zaten var olan BAŞKA bir kayıtla çakışırsa
+  // otomatik olarak yeni bir numara üretilir. Kendi az önce kaydettiğimiz kayda DOKUNMAZ.
   function avoidBookingNoCollision() {
-    if (editingBookingNo) return; // güncellemede dokunma
+    if (editingBookingNo) return;                      // güncellemede dokunma
+    if (bookingNumber === savedOnceBookingNo) return;   // bu zaten BİZİM kaydımız, çakışma değil
     let guard = 0;
     while (sheetRows.some(row => String(row['Booking No']) === String(bookingNumber)) && guard < 20) {
       bookingNumber = generateBookingNumber();
@@ -1124,6 +1132,13 @@ ${FIXED_BRAND}`.trim();
 
     sheetPostForm.submit();
 
+    // YENİ: Bu yeni kaydı "bizim" olarak işaretle — form sıfırlanmadan tekrar
+    // Kaydet'e basılırsa (küçük bir düzeltme yapıp), bu artık çakışma sayılmayacak
+    // ve Apps Script tarafında aynı satır güncellenecek (yeni satır AÇILMAYACAK).
+    if (!editingBookingNo) {
+      savedOnceBookingNo = data.bookingNo;
+    }
+
     const msg = editingBookingNo
       ? `Güncellendi: ${data.bookingNo}`
       : `Kaydedildi: ${data.bookingNo}`;
@@ -1142,8 +1157,9 @@ ${FIXED_BRAND}`.trim();
   // ─── Yeni kayıt ─────────────────────────────────────────────────────────────
   function resetNew() {
     form.reset();
-    editingBookingNo = '';
-    bookingNumber    = generateBookingNumber();
+    editingBookingNo   = '';
+    bookingNumber      = generateBookingNumber();
+    savedOnceBookingNo = ''; // YENİ: bir önceki kaydın "bizim" işareti burada temizlenir
     hasReturn.checked = false;
     setService('Transfer');
     setTimeout(updatePreview, 0);
@@ -1450,14 +1466,24 @@ ${FIXED_BRAND}`.trim();
     const p7       = new Date(now); p7.setDate(now.getDate() + 7);
     const weekStart = new Date(today + 'T00:00');
 
+    // YENİ: "Bugün" tanımı artık Tüm Rezervasyonlar sekmesiyle BİREBİR aynı —
+    // gidiş VEYA dönüş tarihi bugünse sayılır (round-trip'in dönüş ayağı da bir iş).
+    const isMainOn = (row, keyFn) => { const d = rowDate(row); return d && keyFn(d); };
+    const isRetOn  = (row, keyFn) => { const rd = rowReturnDate(row); return rd && keyFn(rd); };
+
     const todayRows = sheetRows
-      .filter(row => { const d = rowDate(row); return d && dayKey(d) === today; })
-      .sort((a, b) => (rowDate(a)||0) - (rowDate(b)||0));
+      .filter(row => isMainOn(row, d => dayKey(d) === today) || isRetOn(row, d => dayKey(d) === today))
+      .sort((a, b) => (todayLegDate(a, today) || 0) - (todayLegDate(b, today) || 0));
 
-    const tomorrowCount = sheetRows.filter(row => { const d = rowDate(row); return d && dayKey(d) === dayKey(tmrw); }).length;
-    const weekCount     = sheetRows.filter(row => { const d = rowDate(row); return d && d >= weekStart && d <= p7; }).length;
+    const tomorrowCount = sheetRows.filter(row =>
+      isMainOn(row, d => dayKey(d) === dayKey(tmrw)) || isRetOn(row, d => dayKey(d) === dayKey(tmrw))
+    ).length;
 
-    // Bu ay ciro — para birimine göre gruplanmış (transfer tarihine göre)
+    const weekCount = sheetRows.filter(row =>
+      isMainOn(row, d => d >= weekStart && d <= p7) || isRetOn(row, d => d >= weekStart && d <= p7)
+    ).length;
+
+    // Bu ay ciro — para birimine göre gruplanmış (transfer tarihine göre, tek seferlik ücret olduğu için gidiş tarihi baz alınır)
     const monthRevenue = {};
     sheetRows.forEach(row => {
       const d = rowDate(row);
@@ -1475,28 +1501,62 @@ ${FIXED_BRAND}`.trim();
     statWeek.textContent         = String(weekCount);
     statMonthRevenue.textContent = revenueText;
 
-    renderTodayTransfersTable(todayRows, todayTransfersBody);
-    renderCards(todayRows, todayTransfersMobile);
+    renderTodayTransfersTable(todayRows, todayTransfersBody, today);
+    renderTodayCards(todayRows, todayTransfersMobile, today);
   }
 
-  function renderTodayTransfersTable(rows, body) {
+  // Bir rezervasyonun "bugün" ile ilgili hangi ayağının (gidiş/dönüş) referans alınacağını
+  // ve o ayağın gerçek tarih/saatini döndürür — sıralama ve aciliyet hesapları için kullanılır.
+  function todayLegDate(row, todayKey) {
+    const d  = rowDate(row);
+    const rd = rowReturnDate(row);
+    if (d && dayKey(d) === todayKey) return d;
+    if (rd && dayKey(rd) === todayKey) return rd;
+    return null;
+  }
+
+  // Bugün için gösterilecek doğru bilgiyi (saat/from/to + gidiş mi dönüş mü) hesaplar.
+  // Round-trip'in HEM gidişi HEM dönüşü bugünse, ikisini de aynı satırda gösterir.
+  function todayLegInfo(row, todayKey) {
+    const mainToday = !!(rowDate(row) && dayKey(rowDate(row)) === todayKey);
+    const retToday  = !!(rowReturnDate(row) && dayKey(rowReturnDate(row)) === todayKey);
+
+    if (mainToday && retToday) {
+      return {
+        time: row.Time || '-', from: row.From || '-', to: row.To || '-',
+        badge: `<span class="urgent-badge" style="background:rgba(59,130,246,.18);color:#bfdbfe;">+ Dönüş ${row['Return Time']||'-'}</span>`,
+        legDate: rowDate(row)
+      };
+    }
+    if (mainToday) {
+      return { time: row.Time || '-', from: row.From || '-', to: row.To || '-', badge: '', legDate: rowDate(row) };
+    }
+    // sadece dönüş bugünse — dönüş bilgilerini göster, "Dönüş" etiketiyle
+    return {
+      time: row['Return Time'] || '-', from: row['Return From'] || '-', to: row['Return To'] || '-',
+      badge: '<span class="urgent-badge" style="background:rgba(139,92,246,.18);color:#ddd6fe;">Dönüş</span>',
+      legDate: rowReturnDate(row)
+    };
+  }
+
+  function renderTodayTransfersTable(rows, body, todayKey) {
     if (!rows.length) {
       body.innerHTML = '<tr><td colspan="8" class="empty">Bugün için transfer yok.</td></tr>';
       return;
     }
     const now = new Date();
     body.innerHTML = rows.map(row => {
-      const d = rowDate(row);
-      const msUntil = d ? (d - now) : null;
+      const leg = todayLegInfo(row, todayKey);
+      const msUntil = leg.legDate ? (leg.legDate - now) : null;
       const isUrgent = msUntil !== null && msUntil > 0 && msUntil <= 3 * 60 * 60 * 1000;
-      const badge = isUrgent ? '<span class="urgent-badge">Yaklaşıyor</span>' : '';
+      const urgentBadge = isUrgent ? '<span class="urgent-badge">Yaklaşıyor</span>' : '';
       return `
         <tr class="${isUrgent ? 'urgent-row' : ''}">
-          <td>${row.Time || '-'}${badge}</td>
+          <td>${leg.time}${urgentBadge}${leg.badge}</td>
           <td>${row['Passenger Name'] || '-'}</td>
           <td>${row.Phone || '-'}</td>
-          <td>${row.From || '-'}</td>
-          <td>${row.To   || '-'}</td>
+          <td>${leg.from}</td>
+          <td>${leg.to}</td>
           <td>${row.Car  || '-'}</td>
           <td>${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</td>
           <td>
@@ -1506,6 +1566,32 @@ ${FIXED_BRAND}`.trim();
             <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
           </td>
         </tr>`;
+    }).join('');
+  }
+
+  function renderTodayCards(rows, el, todayKey) {
+    if (!rows.length) { el.innerHTML = '<div class="empty">Bugün için transfer yok.</div>'; return; }
+    el.innerHTML = rows.map(row => {
+      const leg = todayLegInfo(row, todayKey);
+      return `
+        <div class="res-card">
+          <div class="res-card-head">
+            <div>
+              <div class="res-name">${row['Passenger Name'] || '-'}</div>
+              <div class="res-line">${row.Phone || '-'}</div>
+            </div>
+            <div class="res-time">${leg.time}${leg.badge}</div>
+          </div>
+          <div class="res-line"><strong>From:</strong> ${leg.from}</div>
+          <div class="res-line"><strong>To:</strong>   ${leg.to}</div>
+          <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
+          <div class="res-actions">
+            ${waButton(row)}
+            <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Metni Kopyala</button>
+            <button class="btn-primary   mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
+            <button class="btn-danger    mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
+          </div>
+        </div>`;
     }).join('');
   }
 
