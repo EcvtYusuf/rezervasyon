@@ -781,6 +781,35 @@
     return items;
   }
 
+  // YENİ: Aynı telefon + aynı tarih/saat + aynı from/to ile zaten bir kayıt varsa
+  // (mükerrer gönderim / yanlışlıkla iki kez kaydetme ihtimaline karşı).
+  // Sadece liste bir kez yüklenmişse kontrol edebiliriz — hiç yüklenmediyse (sheetRows boşsa)
+  // kontrol atlanır, kayıt engellenmez (veriye erişimimiz yoksa yanlış engelleme yapmayalım).
+  function findDuplicateContent(data) {
+    if (!sheetRows.length) return null;
+    return sheetRows.find(row => {
+      if (editingBookingNo && String(row['Booking No']) === String(editingBookingNo)) return false;
+      const sameDate = dateTimeFromRow(row.Date, row.Time) === data.dateTime;
+      const samePhone = (row.Phone || '').replace(/\s+/g,'') === (data.phone || '').replace(/\s+/g,'');
+      const sameFrom = (row.From || '').trim().toLowerCase() === data.pickup.trim().toLowerCase();
+      const sameTo   = (row.To   || '').trim().toLowerCase() === data.dropoff.trim().toLowerCase();
+      return sameDate && samePhone && sameFrom && sameTo && data.dateTime;
+    }) || null;
+  }
+
+  // YENİ: Yeni kayıtta booking numarası tesadüfen zaten var olan bir numarayla çakışırsa
+  // (ekstra güvenlik, ihtimal düşük ama bedava) otomatik olarak yeni bir numara üretilir.
+  function avoidBookingNoCollision() {
+    if (editingBookingNo) return; // güncellemede dokunma
+    let guard = 0;
+    while (sheetRows.some(row => String(row['Booking No']) === String(bookingNumber)) && guard < 20) {
+      bookingNumber = generateBookingNumber();
+      guard++;
+    }
+  }
+
+  let isSaving = false; // YENİ: çift tıklama / çift gönderim kilidi
+
   function setPdfRow(rowClass, id, value) {
     const has = !!value;
     document.querySelectorAll(`.${rowClass}`).forEach(el => el.classList.toggle('hidden', !has));
@@ -932,7 +961,13 @@ ${FIXED_BRAND}`.trim();
   // ─── Kaydet / Güncelle ──────────────────────────────────────────────────────
   // doPost form gönderimi ile çalışır. Güncelleme için Apps Script booking no kontrolü yapar.
   function save() {
+    if (isSaving) return; // YENİ: çift tıklamayı tamamen yok say
+
     updatePreview();
+
+    // YENİ: yeni kayıtta booking no çakışması varsa (çok düşük ihtimal) otomatik düzelt
+    avoidBookingNoCollision();
+
     const data = getData();
 
     // YENİ: Zorunlu alan kontrolü — bunlar boşsa kayıt/güncelleme hiç gönderilmez.
@@ -947,6 +982,26 @@ ${FIXED_BRAND}`.trim();
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
+
+    // YENİ: Aynı telefon + aynı tarih/saat + aynı from/to ile mevcut bir kayıt var mı?
+    const dup = findDuplicateContent(data);
+    if (dup) {
+      const proceed = confirm(
+        `Dikkat: Aynı telefon / tarih-saat / güzergahla ${dup['Booking No']} numaralı bir rezervasyon zaten kayıtlı.\n\n` +
+        `Yine de yeni bir kayıt olarak eklemek istiyor musun?\n(İptal edersen kayıt gönderilmeyecek.)`
+      );
+      if (!proceed) {
+        sheetStatus.textContent = 'Kaydedilmedi (mükerrer kayıt uyarısı iptal edildi).';
+        allStatus.textContent   = sheetStatus.textContent;
+        return;
+      }
+    }
+
+    // YENİ: kilit devreye girsin, buton pasifleşsin
+    isSaving = true;
+    saveSheetBtn.disabled = true;
+    const originalBtnText = saveSheetBtn.textContent;
+    saveSheetBtn.textContent = editingBookingNo ? 'Güncelleniyor...' : 'Kaydediliyor...';
 
     sheetPostForm.innerHTML = '';
     sheetPostForm.action    = APPS_SCRIPT_URL;
@@ -967,8 +1022,13 @@ ${FIXED_BRAND}`.trim();
     sheetStatus.textContent = msg;
     allStatus.textContent   = msg + '. Listeyi yenileyebilirsin.';
 
-    // Kayıt sonrası listeyi tazele
-    setTimeout(loadRows, 1100);
+    // Kayıt sonrası listeyi tazele + kilidi çöz
+    setTimeout(() => {
+      loadRows();
+      isSaving = false;
+      saveSheetBtn.disabled = false;
+      saveSheetBtn.textContent = originalBtnText;
+    }, 1200);
   }
 
   // ─── Yeni kayıt ─────────────────────────────────────────────────────────────
