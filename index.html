@@ -475,7 +475,7 @@
       <div class="tabs">
         <button type="button" class="tab-btn active" data-tab="pdfTab">PDF Önizleme</button>
         <button type="button" class="tab-btn" data-tab="textTab">Rezervasyon Metni</button>
-        <button type="button" class="tab-btn" data-tab="controlTab">Günlük Kontrol</button>
+        <button type="button" class="tab-btn" data-tab="controlTab">Bugün Alınanlar</button>
         <button type="button" class="tab-btn" data-tab="allTab">Tüm Rezervasyonlar</button>
       </div>
     </div>
@@ -553,24 +553,25 @@
       </div>
     </section>
 
-    <!-- Günlük Kontrol Tab -->
+    <!-- Bugün Alınanlar Tab (eskiden Günlük Kontrol - artık transfer tarihine göre değil, KAYIT ALINMA anına göre listeler) -->
     <section id="controlTab" class="tab-panel">
       <div class="card">
         <div class="toolbar">
           <button type="button" class="btn-primary" id="loadSheetBtn">Verileri Yükle</button>
-          <button type="button" class="btn-secondary" id="copyDailySummaryBtn">Günlük Özeti Kopyala</button>
-          <span class="pill pill-orange">Eksik = temel rezervasyon bilgisi</span>
+          <button type="button" class="btn-secondary" id="copyDailySummaryBtn">Bugünkü Özeti Kopyala</button>
+          <span class="pill pill-orange">Bu liste, rezervasyonun SİSTEME kaydedildiği ana göre filtrelenir (transfer tarihine göre değil)</span>
         </div>
         <div id="sheetStatus" class="status-line">Hazır.</div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Tarih</th><th>Saat</th><th>Ad Soyad</th><th>Telefon</th>
+                <th>Alınma Saati</th><th>Ad Soyad</th><th>Telefon</th>
+                <th>Transfer Tarihi</th><th>Transfer Saati</th>
                 <th>From</th><th>To</th><th>Araç</th><th>Fiyat</th><th>İşlem</th>
               </tr>
             </thead>
-            <tbody id="dailyTableBody"><tr><td colspan="9" class="empty">Henüz veri yüklenmedi.</td></tr></tbody>
+            <tbody id="dailyTableBody"><tr><td colspan="10" class="empty">Henüz veri yüklenmedi.</td></tr></tbody>
           </table>
         </div>
         <div id="dailyMobileCards" class="mobile-cards"></div>
@@ -604,7 +605,6 @@
           <button type="button" class="btn-secondary" id="clearRangeBtn" style="align-self:flex-end;">Aralığı Temizle</button>
         </div>
         <div id="allStatus" class="status-line">Tüm rezervasyonları görmek için yükle.</div>
-        <div id="todayCountBox" class="ok-box hidden"></div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -661,7 +661,6 @@
   const rangeStart         = $('rangeStart');
   const rangeEnd           = $('rangeEnd');
   const clearRangeBtn      = $('clearRangeBtn');
-  const todayCountBox      = $('todayCountBox');
 
   // ─── State ─────────────────────────────────────────────────────────────────
   let bookingNumber    = generateBookingNumber();
@@ -769,6 +768,16 @@
     if (!data.passengerCount)items.push('Kişi sayısı eksik');
     if (!data.vehicle)       items.push('Araç eksik');
     if (!data.amount)        items.push('Fiyat eksik');
+    return items;
+  }
+
+  // YENİ: Bunlar olmadan KAYIT ASLA ALINAMAZ (sadece uyarı değil, engelleme).
+  function requiredMissing(data) {
+    const items = [];
+    if (!data.nameSurname) items.push('Ad Soyad');
+    if (!data.phone)       items.push('Telefon');
+    if (!data.pickup)      items.push('From (Alış noktası)');
+    if (!data.dropoff)     items.push('To (Bırakış noktası)');
     return items;
   }
 
@@ -925,6 +934,20 @@ ${FIXED_BRAND}`.trim();
   function save() {
     updatePreview();
     const data = getData();
+
+    // YENİ: Zorunlu alan kontrolü — bunlar boşsa kayıt/güncelleme hiç gönderilmez.
+    const req = requiredMissing(data);
+    if (req.length) {
+      missingInfoBox.innerHTML = '<strong>Kaydedilemedi — zorunlu alan(lar) eksik:</strong><br>' + req.map(m => '• ' + m).join('<br>');
+      missingInfoBox.classList.remove('hidden');
+      okInfoBox.classList.add('hidden');
+      const warnMsg = 'Kaydedilemedi: Ad Soyad / Telefon / From / To alanları boş olamaz.';
+      sheetStatus.textContent = warnMsg;
+      allStatus.textContent   = warnMsg;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     sheetPostForm.innerHTML = '';
     sheetPostForm.action    = APPS_SCRIPT_URL;
 
@@ -1008,7 +1031,10 @@ ${FIXED_BRAND}`.trim();
   // ─── SİL ────────────────────────────────────────────────────────────────────
   // FIX: doGet action=delete ile JSONP üzerinden silme yapılıyor
   function deleteReservation(bookingNo) {
-    if (!bookingNo) return;
+    if (!bookingNo || bookingNo === 'undefined' || bookingNo === 'null') {
+      allStatus.textContent = 'Silinemedi: bu kaydın Booking No bilgisi bulunamadı (Sheets tarafında kontrol edilmeli).';
+      return;
+    }
     if (!confirm(`${bookingNo} numaralı rezervasyon silinsin mi?`)) return;
 
     jsonp('delete', { bookingNo }, res => {
@@ -1043,18 +1069,19 @@ ${FIXED_BRAND}`.trim();
            !row.To   || !row.Person || !row.Car || !row.Price;
   }
 
-  // Günlük kontrol tablosu (Return kolonları yok – kısa tutuyoruz)
+  // Bugün Alınanlar tablosu — transfer tarihine göre değil, kaydın SİSTEME düştüğü ana göre
   function renderDailyTable(rows, body) {
     if (!rows.length) {
-      body.innerHTML = '<tr><td colspan="9" class="empty">Kayıt bulunamadı.</td></tr>';
+      body.innerHTML = '<tr><td colspan="10" class="empty">Bugün için henüz alınmış rezervasyon yok (veya \'Created At\' verisi henüz Sheets\'te tutulmuyor).</td></tr>';
       return;
     }
     body.innerHTML = rows.map(row => `
       <tr>
-        <td>${row.Date || '-'}</td>
-        <td>${row.Time || '-'}</td>
+        <td>${createdTimeLabel(row)}</td>
         <td>${row['Passenger Name'] || '-'}</td>
         <td>${row.Phone || '-'}</td>
+        <td>${row.Date || '-'}</td>
+        <td>${row.Time || '-'}</td>
         <td>${row.From || '-'}</td>
         <td>${row.To   || '-'}</td>
         <td>${row.Car  || '-'}</td>
@@ -1065,6 +1092,11 @@ ${FIXED_BRAND}`.trim();
           <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
         </td>
       </tr>`).join('');
+  }
+
+  function createdTimeLabel(row) {
+    const d = toDate(row['Created At']);
+    return d ? `${pad(d.getHours())}:${pad(d.getMinutes())}` : '-';
   }
 
   // Tüm rezervasyonlar tablosu – Return kolonları dahil
@@ -1172,47 +1204,36 @@ ${FIXED_BRAND}`.trim();
     }).sort((a, b) => (rowDate(a)||0) - (rowDate(b)||0));
   }
 
-  // ─── "Bugün alınan rezervasyon" sayacı ─────────────────────────────────────
-  // Not: Bu sayaç, kayıt Sheet'e 'Created At' kolonu ile düşerse çalışır.
-  // Eski kayıtlarda bu kolon yoksa otomatik olarak yok sayılır, hata vermez.
-  function renderTodayCreatedCount() {
-    const today = dayKey(new Date());
-    const countToday = sheetRows.filter(row => {
-      const raw = row['Created At'];
-      if (!raw) return false;
-      const d = toDate(raw);
-      return d && dayKey(d) === today;
-    }).length;
-
-    const anyCreatedAtField = sheetRows.some(row => row['Created At']);
-    if (!anyCreatedAtField) {
-      todayCountBox.classList.add('hidden');
-      return;
-    }
-    todayCountBox.textContent = `Bugün alınan rezervasyon: ${countToday}`;
-    todayCountBox.classList.remove('hidden');
-  }
-
   function renderAll() {
     const rows = filteredRows();
     renderAllTable(rows, allTableBody);
     renderCards(rows, allMobileCards);
     allStatus.textContent = `${sheetRows.length} kayıt yüklendi, ${rows.length} kayıt gösteriliyor.`;
-    renderTodayCreatedCount();
   }
 
+  // "Bugün Alınanlar": rezervasyonun sisteme kaydedildiği an bugünse listeye girer.
+  // NOT: Bu, Sheets'te 'Created At' kolonu olmasını gerektirir. O kolon henüz yoksa
+  // (Apps Script güncellenmeden), liste boş görünür — eski verilere hiçbir zarar vermez.
   function renderDaily() {
-    const now   = new Date();
-    const start = new Date(dayKey(now) + 'T00:00');
-    const end   = new Date(start); end.setDate(start.getDate() + 7);
+    const today = dayKey(new Date());
 
     const rows = sheetRows
-      .filter(row => { const d = rowDate(row); return d && d >= start && d <= end; })
-      .sort((a, b) => (rowDate(a)||0) - (rowDate(b)||0));
+      .filter(row => {
+        const d = toDate(row['Created At']);
+        return d && dayKey(d) === today;
+      })
+      .sort((a, b) => (toDate(b['Created At'])||0) - (toDate(a['Created At'])||0)); // en yeni üstte
 
     renderDailyTable(rows, dailyTableBody);
     renderCards(rows, dailyMobileCards);
-    dailySummary.value = buildSummary(rows);
+    dailySummary.value = buildDailySummary(rows);
+  }
+
+  function buildDailySummary(rows) {
+    if (!rows.length) return 'Bugün için henüz yeni rezervasyon alınmadı (veya Created At verisi henüz aktif değil).';
+    return `Bugün toplam ${rows.length} rezervasyon alındı:\n` + rows.map(row =>
+      `- ${createdTimeLabel(row)} alındı / ${row['Passenger Name']||'-'} / Transfer: ${row.Date||'-'} ${row.Time||'-'} / ${row.From||'-'} → ${row.To||'-'}`
+    ).join('\n');
   }
 
   function buildSummary(rows) {
@@ -1319,7 +1340,7 @@ ${FIXED_BRAND}`.trim();
 
   copyDailySummaryBtn.addEventListener('click', async () => {
     await navigator.clipboard.writeText(dailySummary.value || '');
-    sheetStatus.textContent = 'Günlük özet kopyalandı.';
+    sheetStatus.textContent = 'Bugünkü özet kopyalandı.';
   });
 
   copyListSummaryBtn.addEventListener('click', async () => {
