@@ -252,6 +252,49 @@
     .ok-box      { background: rgba(34,197,94,.12);  border: 1px solid rgba(34,197,94,.28);  color: #bbf7d0; }
     .edit-banner { background: rgba(217,181,109,.14); border: 1px solid rgba(217,181,109,.35); color: #f8e5b4; margin-bottom: 12px; }
 
+    /* ── Dashboard ── */
+    .dash-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .dash-greeting { font-size: 19px; font-weight: 900; color: #fff; }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .stat-card {
+      background: rgba(217,181,109,.06);
+      border: 1px solid rgba(217,181,109,.22);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .stat-label { font-size: 11.5px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .stat-value { font-size: 26px; font-weight: 900; color: var(--gold2); margin: 6px 0 2px; }
+    .stat-sub   { font-size: 11.5px; color: #8b98b8; }
+
+    .urgent-row td   { background: rgba(245,158,11,.10); }
+    .urgent-badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 900;
+      background: rgba(245,158,11,.22);
+      color: #fde68a;
+    }
+
+    @media (max-width: 768px) {
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+
     /* ── Table ── */
     .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
     .search  { flex: 1 1 280px; }
@@ -277,7 +320,7 @@
     .res-time  { font-weight: 900; color: var(--gold2); text-align: right; }
     .res-line  { color: #dbe5ff; margin: 7px 0; font-size: 13px; }
     .res-return{ color: #fde68a; margin: 5px 0; font-size: 12px; }
-    .res-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .res-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
     .mini-btn  { font-size: 12px; padding: 9px 10px; }
 
     iframe[name="sheetFrame"] { width: 0; height: 0; border: 0; position: absolute; opacity: 0; pointer-events: none; }
@@ -473,15 +516,69 @@
         <div class="hint">PDF dili İngilizce, arayüz Türkçe. Sheets arka plan kayıt deposu.</div>
       </div>
       <div class="tabs">
-        <button type="button" class="tab-btn active" data-tab="pdfTab">PDF Önizleme</button>
+        <button type="button" class="tab-btn active" data-tab="dashboardTab">Özet</button>
+        <button type="button" class="tab-btn" data-tab="pdfTab">PDF Önizleme</button>
         <button type="button" class="tab-btn" data-tab="textTab">Rezervasyon Metni</button>
         <button type="button" class="tab-btn" data-tab="controlTab">Bugün Alınanlar</button>
         <button type="button" class="tab-btn" data-tab="allTab">Tüm Rezervasyonlar</button>
       </div>
     </div>
 
+    <!-- Özet (Dashboard) Tab -->
+    <section id="dashboardTab" class="tab-panel active">
+      <div class="card">
+        <div class="dash-head">
+          <div>
+            <div id="dashGreeting" class="dash-greeting">Hoş geldin.</div>
+            <div id="dashDate" class="hint"></div>
+          </div>
+          <button type="button" class="btn-secondary" id="refreshDashboardBtn">↻ Yenile</button>
+        </div>
+        <div id="dashboardStatus" class="status-line">Veriler yükleniyor...</div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">Bugün</div>
+            <div class="stat-value" id="statToday">–</div>
+            <div class="stat-sub">transfer</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Yarın</div>
+            <div class="stat-value" id="statTomorrow">–</div>
+            <div class="stat-sub">transfer</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Önümüzdeki 7 Gün</div>
+            <div class="stat-value" id="statWeek">–</div>
+            <div class="stat-sub">transfer</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Bu Ay Ciro</div>
+            <div class="stat-value" id="statMonthRevenue">–</div>
+            <div class="stat-sub">tahsilat dahil/hariç ayrımı yok</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="margin-top:0;">Bugünün Transferleri</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Saat</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
+                <th>Araç</th><th>Fiyat</th><th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="todayTransfersBody"><tr><td colspan="8" class="empty">Yükleniyor...</td></tr></tbody>
+          </table>
+        </div>
+        <div id="todayTransfersMobile" class="mobile-cards"></div>
+      </div>
+    </section>
+
     <!-- PDF Tab -->
-    <section id="pdfTab" class="tab-panel active">
+    <section id="pdfTab" class="tab-panel">
       <div class="voucher-scroll">
         <div id="voucher" class="voucher-page">
           <header class="voucher-header">
@@ -591,7 +688,6 @@
           <button type="button" class="btn-secondary filter-btn" data-filter="tomorrow">Yarın</button>
           <button type="button" class="btn-secondary filter-btn" data-filter="week">7 Gün</button>
           <button type="button" class="btn-secondary filter-btn" data-filter="month">Bu Ay</button>
-          <button type="button" class="btn-secondary filter-btn" data-filter="missing">Eksik</button>
         </div>
         <div class="toolbar">
           <div class="field" style="margin-bottom:0; flex:1 1 160px;">
@@ -661,6 +757,16 @@
   const rangeStart         = $('rangeStart');
   const rangeEnd           = $('rangeEnd');
   const clearRangeBtn      = $('clearRangeBtn');
+  const dashGreeting       = $('dashGreeting');
+  const dashDate           = $('dashDate');
+  const dashboardStatus    = $('dashboardStatus');
+  const refreshDashboardBtn= $('refreshDashboardBtn');
+  const statToday          = $('statToday');
+  const statTomorrow       = $('statTomorrow');
+  const statWeek           = $('statWeek');
+  const statMonthRevenue   = $('statMonthRevenue');
+  const todayTransfersBody = $('todayTransfersBody');
+  const todayTransfersMobile = $('todayTransfersMobile');
 
   // ─── State ─────────────────────────────────────────────────────────────────
   let bookingNumber    = generateBookingNumber();
@@ -677,6 +783,11 @@
 
   function toDate(v) {
     if (!v) return null;
+    // Apps Script "yyyy-MM-dd HH:mm:ss" formatını tüm tarayıcılarda güvenilir okumak için
+    // (Safari boşluklu formatı bazen yanlış yorumluyor, ISO 'T' ayracına çeviriyoruz)
+    if (typeof v === 'string' && /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/.test(v)) {
+      v = v.replace(' ', 'T');
+    }
     const d = new Date(v);
     return isNaN(d.getTime()) ? null : d;
   }
@@ -949,12 +1060,9 @@ ${FIXED_BRAND}`.trim();
       returnFlightCode : data.returnFlyCode,
       note             : data.note,
       serviceType      : data.serviceType,
-      transferType     : data.hasReturn ? 'Arrival + Return' : 'One Way',
-      // YENİ: rezervasyonun sisteme kaydedildiği an (otomatik, kullanıcı girmiyor).
-      // Sadece YENİ kayıtlarda gönderilir; Apps Script tarafında 'Created At' adında
-      // yeni bir kolon eklenip bu değeri yazacak şekilde güncellenmesi gerekir.
-      // Güncelleme (edit) durumunda tekrar gönderilmez, ilk kayıt anı korunur.
-      createdAt        : editingBookingNo ? '' : new Date().toISOString()
+      transferType     : data.hasReturn ? 'Arrival + Return' : 'One Way'
+      // NOT: 'Created At' / 'Updated At' artık front-end'den gönderilmiyor —
+      // Apps Script bunları kendi sunucu saatiyle (now_()) otomatik yazıyor.
     };
   }
 
@@ -1072,19 +1180,23 @@ ${FIXED_BRAND}`.trim();
 
   // ─── Veri yükle ─────────────────────────────────────────────────────────────
   function loadRows() {
-    sheetStatus.textContent = 'Veri yükleniyor...';
-    allStatus.textContent   = 'Veri yükleniyor...';
+    sheetStatus.textContent     = 'Veri yükleniyor...';
+    allStatus.textContent       = 'Veri yükleniyor...';
+    dashboardStatus.textContent = 'Veri yükleniyor...';
 
     jsonp('list', {}, res => {
       sheetRows = res.rows || [];
       renderDaily();
       renderAll();
-      sheetStatus.textContent = `${sheetRows.length} rezervasyon yüklendi.`;
-      allStatus.textContent   = `${sheetRows.length} rezervasyon yüklendi.`;
+      renderDashboard();
+      sheetStatus.textContent     = `${sheetRows.length} rezervasyon yüklendi.`;
+      allStatus.textContent       = `${sheetRows.length} rezervasyon yüklendi.`;
+      dashboardStatus.textContent = `Son güncelleme: az önce (${sheetRows.length} kayıt).`;
     }, () => {
       const errMsg = 'Veri yüklenemedi. Apps Script dağıtımını kontrol et.';
-      sheetStatus.textContent = errMsg;
-      allStatus.textContent   = errMsg;
+      sheetStatus.textContent     = errMsg;
+      allStatus.textContent       = errMsg;
+      dashboardStatus.textContent = errMsg;
     });
   }
 
@@ -1147,6 +1259,7 @@ ${FIXED_BRAND}`.trim();
         <td>${row.Car  || '-'}</td>
         <td>${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</td>
         <td>
+          ${waButton(row)}
           <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
           <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
           <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1180,6 +1293,7 @@ ${FIXED_BRAND}`.trim();
         <td>${row['Return From'] || '-'}</td>
         <td>${row['Return To']   || '-'}</td>
         <td>
+          ${waButton(row)}
           <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
           <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
           <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1207,6 +1321,7 @@ ${FIXED_BRAND}`.trim();
           <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
           ${returnInfo}
           <div class="res-actions">
+            ${waButton(row)}
             <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Metni Kopyala</button>
             <button class="btn-primary   mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
             <button class="btn-danger    mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1216,6 +1331,20 @@ ${FIXED_BRAND}`.trim();
   }
 
   function esc(v) { return String(v || '').replace(/'/g,"&#39;"); }
+
+  // YENİ: Telefon numarasından tek tıkla WhatsApp'ta mesaj açan link üretir.
+  function waLink(row) {
+    const digits = String(row.Phone || '').replace(/[^\d]/g, '');
+    if (!digits) return '';
+    const text = encodeURIComponent(reservationTxt(rowToData(row)));
+    return `https://wa.me/${digits}?text=${text}`;
+  }
+
+  function waButton(row) {
+    const link = waLink(row);
+    if (!link) return '';
+    return `<a class="btn-secondary mini-btn" href="${link}" target="_blank" rel="noopener">WhatsApp</a>`;
+  }
 
   // ─── Filtreli satırlar ──────────────────────────────────────────────────────
   function filteredRows() {
@@ -1252,8 +1381,7 @@ ${FIXED_BRAND}`.trim();
              (rd && rd.getMonth() === now.getMonth() && rd.getFullYear() === now.getFullYear());
       }
 
-      // Eksik filtresi, aralık seçiliyken de birlikte çalışabilsin
-      if (activeFilter === 'missing') ok = ok && rowMissing(row);
+      // Eksik filtresi kaldırıldı (artık kullanılmıyor)
 
       if (query) {
         const text = [row['Passenger Name'], row.Phone, row.From, row.To, row.Car, row.Note,
@@ -1301,6 +1429,84 @@ ${FIXED_BRAND}`.trim();
     return rows.map(row =>
       `- ${row.Date||'-'} / ${row.Time||'-'} / ${row['Passenger Name']||'-'} / ${row.From||'-'} → ${row.To||'-'} / ${row.Car||'-'}${rowMissing(row) ? ' / Eksik kontrol var' : ' / OK'}`
     ).join('\n');
+  }
+
+  // ─── Özet (Dashboard) ───────────────────────────────────────────────────────
+  function setDashGreeting() {
+    const now  = new Date();
+    const hour = now.getHours();
+    const greeting = hour < 12 ? 'Günaydın!' : (hour < 18 ? 'İyi günler!' : 'İyi akşamlar!');
+    const days   = ['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
+    const months = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+    dashGreeting.textContent = greeting;
+    dashDate.textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} • ${days[now.getDay()]}`;
+  }
+
+  function renderDashboard() {
+    setDashGreeting();
+    const now      = new Date();
+    const today    = dayKey(now);
+    const tmrw     = new Date(now); tmrw.setDate(now.getDate() + 1);
+    const p7       = new Date(now); p7.setDate(now.getDate() + 7);
+    const weekStart = new Date(today + 'T00:00');
+
+    const todayRows = sheetRows
+      .filter(row => { const d = rowDate(row); return d && dayKey(d) === today; })
+      .sort((a, b) => (rowDate(a)||0) - (rowDate(b)||0));
+
+    const tomorrowCount = sheetRows.filter(row => { const d = rowDate(row); return d && dayKey(d) === dayKey(tmrw); }).length;
+    const weekCount     = sheetRows.filter(row => { const d = rowDate(row); return d && d >= weekStart && d <= p7; }).length;
+
+    // Bu ay ciro — para birimine göre gruplanmış (transfer tarihine göre)
+    const monthRevenue = {};
+    sheetRows.forEach(row => {
+      const d = rowDate(row);
+      if (d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && row.Price) {
+        const cur = row.Currency || 'EUR';
+        monthRevenue[cur] = (monthRevenue[cur] || 0) + (parseFloat(row.Price) || 0);
+      }
+    });
+    const revenueText = Object.keys(monthRevenue).length
+      ? Object.entries(monthRevenue).map(([cur, sum]) => `${Math.round(sum).toLocaleString('tr-TR')} ${cur}`).join(' + ')
+      : '–';
+
+    statToday.textContent        = String(todayRows.length);
+    statTomorrow.textContent     = String(tomorrowCount);
+    statWeek.textContent         = String(weekCount);
+    statMonthRevenue.textContent = revenueText;
+
+    renderTodayTransfersTable(todayRows, todayTransfersBody);
+    renderCards(todayRows, todayTransfersMobile);
+  }
+
+  function renderTodayTransfersTable(rows, body) {
+    if (!rows.length) {
+      body.innerHTML = '<tr><td colspan="8" class="empty">Bugün için transfer yok.</td></tr>';
+      return;
+    }
+    const now = new Date();
+    body.innerHTML = rows.map(row => {
+      const d = rowDate(row);
+      const msUntil = d ? (d - now) : null;
+      const isUrgent = msUntil !== null && msUntil > 0 && msUntil <= 3 * 60 * 60 * 1000;
+      const badge = isUrgent ? '<span class="urgent-badge">Yaklaşıyor</span>' : '';
+      return `
+        <tr class="${isUrgent ? 'urgent-row' : ''}">
+          <td>${row.Time || '-'}${badge}</td>
+          <td>${row['Passenger Name'] || '-'}</td>
+          <td>${row.Phone || '-'}</td>
+          <td>${row.From || '-'}</td>
+          <td>${row.To   || '-'}</td>
+          <td>${row.Car  || '-'}</td>
+          <td>${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</td>
+          <td>
+            ${waButton(row)}
+            <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
+            <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
+            <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
+          </td>
+        </tr>`;
+    }).join('');
   }
 
   // ─── Satırdan form doldur ───────────────────────────────────────────────────
@@ -1397,6 +1603,7 @@ ${FIXED_BRAND}`.trim();
   copyTextBtn.addEventListener('click', copyText);
   loadSheetBtn.addEventListener('click', loadRows);
   loadAllBtn.addEventListener('click', loadRows);
+  refreshDashboardBtn.addEventListener('click', loadRows);
 
   copyDailySummaryBtn.addEventListener('click', async () => {
     await navigator.clipboard.writeText(dailySummary.value || '');
@@ -1410,6 +1617,8 @@ ${FIXED_BRAND}`.trim();
 
   // ─── İlk render ─────────────────────────────────────────────────────────────
   updatePreview();
+  setDashGreeting();
+  loadRows(); // YENİ: sayfa açılır açılmaz veriler otomatik çekilir, "Yükle" tuşuna basmaya gerek yok
 </script>
 </body>
 </html>
