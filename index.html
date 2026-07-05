@@ -279,6 +279,21 @@
     .stat-value { font-size: 26px; font-weight: 900; color: var(--gold2); margin: 6px 0 2px; }
     .stat-sub   { font-size: 11.5px; color: #8b98b8; }
 
+    .stat-label-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .month-nav-btn {
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--gold2);
+      border-radius: 8px;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      font-size: 15px;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+    .month-nav-btn:hover { background: rgba(217,181,109,.16); }
+
     .urgent-row td   { background: rgba(245,158,11,.10); }
     .urgent-badge {
       display: inline-block;
@@ -552,10 +567,14 @@
             <div class="stat-value" id="statWeek">–</div>
             <div class="stat-sub">transfer</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-label">Bu Ay Ciro</div>
+          <div class="stat-card stat-card-revenue">
+            <div class="stat-label-row">
+              <button type="button" class="month-nav-btn" id="revMonthPrev" aria-label="Önceki ay">‹</button>
+              <div class="stat-label" id="revMonthLabel">BU AY CİRO</div>
+              <button type="button" class="month-nav-btn" id="revMonthNext" aria-label="Sonraki ay">›</button>
+            </div>
             <div class="stat-value" id="statMonthRevenue">–</div>
-            <div class="stat-sub">tahsilat dahil/hariç ayrımı yok</div>
+            <div class="stat-sub" id="revMonthSub">tahsilat dahil/hariç ayrımı yok</div>
           </div>
         </div>
       </div>
@@ -765,6 +784,10 @@
   const statTomorrow       = $('statTomorrow');
   const statWeek           = $('statWeek');
   const statMonthRevenue   = $('statMonthRevenue');
+  const revMonthLabel      = $('revMonthLabel');
+  const revMonthSub        = $('revMonthSub');
+  const revMonthPrev       = $('revMonthPrev');
+  const revMonthNext       = $('revMonthNext');
   const todayTransfersBody = $('todayTransfersBody');
   const todayTransfersMobile = $('todayTransfersMobile');
 
@@ -1483,26 +1506,49 @@ ${FIXED_BRAND}`.trim();
       isMainOn(row, d => d >= weekStart && d <= p7) || isRetOn(row, d => d >= weekStart && d <= p7)
     ).length;
 
-    // Bu ay ciro — para birimine göre gruplanmış (transfer tarihine göre, tek seferlik ücret olduğu için gidiş tarihi baz alınır)
-    const monthRevenue = {};
-    sheetRows.forEach(row => {
-      const d = rowDate(row);
-      if (d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && row.Price) {
-        const cur = row.Currency || 'EUR';
-        monthRevenue[cur] = (monthRevenue[cur] || 0) + (parseFloat(row.Price) || 0);
-      }
-    });
-    const revenueText = Object.keys(monthRevenue).length
-      ? Object.entries(monthRevenue).map(([cur, sum]) => `${Math.round(sum).toLocaleString('tr-TR')} ${cur}`).join(' + ')
-      : '–';
+    // Bu ay ciro — artık ok butonlarıyla farklı aylara gezilebilir (renderRevenueCard içinde)
+    renderRevenueCard();
 
     statToday.textContent        = String(todayRows.length);
     statTomorrow.textContent     = String(tomorrowCount);
     statWeek.textContent         = String(weekCount);
-    statMonthRevenue.textContent = revenueText;
 
     renderTodayTransfersTable(todayRows, todayTransfersBody, today);
     renderTodayCards(todayRows, todayTransfersMobile, today);
+  }
+
+  // YENİ: Ciro kartı artık istenen herhangi bir ayı gösterebilir (ok butonlarıyla gezilir).
+  let revenueViewDate = new Date(); // hangi ay/yıl gösteriliyor
+
+  const TR_MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+
+  function renderRevenueCard() {
+    const viewMonth = revenueViewDate.getMonth();
+    const viewYear  = revenueViewDate.getFullYear();
+
+    const monthRevenue = {};
+    let count = 0;
+    sheetRows.forEach(row => {
+      const d = rowDate(row);
+      if (d && d.getMonth() === viewMonth && d.getFullYear() === viewYear) {
+        count++;
+        if (row.Price) {
+          const cur = row.Currency || 'EUR';
+          monthRevenue[cur] = (monthRevenue[cur] || 0) + (parseFloat(row.Price) || 0);
+        }
+      }
+    });
+
+    const revenueText = Object.keys(monthRevenue).length
+      ? Object.entries(monthRevenue).map(([cur, sum]) => `${Math.round(sum).toLocaleString('tr-TR')} ${cur}`).join(' + ')
+      : '–';
+
+    const now = new Date();
+    const isCurrentMonth = viewMonth === now.getMonth() && viewYear === now.getFullYear();
+
+    revMonthLabel.textContent    = `${TR_MONTHS[viewMonth]} ${viewYear}`.toUpperCase() + (isCurrentMonth ? ' (BU AY)' : '');
+    statMonthRevenue.textContent = revenueText;
+    revMonthSub.textContent      = `${count} transfer • tahsilat dahil/hariç ayrımı yok`;
   }
 
   // Bir rezervasyonun "bugün" ile ilgili hangi ayağının (gidiş/dönüş) referans alınacağını
@@ -1690,6 +1736,14 @@ ${FIXED_BRAND}`.trim();
   loadSheetBtn.addEventListener('click', loadRows);
   loadAllBtn.addEventListener('click', loadRows);
   refreshDashboardBtn.addEventListener('click', loadRows);
+  revMonthPrev.addEventListener('click', () => {
+    revenueViewDate.setMonth(revenueViewDate.getMonth() - 1);
+    renderRevenueCard();
+  });
+  revMonthNext.addEventListener('click', () => {
+    revenueViewDate.setMonth(revenueViewDate.getMonth() + 1);
+    renderRevenueCard();
+  });
 
   copyDailySummaryBtn.addEventListener('click', async () => {
     await navigator.clipboard.writeText(dailySummary.value || '');
