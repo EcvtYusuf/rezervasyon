@@ -149,6 +149,25 @@
     .btn-warning   { background: rgba(245,158,11,.16); color: #fde68a; border: 1px solid rgba(245,158,11,.32); }
     .btn-danger    { background: rgba(239,68,68,.16); color: #fecaca; border: 1px solid rgba(239,68,68,.32); }
 
+    /* YENİ: WhatsApp butonu <a> etiketi olduğu için bare 'button' seçicisinden
+       (display/border-radius/cursor vb.) hiçbir şey miras almıyordu — kendi başına
+       tam bir buton görünümü + WhatsApp'ın yeşili ile diğerlerinden ayrışıyor. */
+    .btn-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      appearance: none;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .15s;
+      background: rgba(37,211,102,.16);
+      color: #7ee8a3;
+      border: 1px solid rgba(37,211,102,.38);
+    }
+    .btn-whatsapp:hover { transform: translateY(-1px); background: rgba(37,211,102,.26); }
+
     .topbar {
       display: flex;
       align-items: center;
@@ -295,6 +314,11 @@
     .month-nav-btn:hover { background: rgba(217,181,109,.16); }
 
     .urgent-row td   { background: rgba(245,158,11,.10); }
+    .res-card.urgent-card {
+      border-color: rgba(245,158,11,.45);
+      background: rgba(245,158,11,.08);
+    }
+    .urgent-countdown { color: #fde68a; font-weight: 800; }
     .urgent-badge {
       display: inline-block;
       margin-left: 6px;
@@ -308,6 +332,10 @@
 
     @media (max-width: 768px) {
       .stat-grid { grid-template-columns: 1fr 1fr; }
+      /* YENİ: Ciro kartı (uzun "10.805 EUR + 1.650 USD + ..." gibi metinler barındırabiliyor)
+         dar yarım sütuna sıkışıp ezilmesin diye tam genişlik alıyor, kendi satırında durur */
+      .stat-card-revenue { grid-column: 1 / -1; }
+      .stat-card-revenue .stat-value { font-size: 21px; line-height: 1.35; }
     }
 
     /* ── Table ── */
@@ -352,15 +380,29 @@
       .grid { grid-template-columns: 1fr; }
       .actions { grid-template-columns: 1fr; }
       .topbar { align-items: flex-start; }
-      .tabs { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
-      .tab-btn { font-size: 12px; padding: 10px; }
+      /* YENİ: 5 sekme artık dar bir 2 sütuna sıkışmıyor — yatay kaydırmalı tek şerit */
+      .tabs {
+        width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 2px;
+      }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab-btn { font-size: 12.5px; padding: 10px 14px; flex: 0 0 auto; white-space: nowrap; }
       .voucher-scroll { overflow-x: auto; }
       .table-wrap { display: none; }
       .mobile-cards { display: block; }
       .toolbar { display: grid; grid-template-columns: 1fr 1fr; }
       .toolbar .search { grid-column: 1 / -1; }
       .toolbar button { font-size: 12px; padding: 10px; }
-      .res-actions { grid-template-columns: 1fr; }
+      /* YENİ: 4 işlem butonu (WhatsApp/Kopyala/Düzenle/Sil) artık tek sütunda alt alta
+         uzayıp gitmiyor — 2x2 kompakt ızgara, kart daha kısa ve taranabilir oluyor */
+      .res-actions { grid-template-columns: 1fr 1fr; }
+      .mini-btn { min-height: 40px; } /* daha rahat dokunma alanı */
+      .res-card-head { flex-wrap: wrap; row-gap: 6px; }
       .text-output { min-height: 260px; }
       h1 { font-size: 23px; }
     }
@@ -1382,7 +1424,7 @@ ${FIXED_BRAND}`.trim();
   function waButton(row) {
     const link = waLink(row);
     if (!link) return '';
-    return `<a class="btn-secondary mini-btn" href="${link}" target="_blank" rel="noopener">WhatsApp</a>`;
+    return `<a class="btn-whatsapp mini-btn" href="${link}" target="_blank" rel="noopener">WhatsApp</a>`;
   }
 
   // ─── Filtreli satırlar ──────────────────────────────────────────────────────
@@ -1452,8 +1494,39 @@ ${FIXED_BRAND}`.trim();
       .sort((a, b) => (toDate(b['Created At'])||0) - (toDate(a['Created At'])||0)); // en yeni üstte
 
     renderDailyTable(rows, dailyTableBody);
-    renderCards(rows, dailyMobileCards);
+    renderDailyCards(rows, dailyMobileCards);
     dailySummary.value = buildDailySummary(rows);
+  }
+
+  // YENİ: "Bugün Alınanlar" için özel mobil kart görünümü — masaüstü tablosundaki
+  // "Alınma Saati" bilgisini (genel renderCards()'ta hiç gösterilmeyen) mobilde de gösterir.
+  // Diğer sekmelerin (Tüm Rezervasyonlar) mobil kartlarına dokunulmaz, onlar hâlâ genel
+  // renderCards() fonksiyonunu kullanmaya devam eder.
+  function renderDailyCards(rows, el) {
+    if (!rows.length) {
+      el.innerHTML = '<div class="empty">Bugün için henüz alınmış rezervasyon yok (veya \'Created At\' verisi henüz Sheets\'te tutulmuyor).</div>';
+      return;
+    }
+    el.innerHTML = rows.map(row => `
+      <div class="res-card">
+        <div class="res-card-head">
+          <div>
+            <div class="res-name">${row['Passenger Name'] || '-'}</div>
+            <div class="res-line">${row.Phone || '-'}</div>
+          </div>
+          <div class="res-time">Alındı: ${createdTimeLabel(row)}</div>
+        </div>
+        <div class="res-line"><strong>Transfer:</strong> ${row.Date||'-'} ${row.Time||'-'}</div>
+        <div class="res-line"><strong>From:</strong> ${row.From||'-'}</div>
+        <div class="res-line"><strong>To:</strong>   ${row.To  ||'-'}</div>
+        <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
+        <div class="res-actions">
+          ${waButton(row)}
+          <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Metni Kopyala</button>
+          <button class="btn-primary   mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
+          <button class="btn-danger    mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
+        </div>
+      </div>`).join('');
   }
 
   function buildDailySummary(rows) {
@@ -1615,19 +1688,36 @@ ${FIXED_BRAND}`.trim();
     }).join('');
   }
 
+  // Kalan süreyi "1s 45dk kaldı" gibi okunaklı bir metne çevirir (sadece mobilde,
+  // ekstra bilgi olarak — masaüstündeki rozete dokunulmadı).
+  function timeUntilLabel(ms) {
+    const totalMin = Math.max(0, Math.round(ms / 60000));
+    const h = Math.floor(totalMin / 60);
+    const m = totalMin % 60;
+    return h > 0 ? `${h}s ${m}dk kaldı` : `${m}dk kaldı`;
+  }
+
   function renderTodayCards(rows, el, todayKey) {
     if (!rows.length) { el.innerHTML = '<div class="empty">Bugün için transfer yok.</div>'; return; }
+    const now = new Date();
     el.innerHTML = rows.map(row => {
       const leg = todayLegInfo(row, todayKey);
+      const msUntil = leg.legDate ? (leg.legDate - now) : null;
+      const isUrgent = msUntil !== null && msUntil > 0 && msUntil <= 3 * 60 * 60 * 1000;
+      const urgentBadge = isUrgent ? '<span class="urgent-badge">Yaklaşıyor</span>' : '';
+      const countdownLine = isUrgent
+        ? `<div class="res-line urgent-countdown">⏱ ${timeUntilLabel(msUntil)}</div>`
+        : '';
       return `
-        <div class="res-card">
+        <div class="res-card${isUrgent ? ' urgent-card' : ''}">
           <div class="res-card-head">
             <div>
               <div class="res-name">${row['Passenger Name'] || '-'}</div>
               <div class="res-line">${row.Phone || '-'}</div>
             </div>
-            <div class="res-time">${leg.time}${leg.badge}</div>
+            <div class="res-time">${leg.time}${urgentBadge}${leg.badge}</div>
           </div>
+          ${countdownLine}
           <div class="res-line"><strong>From:</strong> ${leg.from}</div>
           <div class="res-line"><strong>To:</strong>   ${leg.to}</div>
           <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
