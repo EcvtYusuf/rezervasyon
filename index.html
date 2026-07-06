@@ -761,6 +761,26 @@
           </div>
           <button type="button" class="btn-secondary" id="clearRangeBtn" style="align-self:flex-end;">Aralığı Temizle</button>
         </div>
+
+        <!-- YENİ: Toplu Hatırlatma Kuyruğu — şu an filtrelenmiş listeye göre çalışır -->
+        <div class="card" id="reminderCard" style="margin-bottom:14px;">
+          <div class="section-title" style="margin-top:0;">Toplu Hatırlatma Gönder</div>
+          <div class="hint" style="margin-bottom:10px;">Yukarıdaki filtreye göre çalışır (şu an ne seçiliyse — Bugün/Yarın/tarih aralığı/arama). Telefonu olmayan kayıtlar otomatik atlanır. WhatsApp'ın kendi kısıtı nedeniyle her mesajı sen WhatsApp içinde "Gönder"e basarak yollarsın, sistem sadece sıradakine geçmeni hızlandırır.</div>
+          <div class="toolbar" style="margin-bottom:0;">
+            <button type="button" class="btn-primary" id="startReminderBtn">📢 Hatırlatma Kuyruğu Başlat</button>
+            <span id="reminderEligibleCount" class="pill pill-orange">–</span>
+          </div>
+          <div id="reminderQueuePanel" class="hidden" style="margin-top:14px;">
+            <div class="ok-box" id="reminderQueueInfo"></div>
+            <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+              <button type="button" class="btn-secondary" id="reminderPrevBtn">◀ Önceki</button>
+              <a class="btn-whatsapp" id="reminderSendBtn" target="_blank" rel="noopener" style="flex:1 1 160px; text-align:center; padding:12px;">WhatsApp'ta Gönder</a>
+              <button type="button" class="btn-secondary" id="reminderNextBtn">Sonraki ▶</button>
+              <button type="button" class="btn-danger" id="reminderCloseBtn">Kuyruğu Kapat</button>
+            </div>
+          </div>
+        </div>
+
         <div id="allStatus" class="status-line">Tüm rezervasyonları görmek için yükle.</div>
         <div class="table-wrap">
           <table>
@@ -832,6 +852,14 @@
   const revMonthNext       = $('revMonthNext');
   const todayTransfersBody = $('todayTransfersBody');
   const todayTransfersMobile = $('todayTransfersMobile');
+  const startReminderBtn      = $('startReminderBtn');
+  const reminderEligibleCount = $('reminderEligibleCount');
+  const reminderQueuePanel    = $('reminderQueuePanel');
+  const reminderQueueInfo     = $('reminderQueueInfo');
+  const reminderPrevBtn       = $('reminderPrevBtn');
+  const reminderNextBtn       = $('reminderNextBtn');
+  const reminderSendBtn       = $('reminderSendBtn');
+  const reminderCloseBtn      = $('reminderCloseBtn');
 
   // ─── State ─────────────────────────────────────────────────────────────────
   let bookingNumber      = generateBookingNumber();
@@ -1414,11 +1442,14 @@ ${FIXED_BRAND}`.trim();
   function esc(v) { return String(v || '').replace(/'/g,"&#39;"); }
 
   // YENİ: Telefon numarasından tek tıkla WhatsApp'ta mesaj açan link üretir.
+  // web.whatsapp.com/send kullanıyoruz (wa.me/api.whatsapp.com yerine) çünkü o format
+  // masaüstü uygulamasını açmak isteyip "WhatsApp açılsın mı?" diye soruyordu — bu format
+  // doğrudan zaten açık/giriş yapılmış olan WhatsApp Web sekmesine gidiyor, soru sormuyor.
   function waLink(row) {
     const digits = String(row.Phone || '').replace(/[^\d]/g, '');
     if (!digits) return '';
     const text = encodeURIComponent(reservationTxt(rowToData(row)));
-    return `https://wa.me/${digits}?text=${text}`;
+    return `https://web.whatsapp.com/send?phone=${digits}&text=${text}`;
   }
 
   function waButton(row) {
@@ -1478,6 +1509,65 @@ ${FIXED_BRAND}`.trim();
     renderAllTable(rows, allTableBody);
     renderCards(rows, allMobileCards);
     allStatus.textContent = `${sheetRows.length} kayıt yüklendi, ${rows.length} kayıt gösteriliyor.`;
+    updateReminderEligibleCount();
+  }
+
+  // ─── Toplu Hatırlatma Kuyruğu ───────────────────────────────────────────────
+  // WhatsApp gerçek toplu gönderimi desteklemiyor (kendi kısıtı) — bu yüzden şu an
+  // filtrelenmiş listeyi sırayla gezen, her kişi için WhatsApp'ı hazır mesajla açan
+  // ve otomatik sıradakine geçen bir "yarı-otomatik" kuyruk kuruyoruz.
+  let reminderQueue = [];
+  let reminderIndex = 0;
+
+  function eligibleForReminder(rows) {
+    return rows.filter(row => String(row.Phone || '').replace(/[^\d]/g, ''));
+  }
+
+  function updateReminderEligibleCount() {
+    const rows = eligibleForReminder(filteredRows());
+    reminderEligibleCount.textContent = `${rows.length} kişiye gönderilebilir`;
+  }
+
+  function startReminderQueue() {
+    reminderQueue = eligibleForReminder(filteredRows());
+    if (!reminderQueue.length) {
+      allStatus.textContent = 'Şu an filtrelenmiş listede telefonu olan kimse yok.';
+      return;
+    }
+    reminderIndex = 0;
+    reminderQueuePanel.classList.remove('hidden');
+    renderReminderStep();
+  }
+
+  function renderReminderStep() {
+    const row = reminderQueue[reminderIndex];
+    reminderQueueInfo.innerHTML =
+      `<strong>${reminderIndex + 1} / ${reminderQueue.length}</strong> — ${row['Passenger Name'] || '-'} (${row.Phone || '-'})<br>` +
+      `${row.Date || '-'} ${row.Time || '-'} • ${row.From || '-'} → ${row.To || '-'}`;
+    reminderSendBtn.href = waLink(row);
+    reminderPrevBtn.disabled = reminderIndex === 0;
+    reminderNextBtn.textContent = (reminderIndex === reminderQueue.length - 1) ? 'Bitir ✓' : 'Sonraki ▶';
+  }
+
+  function reminderGoNext() {
+    if (reminderIndex < reminderQueue.length - 1) {
+      reminderIndex++;
+      renderReminderStep();
+    } else {
+      reminderQueuePanel.classList.add('hidden');
+      allStatus.textContent = 'Hatırlatma kuyruğu tamamlandı.';
+    }
+  }
+
+  function reminderGoPrev() {
+    if (reminderIndex > 0) {
+      reminderIndex--;
+      renderReminderStep();
+    }
+  }
+
+  function closeReminderQueue() {
+    reminderQueuePanel.classList.add('hidden');
   }
 
   // "Bugün Alınanlar": rezervasyonun sisteme kaydedildiği an bugünse listeye girer.
@@ -1833,6 +1923,16 @@ ${FIXED_BRAND}`.trim();
   revMonthNext.addEventListener('click', () => {
     revenueViewDate.setMonth(revenueViewDate.getMonth() + 1);
     renderRevenueCard();
+  });
+
+  startReminderBtn.addEventListener('click', startReminderQueue);
+  reminderPrevBtn.addEventListener('click', reminderGoPrev);
+  reminderNextBtn.addEventListener('click', reminderGoNext);
+  reminderCloseBtn.addEventListener('click', closeReminderQueue);
+  // NOT: href'i hemen değiştirmiyoruz — tarayıcı tıklamadaki linki açtıktan HEMEN
+  // sonra (küçük bir gecikmeyle) sıradakine geçiyoruz, yoksa yanlış kişiye gidebilir.
+  reminderSendBtn.addEventListener('click', () => {
+    setTimeout(reminderGoNext, 150);
   });
 
   copyDailySummaryBtn.addEventListener('click', async () => {
