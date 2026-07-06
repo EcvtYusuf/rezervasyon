@@ -168,6 +168,11 @@
     }
     .btn-whatsapp:hover { transform: translateY(-1px); background: rgba(37,211,102,.26); }
 
+    /* YENİ: Tek "WhatsApp" butonu yerine 3 küçük bayrak (TR/EN/DE) butonu — hangi dilde
+       gönderileceğine karar veremediğimiz için müşteriye göre seçim şansı veriyor. */
+    .wa-lang-group { display: inline-flex; gap: 4px; }
+    .wa-lang-btn { padding: 8px 9px; font-size: 15px; min-width: 0; }
+
     .topbar {
       display: flex;
       align-items: center;
@@ -772,9 +777,13 @@
           </div>
           <div id="reminderQueuePanel" class="hidden" style="margin-top:14px;">
             <div class="ok-box" id="reminderQueueInfo"></div>
-            <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+            <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; align-items:center;">
               <button type="button" class="btn-secondary" id="reminderPrevBtn">◀ Önceki</button>
-              <a class="btn-whatsapp" id="reminderSendBtn" target="_blank" rel="noopener" style="flex:1 1 160px; text-align:center; padding:12px;">WhatsApp'ta Gönder</a>
+              <span style="display:flex; gap:6px;">
+                <a class="btn-whatsapp" id="reminderSendTR" target="_blank" rel="noopener" title="Türkçe gönder" style="padding:12px 16px; font-size:17px;">🇹🇷</a>
+                <a class="btn-whatsapp" id="reminderSendEN" target="_blank" rel="noopener" title="Send in English" style="padding:12px 16px; font-size:17px;">🇬🇧</a>
+                <a class="btn-whatsapp" id="reminderSendDE" target="_blank" rel="noopener" title="Auf Deutsch senden" style="padding:12px 16px; font-size:17px;">🇩🇪</a>
+              </span>
               <button type="button" class="btn-secondary" id="reminderNextBtn">Sonraki ▶</button>
               <button type="button" class="btn-danger" id="reminderCloseBtn">Kuyruğu Kapat</button>
             </div>
@@ -858,7 +867,9 @@
   const reminderQueueInfo     = $('reminderQueueInfo');
   const reminderPrevBtn       = $('reminderPrevBtn');
   const reminderNextBtn       = $('reminderNextBtn');
-  const reminderSendBtn       = $('reminderSendBtn');
+  const reminderSendTR         = $('reminderSendTR');
+  const reminderSendEN         = $('reminderSendEN');
+  const reminderSendDE         = $('reminderSendDE');
   const reminderCloseBtn      = $('reminderCloseBtn');
 
   // ─── State ─────────────────────────────────────────────────────────────────
@@ -1368,7 +1379,7 @@ ${FIXED_BRAND}`.trim();
         <td>${row.Car  || '-'}</td>
         <td>${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</td>
         <td>
-          ${waButton(row)}
+          ${waButtonGroup(row)}
           <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
           <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
           <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1402,7 +1413,7 @@ ${FIXED_BRAND}`.trim();
         <td>${row['Return From'] || '-'}</td>
         <td>${row['Return To']   || '-'}</td>
         <td>
-          ${waButton(row)}
+          ${waButtonGroup(row)}
           <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
           <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
           <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1430,7 +1441,7 @@ ${FIXED_BRAND}`.trim();
           <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
           ${returnInfo}
           <div class="res-actions">
-            ${waButton(row)}
+            ${waButtonGroup(row)}
             <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Metni Kopyala</button>
             <button class="btn-primary   mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
             <button class="btn-danger    mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1441,21 +1452,71 @@ ${FIXED_BRAND}`.trim();
 
   function esc(v) { return String(v || '').replace(/'/g,"&#39;"); }
 
-  // YENİ: Telefon numarasından tek tıkla WhatsApp'ta mesaj açan link üretir.
+  // YENİ: Müşteriye WhatsApp'tan giden asıl mesaj — kısa, net, onay isteyen bir
+  // hatırlatma (kullanıcının verdiği İngilizce metin baz alındı, TR/DE çevirisi eklendi).
+  // NOT: reservationTxt() buradan tamamen ayrı — o hâlâ PDF/Rezervasyon Metni/iç ekip
+  // paylaşımı için AYNEN eskisi gibi çalışıyor. Sadece müşteriye giden WhatsApp mesajı
+  // bu yeni, kısa, onay isteyen formatı kullanıyor.
+  function reminderTxt(row, lang) {
+    const data = rowToData(row);
+    const name = data.nameSurname || '';
+    const dt   = formatDateTimeDots(data.dateTime) || '';
+    const dtPart = dt ? ` (${dt})` : '';
+
+    if (lang === 'tr') {
+      return `Merhaba${name ? ' ' + name : ''},
+
+Bu mesaj transfer rezervasyonunuzla${dtPart} ilgili bir hatırlatmadır. Sürücünüz sizi onaylanan alış noktasında karşılayacaktır. Görüşmek üzere.
+
+Lütfen onaylayınız. ✅
+
+PREMIUM VIP TRANSFER`;
+    }
+
+    if (lang === 'de') {
+      return `Hallo${name ? ' ' + name : ''},
+
+Dies ist eine Erinnerung an Ihre Transferbuchung${dtPart}. Ihr Fahrer wird Sie am bestätigten Abholort treffen. Bis bald.
+
+Bitte bestätigen Sie. ✅
+
+PREMIUM VIP TRANSFER`;
+    }
+
+    // varsayılan: İngilizce
+    return `Hello${name ? ' ' + name : ''},
+
+This is a reminder regarding your transfer reservation${dtPart}. Your driver will meet you at the confirmed pickup point. See you soon.
+
+Please confirm. ✅
+
+PREMIUM VIP TRANSFER`;
+  }
+
+  // YENİ: Telefon numarasından, seçilen dilde WhatsApp'ta mesaj açan link üretir.
   // web.whatsapp.com/send kullanıyoruz (wa.me/api.whatsapp.com yerine) çünkü o format
   // masaüstü uygulamasını açmak isteyip "WhatsApp açılsın mı?" diye soruyordu — bu format
   // doğrudan zaten açık/giriş yapılmış olan WhatsApp Web sekmesine gidiyor, soru sormuyor.
-  function waLink(row) {
+  function waLink(row, lang) {
     const digits = String(row.Phone || '').replace(/[^\d]/g, '');
     if (!digits) return '';
-    const text = encodeURIComponent(reservationTxt(rowToData(row)));
+    const text = encodeURIComponent(reminderTxt(row, lang));
     return `https://web.whatsapp.com/send?phone=${digits}&text=${text}`;
   }
 
-  function waButton(row) {
-    const link = waLink(row);
-    if (!link) return '';
-    return `<a class="btn-whatsapp mini-btn" href="${link}" target="_blank" rel="noopener">WhatsApp</a>`;
+  // YENİ: Müşterinin diline karar veremeyeceğimiz için tek "WhatsApp" butonu yerine
+  // 3 küçük bayrak butonu — hangisine basarsan o dilde mesaj hazırlanıp WhatsApp açılıyor.
+  function waButtonGroup(row) {
+    const digits = String(row.Phone || '').replace(/[^\d]/g, '');
+    if (!digits) return '';
+    const trLink = waLink(row, 'tr');
+    const enLink = waLink(row, 'en');
+    const deLink = waLink(row, 'de');
+    return `<span class="wa-lang-group">
+      <a class="btn-whatsapp wa-lang-btn" href="${trLink}" target="_blank" rel="noopener" title="Türkçe gönder">🇹🇷</a>
+      <a class="btn-whatsapp wa-lang-btn" href="${enLink}" target="_blank" rel="noopener" title="Send in English">🇬🇧</a>
+      <a class="btn-whatsapp wa-lang-btn" href="${deLink}" target="_blank" rel="noopener" title="Auf Deutsch senden">🇩🇪</a>
+    </span>`;
   }
 
   // ─── Filtreli satırlar ──────────────────────────────────────────────────────
@@ -1544,7 +1605,9 @@ ${FIXED_BRAND}`.trim();
     reminderQueueInfo.innerHTML =
       `<strong>${reminderIndex + 1} / ${reminderQueue.length}</strong> — ${row['Passenger Name'] || '-'} (${row.Phone || '-'})<br>` +
       `${row.Date || '-'} ${row.Time || '-'} • ${row.From || '-'} → ${row.To || '-'}`;
-    reminderSendBtn.href = waLink(row);
+    reminderSendTR.href = waLink(row, 'tr');
+    reminderSendEN.href = waLink(row, 'en');
+    reminderSendDE.href = waLink(row, 'de');
     reminderPrevBtn.disabled = reminderIndex === 0;
     reminderNextBtn.textContent = (reminderIndex === reminderQueue.length - 1) ? 'Bitir ✓' : 'Sonraki ▶';
   }
@@ -1611,7 +1674,7 @@ ${FIXED_BRAND}`.trim();
         <div class="res-line"><strong>To:</strong>   ${row.To  ||'-'}</div>
         <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
         <div class="res-actions">
-          ${waButton(row)}
+          ${waButtonGroup(row)}
           <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Metni Kopyala</button>
           <button class="btn-primary   mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
           <button class="btn-danger    mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1769,7 +1832,7 @@ ${FIXED_BRAND}`.trim();
           <td>${row.Car  || '-'}</td>
           <td>${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</td>
           <td>
-            ${waButton(row)}
+            ${waButtonGroup(row)}
             <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
             <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
             <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1812,7 +1875,7 @@ ${FIXED_BRAND}`.trim();
           <div class="res-line"><strong>To:</strong>   ${leg.to}</div>
           <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
           <div class="res-actions">
-            ${waButton(row)}
+            ${waButtonGroup(row)}
             <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Metni Kopyala</button>
             <button class="btn-primary   mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
             <button class="btn-danger    mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1931,9 +1994,9 @@ ${FIXED_BRAND}`.trim();
   reminderCloseBtn.addEventListener('click', closeReminderQueue);
   // NOT: href'i hemen değiştirmiyoruz — tarayıcı tıklamadaki linki açtıktan HEMEN
   // sonra (küçük bir gecikmeyle) sıradakine geçiyoruz, yoksa yanlış kişiye gidebilir.
-  reminderSendBtn.addEventListener('click', () => {
-    setTimeout(reminderGoNext, 150);
-  });
+  reminderSendTR.addEventListener('click', () => setTimeout(reminderGoNext, 150));
+  reminderSendEN.addEventListener('click', () => setTimeout(reminderGoNext, 150));
+  reminderSendDE.addEventListener('click', () => setTimeout(reminderGoNext, 150));
 
   copyDailySummaryBtn.addEventListener('click', async () => {
     await navigator.clipboard.writeText(dailySummary.value || '');
