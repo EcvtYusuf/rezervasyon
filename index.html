@@ -229,6 +229,7 @@
     .voucher-grid     { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
     .voucher-section      { border: 1px solid #d8dfeb; border-radius: 10px; padding: 8px 9px; background: #fff; break-inside: avoid; }
+    .voucher-section.policy-notice { background: #fdf8ea; border-color: #e6d4a1; }
     .voucher-section.full { grid-column: 1 / -1; }
 
     .voucher-section-title {
@@ -649,7 +650,7 @@
         <div id="voucher" class="voucher-page">
           <header class="voucher-header">
             <h3 class="voucher-title">PREMIUM VIP TRANSFER</h3>
-            <p class="voucher-subtitle">Luxury Airport Chauffeur Service • WhatsApp: +90 506 056 18 94</p>
+            <p class="voucher-subtitle">Luxury Airport Chauffeur Service • Reservations: +90 534 634 25 47</p>
           </header>
 
           <div class="voucher-grid">
@@ -700,8 +701,34 @@
                 <li>Free waiting time included for flight delays.</li>
                 <li>After landing please turn on your phone.</li>
                 <li>If you have no internet, ask someone at the airport for help and contact us via the phone number on this voucher.</li>
-                <li>WhatsApp / Phone: +90 506 056 18 94</li>
+                <li><strong>EN:</strong> If you cannot find your driver, please stay at the meeting point and contact us immediately — do not leave with another vehicle before speaking to us.</li>
+                <li><strong>TR:</strong> Şoförünüzü bulamazsanız lütfen buluşma noktasında bekleyin ve hemen bizimle iletişime geçin — bizimle konuşmadan başka bir araçla ayrılmayınız.</li>
+                <li><strong>DE:</strong> Falls Sie Ihren Fahrer nicht finden können, bleiben Sie bitte am Treffpunkt und kontaktieren Sie uns sofort — verlassen Sie den Ort nicht mit einem anderen Fahrzeug, bevor Sie mit uns gesprochen haben.</li>
+                <li><strong>Driver Operation</strong> (day of travel) — WhatsApp / Phone: +90 506 056 18 94</li>
               </ul>
+            </section>
+
+            <section class="voucher-section full policy-notice">
+              <h4 class="voucher-section-title">Cancellation &amp; No-Show Policy</h4>
+              <p style="margin:0 0 8px; padding-bottom:8px; border-bottom:1px solid #e6d4a1; color:#1c2940; line-height:1.5; font-size:11px;">
+                <strong>EN:</strong> Once a reservation is confirmed, a vehicle and driver are reserved exclusively for the guest.
+                If the guest does not arrive at the confirmed meeting point, leaves with another vehicle without
+                sharing a photo or live location with us first, or cancels at short notice, the booking will be
+                treated as a no-show and the transfer fee becomes non-refundable / payable in full.
+              </p>
+              <p style="margin:0 0 8px; padding-bottom:8px; border-bottom:1px solid #e6d4a1; color:#1c2940; line-height:1.5; font-size:11px;">
+                <strong>TR:</strong> Rezervasyon onaylandıktan sonra araç ve şoför yalnızca misafir için ayrılır.
+                Misafirin onaylanan buluşma noktasına gelmemesi, bizimle fotoğraf veya canlı konum paylaşmadan
+                başka bir araçla ayrılması ya da son anda iptal etmesi durumunda rezervasyon "no-show" (gelmeme)
+                olarak değerlendirilir ve transfer ücreti iade edilmez / tam olarak tahsil edilir.
+              </p>
+              <p style="margin:0; color:#1c2940; line-height:1.5; font-size:11px;">
+                <strong>DE:</strong> Sobald eine Reservierung bestätigt ist, werden Fahrzeug und Fahrer ausschließlich
+                für den Gast reserviert. Erscheint der Gast nicht am bestätigten Treffpunkt, verlässt den Ort mit
+                einem anderen Fahrzeug, ohne zuvor ein Foto oder seinen Live-Standort mit uns zu teilen, oder storniert
+                kurzfristig, wird die Buchung als Nichterscheinen (No-Show) gewertet und der Transferpreis wird nicht
+                erstattet / in voller Höhe berechnet.
+              </p>
             </section>
           </div>
         </div>
@@ -780,9 +807,9 @@
             <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; align-items:center;">
               <button type="button" class="btn-secondary" id="reminderPrevBtn">◀ Önceki</button>
               <span style="display:flex; gap:6px;">
-                <a class="btn-whatsapp" id="reminderSendTR" target="_blank" rel="noopener" title="Türkçe gönder" style="padding:12px 16px; font-size:17px;">🇹🇷</a>
-                <a class="btn-whatsapp" id="reminderSendEN" target="_blank" rel="noopener" title="Send in English" style="padding:12px 16px; font-size:17px;">🇬🇧</a>
-                <a class="btn-whatsapp" id="reminderSendDE" target="_blank" rel="noopener" title="Auf Deutsch senden" style="padding:12px 16px; font-size:17px;">🇩🇪</a>
+                <a class="btn-whatsapp" id="reminderSendTR" target="wa_web_tab" rel="noopener" title="Türkçe gönder" style="padding:12px 16px; font-size:17px;">🇹🇷</a>
+                <a class="btn-whatsapp" id="reminderSendEN" target="wa_web_tab" rel="noopener" title="Send in English" style="padding:12px 16px; font-size:17px;">🇬🇧</a>
+                <a class="btn-whatsapp" id="reminderSendDE" target="wa_web_tab" rel="noopener" title="Auf Deutsch senden" style="padding:12px 16px; font-size:17px;">🇩🇪</a>
               </span>
               <button type="button" class="btn-secondary" id="reminderNextBtn">Sonraki ▶</button>
               <button type="button" class="btn-danger" id="reminderCloseBtn">Kuyruğu Kapat</button>
@@ -1282,14 +1309,32 @@ ${FIXED_BRAND}`.trim();
     const script = document.createElement('script');
     const params = new URLSearchParams({ action, callback: cbName, ...extraParams });
 
+    // YENİ: Apps Script hiç cevap vermezse (ör. dağıtım ayarı bozuksa, Google girişi
+    // istiyorsa) eskiden sistem sonsuza kadar "yükleniyor" diye takılı kalıyordu.
+    // Artık 20 saniye içinde cevap gelmezse net bir zaman aşımı hatası gösteriliyor.
+    let settled = false;
+    const timeoutId = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      delete window[cbName];
+      script.remove();
+      if (onError) onError('timeout');
+    }, 20000);
+
     window[cbName] = res => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeoutId);
       onSuccess(res || {});
       delete window[cbName];
       script.remove();
     };
 
     script.onerror = () => {
-      if (onError) onError();
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeoutId);
+      if (onError) onError('network');
       delete window[cbName];
       script.remove();
     };
@@ -1312,8 +1357,10 @@ ${FIXED_BRAND}`.trim();
       sheetStatus.textContent     = `${sheetRows.length} rezervasyon yüklendi.`;
       allStatus.textContent       = `${sheetRows.length} rezervasyon yüklendi.`;
       dashboardStatus.textContent = `Son güncelleme: az önce (${sheetRows.length} kayıt).`;
-    }, () => {
-      const errMsg = 'Veri yüklenemedi. Apps Script dağıtımını kontrol et.';
+    }, (reason) => {
+      const errMsg = reason === 'timeout'
+        ? 'Zaman aşımı: Apps Script 20 saniyede cevap vermedi. Dağıtımın "Kimin erişimi var" ayarı "Herkes" olmalı (Google girişi istiyorsa JSONP hiç dönmez).'
+        : 'Veri yüklenemedi. Apps Script dağıtım linkini/ayarlarını kontrol et.';
       sheetStatus.textContent     = errMsg;
       allStatus.textContent       = errMsg;
       dashboardStatus.textContent = errMsg;
@@ -1513,9 +1560,9 @@ PREMIUM VIP TRANSFER`;
     const enLink = waLink(row, 'en');
     const deLink = waLink(row, 'de');
     return `<span class="wa-lang-group">
-      <a class="btn-whatsapp wa-lang-btn" href="${trLink}" target="_blank" rel="noopener" title="Türkçe gönder">🇹🇷</a>
-      <a class="btn-whatsapp wa-lang-btn" href="${enLink}" target="_blank" rel="noopener" title="Send in English">🇬🇧</a>
-      <a class="btn-whatsapp wa-lang-btn" href="${deLink}" target="_blank" rel="noopener" title="Auf Deutsch senden">🇩🇪</a>
+      <a class="btn-whatsapp wa-lang-btn" href="${trLink}" target="wa_web_tab" rel="noopener" title="Türkçe gönder">🇹🇷</a>
+      <a class="btn-whatsapp wa-lang-btn" href="${enLink}" target="wa_web_tab" rel="noopener" title="Send in English">🇬🇧</a>
+      <a class="btn-whatsapp wa-lang-btn" href="${deLink}" target="wa_web_tab" rel="noopener" title="Auf Deutsch senden">🇩🇪</a>
     </span>`;
   }
 
