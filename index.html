@@ -28,8 +28,10 @@
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: radial-gradient(circle at top left, rgba(217,181,109,.10), transparent 30%),
-                  linear-gradient(180deg, #0b1220, #0f172a);
+      background:
+        radial-gradient(circle at 12% -8%, rgba(217,181,109,.13), transparent 32%),
+        radial-gradient(circle at 92% 0%, rgba(59,130,246,.08), transparent 28%),
+        linear-gradient(180deg, #09101d, #0f172a 52%, #0b1220);
       color: var(--text);
     }
 
@@ -173,11 +175,12 @@
     .tab-panel.active { display: block; }
 
     .card {
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.09);
+      background: linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.032));
+      border: 1px solid rgba(255,255,255,.085);
       border-radius: 16px;
       padding: 16px;
       margin-bottom: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
     }
 
     .card-head-row {
@@ -192,6 +195,65 @@
     .card-head-row .section-title { margin: 0; flex: 1 1 220px; }
     .compact-summary { min-height: 150px; margin-top: 12px; }
     .output-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+
+    .dashboard-job-switch {
+      display: inline-flex;
+      gap: 4px;
+      flex-wrap: nowrap;
+      margin-bottom: 14px;
+      padding: 4px;
+      border: 1px solid rgba(255,255,255,.085);
+      border-radius: 13px;
+      background: rgba(5,10,20,.38);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
+    }
+
+    .job-switch-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 158px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      background: transparent;
+      border-color: transparent;
+      color: #aebbd8;
+      box-shadow: none;
+    }
+
+    .job-switch-btn:hover {
+      background: rgba(255,255,255,.055);
+      transform: none;
+    }
+
+    .job-switch-btn.active {
+      background: linear-gradient(135deg, rgba(217,181,109,.23), rgba(217,181,109,.10));
+      color: #ffe4aa;
+      border-color: rgba(217,181,109,.34);
+      box-shadow: 0 6px 18px rgba(0,0,0,.15), inset 0 1px 0 rgba(255,255,255,.07);
+    }
+
+    .job-switch-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 27px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.085);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .job-switch-btn.active .job-switch-count {
+      background: rgba(255,228,170,.14);
+      color: #ffe4aa;
+    }
+
+    .dashboard-job-view { min-width: 0; }
+
 
     .job-badge {
       display: inline-flex;
@@ -212,6 +274,66 @@
       background: rgba(139,92,246,.16);
       color: #ddd6fe;
       border-color: rgba(139,92,246,.30);
+    }
+
+    .job-badge.roundtrip {
+      background: linear-gradient(135deg, rgba(59,130,246,.18), rgba(139,92,246,.19));
+      color: #e5e7ff;
+      border-color: rgba(129,140,248,.36);
+    }
+
+    .job-leg-stack {
+      display: grid;
+      gap: 5px;
+      min-width: 118px;
+    }
+
+    .job-leg-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.25;
+    }
+
+    .job-leg-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 20px;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: rgba(59,130,246,.16);
+      color: #bfdbfe;
+      border: 1px solid rgba(59,130,246,.25);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .job-leg-key.return {
+      background: rgba(139,92,246,.16);
+      color: #ddd6fe;
+      border-color: rgba(139,92,246,.28);
+    }
+
+    .combined-route-block {
+      display: grid;
+      gap: 8px;
+      margin-top: 9px;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .combined-route-line {
+      display: grid;
+      grid-template-columns: auto auto minmax(0,1fr);
+      align-items: start;
+      gap: 7px;
+      color: #dbe5ff;
+      font-size: 13px;
+      line-height: 1.35;
     }
 
     .total-price-label { white-space: nowrap; font-weight: 800; }
@@ -299,36 +421,127 @@
     .edit-banner { background: rgba(217,181,109,.14); border: 1px solid rgba(217,181,109,.35); color: #f8e5b4; margin-bottom: 12px; }
 
     /* ── Dashboard ── */
+    .dashboard-overview-card {
+      padding: 15px 16px 16px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.048), rgba(255,255,255,.025)),
+        radial-gradient(circle at 0 0, rgba(217,181,109,.055), transparent 38%);
+    }
+
     .dash-head {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 0;
     }
-    .dash-greeting { font-size: 19px; font-weight: 900; color: #fff; }
+
+    .dash-greeting { font-size: 21px; line-height: 1.1; font-weight: 900; color: #fff; }
+    .dashboard-overview-card #dashboardStatus { margin-top: 5px; font-size: 12px; opacity: .86; }
+
+    .dashboard-refresh-btn {
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      background: rgba(255,255,255,.06);
+    }
 
     .stat-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-top: 14px;
+      grid-template-columns: repeat(3, minmax(155px, 188px)) minmax(310px, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+      align-items: stretch;
     }
-    .stat-card {
-      background: rgba(217,181,109,.06);
-      border: 1px solid rgba(217,181,109,.22);
-      border-radius: 14px;
-      padding: 14px;
-    }
-    .stat-label { font-size: 11.5px; color: var(--muted); font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
-    .stat-value { font-size: 26px; font-weight: 900; color: var(--gold2); margin: 6px 0 2px; }
-    .stat-sub   { font-size: 11.5px; color: #8b98b8; }
 
-    .stat-label-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .stat-card {
+      position: relative;
+      min-width: 0;
+      min-height: 92px;
+      overflow: hidden;
+      border-radius: 14px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,.038);
+      border: 1px solid rgba(255,255,255,.085);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 8px 22px rgba(0,0,0,.08);
+      transition: border-color .16s ease, background .16s ease, transform .16s ease, box-shadow .16s ease;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      width: 82px;
+      height: 82px;
+      right: -32px;
+      bottom: -42px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .055;
+      pointer-events: none;
+    }
+
+    .stat-card-today {
+      color: #86efac;
+      background: linear-gradient(145deg, rgba(34,197,94,.105), rgba(34,197,94,.035));
+      border-color: rgba(34,197,94,.19);
+    }
+
+    .stat-card-tomorrow {
+      color: #93c5fd;
+      background: linear-gradient(145deg, rgba(59,130,246,.105), rgba(59,130,246,.035));
+      border-color: rgba(59,130,246,.20);
+    }
+
+    .stat-card-week {
+      color: #c4b5fd;
+      background: linear-gradient(145deg, rgba(139,92,246,.10), rgba(139,92,246,.032));
+      border-color: rgba(139,92,246,.19);
+    }
+
+    .stat-card-revenue {
+      color: var(--gold2);
+      background: linear-gradient(145deg, rgba(217,181,109,.105), rgba(217,181,109,.032));
+      border-color: rgba(217,181,109,.22);
+    }
+
+    .stat-card-clickable { cursor: pointer; }
+    .stat-card-clickable:hover {
+      transform: translateY(-2px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 12px 28px rgba(0,0,0,.14);
+    }
+
+    .stat-card-clickable.active {
+      border-color: currentColor;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 0 0 2px rgba(255,255,255,.035), 0 12px 30px rgba(0,0,0,.16);
+    }
+
+    .stat-label {
+      font-size: 10.5px;
+      color: #b8c4dd;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .075em;
+    }
+
+    .stat-value {
+      position: relative;
+      z-index: 1;
+      font-size: 27px;
+      line-height: 1.08;
+      font-weight: 900;
+      color: currentColor;
+      margin: 5px 0 2px;
+      word-break: break-word;
+    }
+
+    .stat-sub { position: relative; z-index: 1; font-size: 11px; color: #8794b1; }
+    .stat-label-row { display: grid; grid-template-columns: 24px minmax(0,1fr) 24px; align-items: center; gap: 7px; }
+    .stat-label-row .stat-label { text-align: center; }
+
     .month-nav-btn {
-      background: rgba(255,255,255,.07);
-      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.10);
       color: var(--gold2);
       border-radius: 8px;
       width: 24px;
@@ -338,7 +551,7 @@
       line-height: 1;
       flex: 0 0 auto;
     }
-    .month-nav-btn:hover { background: rgba(217,181,109,.16); }
+    .month-nav-btn:hover { background: rgba(217,181,109,.14); transform: none; }
 
     .urgent-row td   { background: rgba(245,158,11,.10); }
     .res-card.urgent-card {
@@ -357,12 +570,20 @@
       color: #fde68a;
     }
 
+    @media (max-width: 1450px) and (min-width: 1201px) {
+      .stat-grid { grid-template-columns: repeat(3, minmax(140px, 1fr)); }
+      .stat-card-revenue { grid-column: 1 / -1; min-height: 82px; }
+      .stat-card-revenue .stat-value { font-size: 23px; }
+    }
+
     @media (max-width: 768px) {
-      .stat-grid { grid-template-columns: 1fr 1fr; }
-      /* YENİ: Ciro kartı (uzun "10.805 EUR + 1.650 USD + ..." gibi metinler barındırabiliyor)
-         dar yarım sütuna sıkışıp ezilmesin diye tam genişlik alıyor, kendi satırında durur */
+      .dashboard-overview-card { padding: 14px; }
+      .dash-greeting { font-size: 19px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .stat-card { min-height: 86px; padding: 11px 12px; }
+      .stat-card-week { grid-column: 1 / -1; }
       .stat-card-revenue { grid-column: 1 / -1; }
-      .stat-card-revenue .stat-value { font-size: 21px; line-height: 1.35; }
+      .stat-card-revenue .stat-value { font-size: 21px; line-height: 1.28; }
     }
 
     /* ── Table ── */
@@ -390,7 +611,9 @@
       letter-spacing: .05em;
       box-shadow: 0 1px 0 rgba(255,255,255,.08);
     }
-    td { color: var(--text); }
+    td { color: var(--text); transition: background .14s ease; }
+    tbody tr:hover td { background: rgba(255,255,255,.032); }
+    .urgent-row:hover td { background: rgba(245,158,11,.135); }
     .empty { color: #8b98b8; padding: 16px; }
 
     .pill        { border-radius: 999px; padding: 7px 10px; font-size: 12px; font-weight: 900; display: inline-flex; }
@@ -446,6 +669,9 @@
       .row-actions { min-width: 170px; }
       .card-head-row { align-items: stretch; }
       .card-head-row button { width: 100%; }
+      .dashboard-job-switch { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+      .job-switch-btn { min-width: 0; width: 100%; padding: 10px 8px; }
+      .combined-route-line { grid-template-columns: auto auto minmax(0,1fr); }
       .mini-btn { min-height: 40px; } /* daha rahat dokunma alanı */
       .res-card-head { flex-wrap: wrap; row-gap: 6px; }
       .text-output { min-height: 260px; }
@@ -628,28 +854,28 @@
 
     <!-- Özet (Dashboard) Tab -->
     <section id="dashboardTab" class="tab-panel active">
-      <div class="card">
+      <div class="card dashboard-overview-card">
         <div class="dash-head">
           <div>
             <div id="dashGreeting" class="dash-greeting">Hoş geldin.</div>
             <div id="dashDate" class="hint"></div>
           </div>
-          <button type="button" class="btn-secondary" id="refreshDashboardBtn">↻ Yenile</button>
+          <button type="button" class="btn-secondary dashboard-refresh-btn" id="refreshDashboardBtn">↻ Yenile</button>
         </div>
         <div id="dashboardStatus" class="status-line">Veriler yükleniyor...</div>
 
         <div class="stat-grid">
-          <div class="stat-card">
+          <div class="stat-card stat-card-today stat-card-clickable active" id="statTodayCard" role="button" tabindex="0" aria-label="Bugünün işlerini göster">
             <div class="stat-label">Bugünkü İşler</div>
             <div class="stat-value" id="statToday">–</div>
             <div class="stat-sub">iş</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card stat-card-tomorrow stat-card-clickable" id="statTomorrowCard" role="button" tabindex="0" aria-label="Yarının işlerini göster">
             <div class="stat-label">Yarının İşleri</div>
             <div class="stat-value" id="statTomorrow">–</div>
             <div class="stat-sub">iş</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card stat-card-week">
             <div class="stat-label">Önümüzdeki 7 Gün</div>
             <div class="stat-value" id="statWeek">–</div>
             <div class="stat-sub">iş</div>
@@ -666,44 +892,55 @@
         </div>
       </div>
 
-      <div class="card">
-        <div class="card-head-row">
-          <div class="section-title">Bugünün İşleri</div>
-          <span class="pill pill-green" id="todayJobsLabel">–</span>
+      <div class="card" id="dashboardJobsCard">
+        <div class="dashboard-job-switch" role="tablist" aria-label="İş günü seçimi">
+          <button type="button" class="btn-secondary job-switch-btn active" id="showTodayJobsBtn" role="tab" aria-selected="true" aria-controls="todayJobsView">
+            Bugünün İşleri <span class="job-switch-count" id="todayJobsSwitchCount">–</span>
+          </button>
+          <button type="button" class="btn-secondary job-switch-btn" id="showTomorrowJobsBtn" role="tab" aria-selected="false" aria-controls="tomorrowJobsView">
+            Yarının İşleri <span class="job-switch-count" id="tomorrowJobsSwitchCount">–</span>
+          </button>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
-                <th>Araç</th><th>Toplam Fiyat</th><th>İşlem</th>
-              </tr>
-            </thead>
-            <tbody id="todayTransfersBody"><tr><td colspan="9" class="empty">Yükleniyor...</td></tr></tbody>
-          </table>
-        </div>
-        <div id="todayTransfersMobile" class="mobile-cards"></div>
-      </div>
 
-      <div class="card">
-        <div class="card-head-row">
-          <div class="section-title">Yarının İşleri</div>
-          <button type="button" class="btn-secondary" id="copyTomorrowJobsBtn">Yarının Liste Metnini Kopyala</button>
+        <div id="todayJobsView" class="dashboard-job-view" role="tabpanel" aria-labelledby="showTodayJobsBtn">
+          <div class="card-head-row">
+            <div class="section-title">Bugünün İşleri</div>
+            <span class="pill pill-green" id="todayJobsLabel">–</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
+                  <th>Araç</th><th>Toplam Fiyat</th><th>İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="todayTransfersBody"><tr><td colspan="9" class="empty">Yükleniyor...</td></tr></tbody>
+            </table>
+          </div>
+          <div id="todayTransfersMobile" class="mobile-cards"></div>
         </div>
-        <div id="tomorrowJobsStatus" class="status-line">Yarının işleri hazırlanıyor...</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
-                <th>Araç</th><th>Toplam Fiyat</th><th>İşlem</th>
-              </tr>
-            </thead>
-            <tbody id="tomorrowTransfersBody"><tr><td colspan="9" class="empty">Yükleniyor...</td></tr></tbody>
-          </table>
+
+        <div id="tomorrowJobsView" class="dashboard-job-view hidden" role="tabpanel" aria-labelledby="showTomorrowJobsBtn">
+          <div class="card-head-row">
+            <div class="section-title">Yarının İşleri</div>
+            <button type="button" class="btn-secondary" id="copyTomorrowJobsBtn">Yarının Liste Metnini Kopyala</button>
+          </div>
+          <div id="tomorrowJobsStatus" class="status-line">Yarının işleri hazırlanıyor...</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
+                  <th>Araç</th><th>Toplam Fiyat</th><th>İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="tomorrowTransfersBody"><tr><td colspan="9" class="empty">Yükleniyor...</td></tr></tbody>
+            </table>
+          </div>
+          <div id="tomorrowTransfersMobile" class="mobile-cards"></div>
+          <textarea id="tomorrowJobsSummary" class="hidden" readonly aria-hidden="true"></textarea>
         </div>
-        <div id="tomorrowTransfersMobile" class="mobile-cards"></div>
-        <textarea id="tomorrowJobsSummary" class="summary-output compact-summary" readonly></textarea>
       </div>
     </section>
 
@@ -945,19 +1182,27 @@
   const statToday          = $('statToday');
   const statTomorrow       = $('statTomorrow');
   const statWeek           = $('statWeek');
+  const statTodayCard      = $('statTodayCard');
+  const statTomorrowCard   = $('statTomorrowCard');
   const statMonthRevenue   = $('statMonthRevenue');
   const revMonthLabel      = $('revMonthLabel');
   const revMonthSub        = $('revMonthSub');
   const revMonthPrev       = $('revMonthPrev');
   const revMonthNext       = $('revMonthNext');
-  const todayTransfersBody   = $('todayTransfersBody');
-  const todayTransfersMobile = $('todayTransfersMobile');
-  const todayJobsLabel       = $('todayJobsLabel');
+  const todayTransfersBody      = $('todayTransfersBody');
+  const todayTransfersMobile    = $('todayTransfersMobile');
+  const todayJobsLabel          = $('todayJobsLabel');
   const tomorrowTransfersBody   = $('tomorrowTransfersBody');
   const tomorrowTransfersMobile = $('tomorrowTransfersMobile');
   const tomorrowJobsSummary     = $('tomorrowJobsSummary');
   const tomorrowJobsStatus      = $('tomorrowJobsStatus');
   const copyTomorrowJobsBtn     = $('copyTomorrowJobsBtn');
+  const showTodayJobsBtn        = $('showTodayJobsBtn');
+  const showTomorrowJobsBtn     = $('showTomorrowJobsBtn');
+  const todayJobsView           = $('todayJobsView');
+  const tomorrowJobsView        = $('tomorrowJobsView');
+  const todayJobsSwitchCount    = $('todayJobsSwitchCount');
+  const tomorrowJobsSwitchCount = $('tomorrowJobsSwitchCount');
 
   // ─── State ─────────────────────────────────────────────────────────────────
   let bookingNumber      = generateBookingNumber();
@@ -969,6 +1214,7 @@
   // "başkasıyla çakışma" sanıp booking no'yu değiştirmesini engellemek — aksi halde
   // ikinci Kaydet, güncelleme yerine yepyeni bir satır oluşturuyordu.
   let savedOnceBookingNo = '';
+  let dashboardJobsDay   = 'today';
 
   // ─── Util ──────────────────────────────────────────────────────────────────
   function generateBookingNumber() {
@@ -1519,37 +1765,83 @@ ${FIXED_BRAND}`.trim();
   }
 
   // Bir rezervasyonu veri tabanında çoğaltmadan, yalnızca ekranda operasyon işlerine ayırır.
-  // Fiyat ve ciro rezervasyon satırında tek kalır; dönüş için ikinci ücret oluşturulmaz.
+  // Aynı rezervasyonun gidiş ve dönüşü aynı gündeyse tek operasyon işi olarak gösterilir.
+  // Fiyat ve ciro rezervasyon satırında tek kalır; hiçbir yeni Sheets kaydı oluşturulmaz.
   function buildTransferJobs(rows) {
     const jobs = [];
 
     rows.forEach(row => {
-      const mainDate = rowDate(row);
-      if (mainDate) {
+      const mainDate   = rowDate(row);
+      const returnDate = rowReturnDate(row);
+
+      const mainLeg = mainDate ? {
+        type: 'main',
+        label: mainJobLabel(row),
+        shortLabel: mainJobLabel(row) === 'GİDİŞ' ? 'G' : mainJobLabel(row),
+        dateTime: mainDate,
+        date: row.Date || '',
+        time: row.Time || '',
+        from: row.From || '',
+        to: row.To || '',
+        flightCode: row['Flight Code'] || ''
+      } : null;
+
+      const returnLeg = returnDate ? {
+        type: 'return',
+        label: 'DÖNÜŞ',
+        shortLabel: 'D',
+        dateTime: returnDate,
+        date: row['Return Date'] || '',
+        time: row['Return Time'] || '',
+        from: row['Return From'] || '',
+        to: row['Return To'] || '',
+        flightCode: row['Return Flight Code'] || ''
+      } : null;
+
+      // Aynı gün içindeki gidiş + dönüş tek iştir; iki ayrı satır ve iki ayrı sayaç oluşturmaz.
+      if (mainLeg && returnLeg && dayKey(mainDate) === dayKey(returnDate)) {
+        const legs = [mainLeg, returnLeg].sort((a, b) => a.dateTime - b.dateTime);
+        jobs.push({
+          type: 'roundtrip',
+          typeLabel: `${mainLeg.label} + DÖNÜŞ`,
+          dateTime: legs[0].dateTime,
+          date: mainLeg.date,
+          time: `${mainLeg.time || '-'} / ${returnLeg.time || '-'}`,
+          from: mainLeg.from,
+          to: mainLeg.to,
+          flightCode: mainLeg.flightCode,
+          legs,
+          row
+        });
+        return;
+      }
+
+      if (mainLeg) {
         jobs.push({
           type: 'main',
-          typeLabel: mainJobLabel(row),
-          dateTime: mainDate,
-          date: row.Date || '',
-          time: row.Time || '',
-          from: row.From || '',
-          to: row.To || '',
-          flightCode: row['Flight Code'] || '',
+          typeLabel: mainLeg.label,
+          dateTime: mainLeg.dateTime,
+          date: mainLeg.date,
+          time: mainLeg.time,
+          from: mainLeg.from,
+          to: mainLeg.to,
+          flightCode: mainLeg.flightCode,
+          legs: [mainLeg],
           row
         });
       }
 
-      const returnDate = rowReturnDate(row);
-      if (returnDate) {
+      if (returnLeg) {
         jobs.push({
           type: 'return',
-          typeLabel: 'DÖNÜŞ',
-          dateTime: returnDate,
-          date: row['Return Date'] || '',
-          time: row['Return Time'] || '',
-          from: row['Return From'] || '',
-          to: row['Return To'] || '',
-          flightCode: row['Return Flight Code'] || '',
+          typeLabel: returnLeg.label,
+          dateTime: returnLeg.dateTime,
+          date: returnLeg.date,
+          time: returnLeg.time,
+          from: returnLeg.from,
+          to: returnLeg.to,
+          flightCode: returnLeg.flightCode,
+          legs: [returnLeg],
           row
         });
       }
@@ -1566,7 +1858,30 @@ ${FIXED_BRAND}`.trim();
   }
 
   function jobBadgeHtml(job) {
-    return `<span class="job-badge${job.type === 'return' ? ' return' : ''}">${job.typeLabel}</span>`;
+    const badgeClass = job.type === 'return' ? ' return' : (job.type === 'roundtrip' ? ' roundtrip' : '');
+    return `<span class="job-badge${badgeClass}">${job.typeLabel}</span>`;
+  }
+
+  function jobTimeHtml(job) {
+    if (job.type !== 'roundtrip') return job.time || '-';
+    return `<div class="job-leg-stack">${job.legs.map(leg =>
+      `<div class="job-leg-line"><span class="job-leg-key${leg.type === 'return' ? ' return' : ''}">${leg.shortLabel}</span><strong>${leg.time || '-'}</strong></div>`
+    ).join('')}</div>`;
+  }
+
+  function jobRoutePartHtml(job, field) {
+    if (job.type !== 'roundtrip') return job[field] || '-';
+    return `<div class="job-leg-stack">${job.legs.map(leg =>
+      `<div class="job-leg-line"><span class="job-leg-key${leg.type === 'return' ? ' return' : ''}">${leg.shortLabel}</span><span>${leg[field] || '-'}</span></div>`
+    ).join('')}</div>`;
+  }
+
+  function jobNextOperationDate(job, now) {
+    const futureLeg = (job.legs || [])
+      .map(leg => leg.dateTime)
+      .filter(date => date && date > now)
+      .sort((a, b) => a - b)[0];
+    return futureLeg || job.dateTime;
   }
 
   function jobsForDay(jobs, key) {
@@ -1578,6 +1893,16 @@ ${FIXED_BRAND}`.trim();
 
     return `${title.toLocaleUpperCase('tr-TR')} — ${jobs.length} İŞ\n\n` + jobs.map(job => {
       const row = job.row;
+
+      if (job.type === 'roundtrip') {
+        const legLines = job.legs.map(leg => {
+          const flight = leg.flightCode ? ` / Uçuş: ${leg.flightCode}` : '';
+          return `${leg.time || '-'} — ${leg.label}\n${leg.from || '-'} → ${leg.to || '-'}${flight}`;
+        }).join('\n');
+
+        return `GİDİŞ + DÖNÜŞ\n${row['Passenger Name'] || '-'}\n${row.Phone || '-'}\n${legLines}\n${row.Person || '-'} kişi / ${row.Car || '-'}\nRezervasyon No: ${row['Booking No'] || '-'}`;
+      }
+
       const flight = job.flightCode ? `\nUçuş: ${job.flightCode}` : '';
       return `${job.time || '-'} — ${job.typeLabel}\n${row['Passenger Name'] || '-'}\n${row.Phone || '-'}\n${job.from || '-'} → ${job.to || '-'}${flight}\n${row.Person || '-'} kişi / ${row.Car || '-'}\nRezervasyon No: ${row['Booking No'] || '-'}`;
     }).join('\n\n');
@@ -1839,6 +2164,20 @@ ${FIXED_BRAND}`.trim();
     dashDate.textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} • ${days[now.getDay()]}`;
   }
 
+  function showDashboardJobs(day) {
+    dashboardJobsDay = day === 'tomorrow' ? 'tomorrow' : 'today';
+    const showTomorrow = dashboardJobsDay === 'tomorrow';
+
+    todayJobsView.classList.toggle('hidden', showTomorrow);
+    tomorrowJobsView.classList.toggle('hidden', !showTomorrow);
+    showTodayJobsBtn.classList.toggle('active', !showTomorrow);
+    showTomorrowJobsBtn.classList.toggle('active', showTomorrow);
+    statTodayCard.classList.toggle('active', !showTomorrow);
+    statTomorrowCard.classList.toggle('active', showTomorrow);
+    showTodayJobsBtn.setAttribute('aria-selected', String(!showTomorrow));
+    showTomorrowJobsBtn.setAttribute('aria-selected', String(showTomorrow));
+  }
+
   function renderDashboard() {
     setDashGreeting();
     const now       = new Date();
@@ -1855,10 +2194,12 @@ ${FIXED_BRAND}`.trim();
 
     renderRevenueCard();
 
-    statToday.textContent    = String(todayJobs.length);
-    statTomorrow.textContent = String(tomorrowJobs.length);
-    statWeek.textContent     = String(weekJobs.length);
-    todayJobsLabel.textContent = `${todayJobs.length} iş`;
+    statToday.textContent             = String(todayJobs.length);
+    statTomorrow.textContent          = String(tomorrowJobs.length);
+    statWeek.textContent              = String(weekJobs.length);
+    todayJobsLabel.textContent        = `${todayJobs.length} iş`;
+    todayJobsSwitchCount.textContent  = String(todayJobs.length);
+    tomorrowJobsSwitchCount.textContent = String(tomorrowJobs.length);
 
     renderJobTable(todayJobs, todayTransfersBody, 'Bugün için iş yok.', true);
     renderJobCards(todayJobs, todayTransfersMobile, 'Bugün için iş yok.', true);
@@ -1867,8 +2208,10 @@ ${FIXED_BRAND}`.trim();
     renderJobCards(tomorrowJobs, tomorrowTransfersMobile, 'Yarın için iş yok.', false);
     tomorrowJobsSummary.value = buildJobsSummary(tomorrowJobs, `${formatDate(tomorrowKey)} yarının işleri`);
     tomorrowJobsStatus.textContent = tomorrowJobs.length
-      ? `${tomorrowJobs.length} iş gerçek saat sırasına göre listelendi. Gidiş ve dönüş ayrı iştir; ücret rezervasyonda tek kalır.`
+      ? `${tomorrowJobs.length} iş gerçek saat sırasına göre listelendi. Aynı gün gidiş-dönüş tek iş olarak gösterilir; ücret rezervasyonda tek kalır.`
       : 'Yarın için planlanmış iş bulunmuyor.';
+
+    showDashboardJobs(dashboardJobsDay);
   }
 
   // Ciro rezervasyon bazında hesaplanır. Gidiş ve dönüş ayrı iş görünse de fiyat yalnızca bir kez toplanır.
@@ -1912,17 +2255,18 @@ ${FIXED_BRAND}`.trim();
     const now = new Date();
     body.innerHTML = jobs.map(job => {
       const row = job.row;
-      const msUntil = job.dateTime - now;
+      const nextOperationDate = jobNextOperationDate(job, now);
+      const msUntil = nextOperationDate - now;
       const isUrgent = !!showUrgency && msUntil > 0 && msUntil <= 3 * 60 * 60 * 1000;
       const urgentBadge = isUrgent ? '<span class="urgent-badge">Yaklaşıyor</span>' : '';
       return `
         <tr class="${isUrgent ? 'urgent-row' : ''}">
-          <td>${job.time || '-'}${urgentBadge}</td>
+          <td>${jobTimeHtml(job)}${urgentBadge}</td>
           <td>${jobBadgeHtml(job)}</td>
           <td>${row['Passenger Name'] || '-'}</td>
           <td>${row.Phone || '-'}</td>
-          <td>${job.from || '-'}</td>
-          <td>${job.to || '-'}</td>
+          <td>${jobRoutePartHtml(job, 'from')}</td>
+          <td>${jobRoutePartHtml(job, 'to')}</td>
           <td>${row.Car || '-'}</td>
           <td>${jobPriceHtml(job)}</td>
           <td><div class="row-actions">
@@ -1947,12 +2291,24 @@ ${FIXED_BRAND}`.trim();
 
     el.innerHTML = jobs.map(job => {
       const row = job.row;
-      const msUntil = job.dateTime - now;
+      const nextOperationDate = jobNextOperationDate(job, now);
+      const msUntil = nextOperationDate - now;
       const isUrgent = !!showUrgency && msUntil > 0 && msUntil <= 3 * 60 * 60 * 1000;
       const urgentBadge = isUrgent ? '<span class="urgent-badge">Yaklaşıyor</span>' : '';
       const countdownLine = isUrgent ? `<div class="res-line urgent-countdown">⏱ ${timeUntilLabel(msUntil)}</div>` : '';
       const price = row.Price ? `${row.Price} ${row.Currency || ''}` : '-';
       const priceNote = hasReturnLeg(row) ? 'gidiş + dönüş toplamı' : 'rezervasyon toplamı';
+
+      const routeContent = job.type === 'roundtrip'
+        ? `<div class="combined-route-block">${job.legs.map(leg => `
+            <div class="combined-route-line">
+              <span class="job-leg-key${leg.type === 'return' ? ' return' : ''}">${leg.shortLabel}</span>
+              <strong>${leg.time || '-'}</strong>
+              <span>${leg.from || '-'} → ${leg.to || '-'}</span>
+            </div>`).join('')}
+          </div>`
+        : `<div class="res-line"><strong>From:</strong> ${job.from || '-'}</div>
+           <div class="res-line"><strong>To:</strong> ${job.to || '-'}</div>`;
 
       return `
         <div class="res-card${isUrgent ? ' urgent-card' : ''}">
@@ -1961,11 +2317,10 @@ ${FIXED_BRAND}`.trim();
               <div class="res-name">${row['Passenger Name'] || '-'}</div>
               <div class="res-line">${row.Phone || '-'}</div>
             </div>
-            <div class="res-time">${job.time || '-'} ${urgentBadge}<br>${jobBadgeHtml(job)}</div>
+            <div class="res-time">${job.type === 'roundtrip' ? '' : (job.time || '-') + ' '}${urgentBadge}<br>${jobBadgeHtml(job)}</div>
           </div>
           ${countdownLine}
-          <div class="res-line"><strong>From:</strong> ${job.from || '-'}</div>
-          <div class="res-line"><strong>To:</strong> ${job.to || '-'}</div>
+          ${routeContent}
           <div class="res-line"><strong>Car:</strong> ${row.Car || '-'}</div>
           <div class="res-line"><strong>Toplam:</strong> ${price} <span class="total-price-note">${priceNote}</span></div>
           <div class="res-actions">
@@ -2071,6 +2426,16 @@ ${FIXED_BRAND}`.trim();
   copyTextBtn.addEventListener('click', copyText);
   copyInfoTextBtn.addEventListener('click', copyText);
   copyReminderGroupBtn.addEventListener('click', copyReminderGroupText);
+  showTodayJobsBtn.addEventListener('click', () => showDashboardJobs('today'));
+  showTomorrowJobsBtn.addEventListener('click', () => showDashboardJobs('tomorrow'));
+  statTodayCard.addEventListener('click', () => showDashboardJobs('today'));
+  statTomorrowCard.addEventListener('click', () => showDashboardJobs('tomorrow'));
+  statTodayCard.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); showDashboardJobs('today'); }
+  });
+  statTomorrowCard.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); showDashboardJobs('tomorrow'); }
+  });
   copyTomorrowJobsBtn.addEventListener('click', async () => {
     await navigator.clipboard.writeText(tomorrowJobsSummary.value || '');
     tomorrowJobsStatus.textContent = 'Yarının liste metni kopyalandı.';
@@ -2094,7 +2459,7 @@ ${FIXED_BRAND}`.trim();
   });
 
   copyListSummaryBtn.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(buildSummary(filteredJobs()));
+    await navigator.clipboard.writeText(buildJobsSummary(filteredJobs(), 'Liste özeti'));
     allStatus.textContent = 'Liste özeti kopyalandı.';
   });
 
