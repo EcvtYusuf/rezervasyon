@@ -714,16 +714,17 @@
     .urgent-row:hover td { background: rgba(245,158,11,.125); }
     .empty { color: #8b98b8; padding: 22px 16px; text-align: center; }
 
-    .job-table { min-width: 1130px; table-layout: fixed; }
-    .job-table th:nth-child(1) { width: 86px; }
+    .job-table { min-width: 1240px; table-layout: fixed; }
+    .job-table th:nth-child(1) { width: 82px; }
     .job-table th:nth-child(2) { width: 88px; }
-    .job-table th:nth-child(3) { width: 140px; }
-    .job-table th:nth-child(4) { width: 115px; }
-    .job-table th:nth-child(5),
-    .job-table th:nth-child(6) { width: 18%; }
-    .job-table th:nth-child(7) { width: 110px; }
-    .job-table th:nth-child(8) { width: 115px; }
-    .job-table th:nth-child(9) { width: 185px; }
+    .job-table th:nth-child(3) { width: 135px; }
+    .job-table th:nth-child(4) { width: 112px; }
+    .job-table th:nth-child(5) { width: 94px; }
+    .job-table th:nth-child(6),
+    .job-table th:nth-child(7) { width: 17%; }
+    .job-table th:nth-child(8) { width: 108px; }
+    .job-table th:nth-child(9) { width: 112px; }
+    .job-table th:nth-child(10) { width: 185px; }
 
     .job-row-main td:first-child { box-shadow: inset 3px 0 0 rgba(59,130,246,.55); }
     .job-row-return td:first-child { box-shadow: inset 3px 0 0 rgba(139,92,246,.60); }
@@ -731,6 +732,25 @@
     .job-time-cell { color: #f6dda8; font-size: 13px; font-weight: 900; font-variant-numeric: tabular-nums; }
     .job-passenger-cell { color: #fff; font-weight: 850; }
     .job-phone-cell { color: #c9d5eb; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .job-flight-cell { color: #dce8ff; }
+    .flight-code-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 54px;
+      padding: 4px 7px;
+      border-radius: 8px;
+      border: 1px solid rgba(96,165,250,.28);
+      background: rgba(59,130,246,.11);
+      color: #d8eaff;
+      font-size: 10.5px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: .035em;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+    .flight-empty { color: #687792; font-weight: 800; }
     .job-route-cell { color: #dbe5f7; overflow-wrap: anywhere; }
     .job-vehicle-cell { color: #dbe5f7; overflow-wrap: anywhere; }
     .job-price-cell { color: #fff0c8; }
@@ -1077,11 +1097,11 @@
             <table class="job-table">
               <thead>
                 <tr>
-                  <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
+                  <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>Uçuş</th><th>From</th><th>To</th>
                   <th>Araç</th><th>Toplam Fiyat</th><th>İşlem</th>
                 </tr>
               </thead>
-              <tbody id="todayTransfersBody"><tr><td colspan="9" class="empty">Yükleniyor...</td></tr></tbody>
+              <tbody id="todayTransfersBody"><tr><td colspan="10" class="empty">Yükleniyor...</td></tr></tbody>
             </table>
           </div>
           <div id="todayTransfersMobile" class="mobile-cards"></div>
@@ -1093,11 +1113,11 @@
             <table class="job-table">
               <thead>
                 <tr>
-                  <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
+                  <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>Uçuş</th><th>From</th><th>To</th>
                   <th>Araç</th><th>Toplam Fiyat</th><th>İşlem</th>
                 </tr>
               </thead>
-              <tbody id="tomorrowTransfersBody"><tr><td colspan="9" class="empty">Yükleniyor...</td></tr></tbody>
+              <tbody id="tomorrowTransfersBody"><tr><td colspan="10" class="empty">Yükleniyor...</td></tr></tbody>
             </table>
           </div>
           <div id="tomorrowTransfersMobile" class="mobile-cards"></div>
@@ -2043,6 +2063,20 @@ ${FIXED_BRAND}`.trim();
     ).join('')}</div>`;
   }
 
+  // Uçuş kodu varsa gösterilir; yoksa boş bırakmak yerine net biçimde "-" görünür.
+  // Aynı gün gidiş + dönüş işinde iki ayağın uçuş kodu G / D olarak ayrı gösterilir.
+  function jobFlightHtml(job) {
+    if (job.type !== 'roundtrip') {
+      return job.flightCode
+        ? `<span class="flight-code-chip">${job.flightCode}</span>`
+        : '<span class="flight-empty">-</span>';
+    }
+
+    return `<div class="job-leg-stack">${job.legs.map(leg =>
+      `<div class="job-leg-line"><span class="job-leg-key${leg.type === 'return' ? ' return' : ''}">${leg.shortLabel}</span>${leg.flightCode ? `<span class="flight-code-chip">${leg.flightCode}</span>` : '<span class="flight-empty">-</span>'}</div>`
+    ).join('')}</div>`;
+  }
+
   function jobNextOperationDate(job, now) {
     const futureLeg = (job.legs || [])
       .map(leg => leg.dateTime)
@@ -2432,7 +2466,7 @@ ${FIXED_BRAND}`.trim();
 
   function renderJobTable(jobs, body, emptyText, showUrgency) {
     if (!jobs.length) {
-      body.innerHTML = `<tr><td colspan="9" class="empty">${emptyText}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="10" class="empty">${emptyText}</td></tr>`;
       return;
     }
 
@@ -2449,6 +2483,7 @@ ${FIXED_BRAND}`.trim();
           <td class="job-type-cell">${jobBadgeHtml(job)}</td>
           <td class="job-passenger-cell">${row['Passenger Name'] || '-'}</td>
           <td class="job-phone-cell">${row.Phone || '-'}</td>
+          <td class="job-flight-cell">${jobFlightHtml(job)}</td>
           <td class="job-route-cell">${jobRoutePartHtml(job, 'from')}</td>
           <td class="job-route-cell">${jobRoutePartHtml(job, 'to')}</td>
           <td class="job-vehicle-cell">${row.Car || '-'}</td>
@@ -2504,6 +2539,7 @@ ${FIXED_BRAND}`.trim();
             <div class="res-time">${job.type === 'roundtrip' ? '' : (job.time || '-') + ' '}${urgentBadge}<br>${jobBadgeHtml(job)}</div>
           </div>
           ${countdownLine}
+          <div class="res-line"><strong>Uçuş:</strong> ${jobFlightHtml(job)}</div>
           ${routeContent}
           <div class="res-line"><strong>Car:</strong> ${row.Car || '-'}</div>
           <div class="res-line"><strong>Toplam:</strong> ${price} <span class="total-price-note">${priceNote}</span></div>
