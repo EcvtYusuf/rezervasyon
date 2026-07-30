@@ -336,10 +336,8 @@
       line-height: 1.35;
     }
 
-    .total-price-label { white-space: nowrap; font-weight: 800; }
-    .total-price-note { display: block; margin-top: 3px; color: #8b98b8; font-size: 10.5px; font-weight: 700; }
-    .row-actions { display: flex; gap: 6px; flex-wrap: wrap; min-width: 190px; }
-    .row-actions .mini-btn { flex: 1 1 56px; }
+    .total-price-label { white-space: nowrap; font-weight: 900; }
+    .total-price-note { display: block; margin-top: 3px; color: #8795b2; font-size: 10px; font-weight: 700; line-height: 1.2; }
 
     .hidden { display: none !important; }
 
@@ -449,7 +447,7 @@
 
     .stat-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(155px, 188px)) minmax(310px, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
       margin-top: 12px;
       align-items: stretch;
@@ -458,10 +456,10 @@
     .stat-card {
       position: relative;
       min-width: 0;
-      min-height: 92px;
+      min-height: 102px;
       overflow: hidden;
       border-radius: 14px;
-      padding: 12px 14px;
+      padding: 13px 14px;
       background: rgba(255,255,255,.038);
       border: 1px solid rgba(255,255,255,.085);
       box-shadow: inset 0 1px 0 rgba(255,255,255,.035), 0 8px 22px rgba(0,0,0,.08);
@@ -501,8 +499,73 @@
 
     .stat-card-revenue {
       color: var(--gold2);
+      cursor: pointer;
       background: linear-gradient(145deg, rgba(217,181,109,.105), rgba(217,181,109,.032));
       border-color: rgba(217,181,109,.22);
+    }
+
+    .stat-card-revenue:hover {
+      border-color: rgba(243,215,157,.42);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 12px 28px rgba(0,0,0,.14);
+    }
+
+    .revenue-value-shell {
+      position: relative;
+      min-height: 43px;
+      display: flex;
+      align-items: center;
+    }
+
+    .revenue-sensitive {
+      width: 100%;
+      transition: filter .18s ease, opacity .18s ease, transform .18s ease;
+    }
+
+    .stat-card-revenue:not(.is-revealed) .revenue-sensitive {
+      filter: blur(10px);
+      opacity: .34;
+      transform: scale(.985);
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .revenue-mask {
+      position: absolute;
+      inset: 2px 0;
+      z-index: 2;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(243,215,157,.25);
+      background: rgba(8,13,24,.68);
+      color: #f6deb0;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .01em;
+      backdrop-filter: blur(5px);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.045);
+      transition: opacity .16s ease, visibility .16s ease, background .16s ease;
+    }
+
+    .revenue-mask:hover {
+      transform: none;
+      background: rgba(20,26,39,.86);
+      border-color: rgba(243,215,157,.42);
+    }
+
+    .revenue-mask:focus-visible {
+      outline: 2px solid rgba(243,215,157,.75);
+      outline-offset: 2px;
+    }
+
+    .stat-card-revenue.is-revealed .revenue-mask {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .stat-card-clickable { cursor: pointer; }
@@ -571,8 +634,9 @@
     }
 
     @media (max-width: 1450px) and (min-width: 1201px) {
-      .stat-grid { grid-template-columns: repeat(3, minmax(140px, 1fr)); }
-      .stat-card-revenue { grid-column: 1 / -1; min-height: 82px; }
+      .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stat-card { min-height: 92px; }
+      .stat-card-revenue { grid-column: auto; }
       .stat-card-revenue .stat-value { font-size: 23px; }
     }
 
@@ -581,7 +645,7 @@
       .dash-greeting { font-size: 19px; }
       .stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
       .stat-card { min-height: 86px; padding: 11px 12px; }
-      .stat-card-week { grid-column: 1 / -1; }
+      .stat-card-week { grid-column: auto; }
       .stat-card-revenue { grid-column: 1 / -1; }
       .stat-card-revenue .stat-value { font-size: 21px; line-height: 1.28; }
     }
@@ -593,28 +657,119 @@
     .filter-btn.active { background: rgba(217,181,109,.18); color: var(--gold2); border-color: rgba(217,181,109,.45); }
 
     .table-wrap {
-      overflow: auto;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.09);
-      max-height: min(68vh, 780px);
+      overflow-x: auto;
+      overflow-y: visible;
+      max-height: none;
+      border-radius: 13px;
+      border: 1px solid rgba(255,255,255,.085);
+      background: rgba(6,11,21,.28);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(174,187,216,.30) rgba(255,255,255,.025);
     }
-    table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1180px; font-size: 13px; }
-    th, td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; vertical-align: top; }
+
+    .table-wrap::-webkit-scrollbar { height: 10px; }
+    .table-wrap::-webkit-scrollbar-track { background: rgba(255,255,255,.025); }
+    .table-wrap::-webkit-scrollbar-thumb {
+      background: rgba(174,187,216,.28);
+      border: 2px solid rgba(6,11,21,.6);
+      border-radius: 999px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 1160px;
+      font-size: 12.5px;
+    }
+
+    th, td {
+      padding: 11px 12px;
+      border-bottom: 1px solid rgba(255,255,255,.065);
+      text-align: left;
+      vertical-align: middle;
+    }
+
     th {
       position: sticky;
       top: 0;
       z-index: 3;
-      color: var(--gold2);
-      background: #252f45;
-      font-size: 12px;
+      color: #d8e1f5;
+      background: #222d43;
+      font-size: 10.5px;
+      font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: .05em;
-      box-shadow: 0 1px 0 rgba(255,255,255,.08);
+      letter-spacing: .075em;
+      box-shadow: 0 1px 0 rgba(255,255,255,.08), 0 8px 18px rgba(0,0,0,.08);
+      white-space: nowrap;
     }
-    td { color: var(--text); transition: background .14s ease; }
-    tbody tr:hover td { background: rgba(255,255,255,.032); }
-    .urgent-row:hover td { background: rgba(245,158,11,.135); }
-    .empty { color: #8b98b8; padding: 16px; }
+
+    th:first-child { border-top-left-radius: 12px; }
+    th:last-child  { border-top-right-radius: 12px; }
+    td { color: var(--text); line-height: 1.32; transition: background .14s ease, border-color .14s ease; }
+    tbody tr:nth-child(even) td { background: rgba(255,255,255,.014); }
+    tbody tr:hover td { background: rgba(93,124,181,.075); border-bottom-color: rgba(143,168,214,.18); }
+    tbody tr:last-child td { border-bottom: 0; }
+    .urgent-row td { background: rgba(245,158,11,.085); }
+    .urgent-row:hover td { background: rgba(245,158,11,.125); }
+    .empty { color: #8b98b8; padding: 22px 16px; text-align: center; }
+
+    .job-table { min-width: 1130px; table-layout: fixed; }
+    .job-table th:nth-child(1) { width: 86px; }
+    .job-table th:nth-child(2) { width: 88px; }
+    .job-table th:nth-child(3) { width: 140px; }
+    .job-table th:nth-child(4) { width: 115px; }
+    .job-table th:nth-child(5),
+    .job-table th:nth-child(6) { width: 18%; }
+    .job-table th:nth-child(7) { width: 110px; }
+    .job-table th:nth-child(8) { width: 115px; }
+    .job-table th:nth-child(9) { width: 185px; }
+
+    .job-row-main td:first-child { box-shadow: inset 3px 0 0 rgba(59,130,246,.55); }
+    .job-row-return td:first-child { box-shadow: inset 3px 0 0 rgba(139,92,246,.60); }
+    .job-row-roundtrip td:first-child { box-shadow: inset 3px 0 0 rgba(129,140,248,.72); }
+    .job-time-cell { color: #f6dda8; font-size: 13px; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .job-passenger-cell { color: #fff; font-weight: 850; }
+    .job-phone-cell { color: #c9d5eb; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .job-route-cell { color: #dbe5f7; overflow-wrap: anywhere; }
+    .job-vehicle-cell { color: #dbe5f7; overflow-wrap: anywhere; }
+    .job-price-cell { color: #fff0c8; }
+    .job-actions-cell { padding: 8px 10px; }
+
+    .jobs-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .jobs-toolbar .dashboard-job-switch { margin-bottom: 0; }
+    .jobs-toolbar-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+    .jobs-order-note { color: #95a3c0; font-size: 11.5px; font-weight: 700; }
+    .jobs-copy-btn { padding: 9px 12px; border-radius: 10px; font-size: 11.5px; }
+    .jobs-feedback-line { margin: 0 0 10px; color: #91a0bd; font-size: 11.5px; }
+
+    #dashboardJobsCard { padding: 13px; }
+    .row-actions {
+      display: grid;
+      grid-template-columns: minmax(68px, 1fr) minmax(76px, 1fr) 46px;
+      gap: 6px;
+      min-width: 190px;
+    }
+    .row-actions .mini-btn {
+      min-width: 0;
+      min-height: 34px;
+      padding: 8px 8px;
+      border-radius: 9px;
+      font-size: 10.5px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .row-actions .action-copy { background: rgba(255,255,255,.06); }
+    .row-actions .action-edit { background: rgba(59,130,246,.12); color: #cfe3ff; border-color: rgba(59,130,246,.24); }
+    .row-actions .action-delete { padding-inline: 6px; }
 
     .pill        { border-radius: 999px; padding: 7px 10px; font-size: 12px; font-weight: 900; display: inline-flex; }
     .pill-orange { background: rgba(245,158,11,.14); color: #fde68a; border: 1px solid rgba(245,158,11,.28); }
@@ -669,7 +824,10 @@
       .row-actions { min-width: 170px; }
       .card-head-row { align-items: stretch; }
       .card-head-row button { width: 100%; }
+      .jobs-toolbar { align-items: stretch; }
       .dashboard-job-switch { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+      .jobs-toolbar-right { width: 100%; justify-content: space-between; }
+      .jobs-copy-btn { flex: 1 1 auto; }
       .job-switch-btn { min-width: 0; width: 100%; padding: 10px 8px; }
       .combined-route-line { grid-template-columns: auto auto minmax(0,1fr); }
       .mini-btn { min-height: 40px; } /* daha rahat dokunma alanı */
@@ -880,35 +1038,43 @@
             <div class="stat-value" id="statWeek">–</div>
             <div class="stat-sub">iş</div>
           </div>
-          <div class="stat-card stat-card-revenue">
+          <div class="stat-card stat-card-revenue" id="statRevenueCard" role="button" tabindex="0" aria-label="Aylık ciroyu göster" aria-pressed="false">
             <div class="stat-label-row">
               <button type="button" class="month-nav-btn" id="revMonthPrev" aria-label="Önceki ay">‹</button>
               <div class="stat-label" id="revMonthLabel">BU AY CİRO</div>
               <button type="button" class="month-nav-btn" id="revMonthNext" aria-label="Sonraki ay">›</button>
             </div>
-            <div class="stat-value" id="statMonthRevenue">–</div>
+            <div class="revenue-value-shell">
+              <div class="stat-value revenue-sensitive" id="statMonthRevenue">–</div>
+              <button type="button" class="revenue-mask" id="toggleRevenueBtn" aria-pressed="false">
+                <span aria-hidden="true">◉</span><span id="revenueToggleLabel">Ciroyu göster</span>
+              </button>
+            </div>
             <div class="stat-sub" id="revMonthSub">tahsilat dahil/hariç ayrımı yok</div>
           </div>
         </div>
       </div>
 
       <div class="card" id="dashboardJobsCard">
-        <div class="dashboard-job-switch" role="tablist" aria-label="İş günü seçimi">
-          <button type="button" class="btn-secondary job-switch-btn active" id="showTodayJobsBtn" role="tab" aria-selected="true" aria-controls="todayJobsView">
-            Bugünün İşleri <span class="job-switch-count" id="todayJobsSwitchCount">–</span>
-          </button>
-          <button type="button" class="btn-secondary job-switch-btn" id="showTomorrowJobsBtn" role="tab" aria-selected="false" aria-controls="tomorrowJobsView">
-            Yarının İşleri <span class="job-switch-count" id="tomorrowJobsSwitchCount">–</span>
-          </button>
+        <div class="jobs-toolbar">
+          <div class="dashboard-job-switch" role="tablist" aria-label="İş günü seçimi">
+            <button type="button" class="btn-secondary job-switch-btn active" id="showTodayJobsBtn" role="tab" aria-selected="true" aria-controls="todayJobsView">
+              Bugünün İşleri <span class="job-switch-count" id="todayJobsSwitchCount">–</span>
+            </button>
+            <button type="button" class="btn-secondary job-switch-btn" id="showTomorrowJobsBtn" role="tab" aria-selected="false" aria-controls="tomorrowJobsView">
+              Yarının İşleri <span class="job-switch-count" id="tomorrowJobsSwitchCount">–</span>
+            </button>
+          </div>
+          <div class="jobs-toolbar-right">
+            <span class="jobs-order-note" id="jobsOrderNote">Gerçek saat sırasına göre</span>
+            <button type="button" class="btn-secondary jobs-copy-btn hidden" id="copyTomorrowJobsBtn">Listeyi Kopyala</button>
+          </div>
         </div>
 
         <div id="todayJobsView" class="dashboard-job-view" role="tabpanel" aria-labelledby="showTodayJobsBtn">
-          <div class="card-head-row">
-            <div class="section-title">Bugünün İşleri</div>
-            <span class="pill pill-green" id="todayJobsLabel">–</span>
-          </div>
+          <span class="hidden" id="todayJobsLabel">–</span>
           <div class="table-wrap">
-            <table>
+            <table class="job-table">
               <thead>
                 <tr>
                   <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
@@ -922,13 +1088,9 @@
         </div>
 
         <div id="tomorrowJobsView" class="dashboard-job-view hidden" role="tabpanel" aria-labelledby="showTomorrowJobsBtn">
-          <div class="card-head-row">
-            <div class="section-title">Yarının İşleri</div>
-            <button type="button" class="btn-secondary" id="copyTomorrowJobsBtn">Yarının Liste Metnini Kopyala</button>
-          </div>
-          <div id="tomorrowJobsStatus" class="status-line">Yarının işleri hazırlanıyor...</div>
+          <div id="tomorrowJobsStatus" class="jobs-feedback-line">Yarının işleri hazırlanıyor...</div>
           <div class="table-wrap">
-            <table>
+            <table class="job-table">
               <thead>
                 <tr>
                   <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
@@ -1184,6 +1346,9 @@
   const statWeek           = $('statWeek');
   const statTodayCard      = $('statTodayCard');
   const statTomorrowCard   = $('statTomorrowCard');
+  const statRevenueCard    = $('statRevenueCard');
+  const toggleRevenueBtn   = $('toggleRevenueBtn');
+  const revenueToggleLabel = $('revenueToggleLabel');
   const statMonthRevenue   = $('statMonthRevenue');
   const revMonthLabel      = $('revMonthLabel');
   const revMonthSub        = $('revMonthSub');
@@ -1203,12 +1368,14 @@
   const tomorrowJobsView        = $('tomorrowJobsView');
   const todayJobsSwitchCount    = $('todayJobsSwitchCount');
   const tomorrowJobsSwitchCount = $('tomorrowJobsSwitchCount');
+  const jobsOrderNote            = $('jobsOrderNote');
 
   // ─── State ─────────────────────────────────────────────────────────────────
   let bookingNumber      = generateBookingNumber();
   let editingBookingNo   = '';
   let sheetRows          = [];
   let activeFilter       = 'all';
+  let revenueRevealed    = false;
   // YENİ: Bu formda daha önce başarıyla kaydedilmiş (yeni) booking no'yu takip eder.
   // Amaç: aynı kaydı ikinci kez (küçük bir değişiklikle) kaydederken sistemin bunu
   // "başkasıyla çakışma" sanıp booking no'yu değiştirmesini engellemek — aksi halde
@@ -2164,6 +2331,19 @@ ${FIXED_BRAND}`.trim();
     dashDate.textContent = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()} • ${days[now.getDay()]}`;
   }
 
+  function setRevenueVisibility(show) {
+    revenueRevealed = !!show;
+    statRevenueCard.classList.toggle('is-revealed', revenueRevealed);
+    statRevenueCard.setAttribute('aria-pressed', String(revenueRevealed));
+    statRevenueCard.setAttribute('aria-label', revenueRevealed ? 'Aylık ciroyu gizle' : 'Aylık ciroyu göster');
+    toggleRevenueBtn.setAttribute('aria-pressed', String(revenueRevealed));
+    revenueToggleLabel.textContent = revenueRevealed ? 'Ciroyu gizle' : 'Ciroyu göster';
+  }
+
+  function toggleRevenueVisibility() {
+    setRevenueVisibility(!revenueRevealed);
+  }
+
   function showDashboardJobs(day) {
     dashboardJobsDay = day === 'tomorrow' ? 'tomorrow' : 'today';
     const showTomorrow = dashboardJobsDay === 'tomorrow';
@@ -2176,6 +2356,10 @@ ${FIXED_BRAND}`.trim();
     statTomorrowCard.classList.toggle('active', showTomorrow);
     showTodayJobsBtn.setAttribute('aria-selected', String(!showTomorrow));
     showTomorrowJobsBtn.setAttribute('aria-selected', String(showTomorrow));
+    copyTomorrowJobsBtn.classList.toggle('hidden', !showTomorrow);
+    jobsOrderNote.textContent = showTomorrow
+      ? `Yarın • ${tomorrowJobsSwitchCount.textContent || '0'} iş • gerçek saat sırası`
+      : `Bugün • ${todayJobsSwitchCount.textContent || '0'} iş • gerçek saat sırası`;
   }
 
   function renderDashboard() {
@@ -2208,7 +2392,7 @@ ${FIXED_BRAND}`.trim();
     renderJobCards(tomorrowJobs, tomorrowTransfersMobile, 'Yarın için iş yok.', false);
     tomorrowJobsSummary.value = buildJobsSummary(tomorrowJobs, `${formatDate(tomorrowKey)} yarının işleri`);
     tomorrowJobsStatus.textContent = tomorrowJobs.length
-      ? `${tomorrowJobs.length} iş gerçek saat sırasına göre listelendi. Aynı gün gidiş-dönüş tek iş olarak gösterilir; ücret rezervasyonda tek kalır.`
+      ? `${tomorrowJobs.length} iş hazır. Aynı gün gidiş-dönüş tek satırda gösterilir.`
       : 'Yarın için planlanmış iş bulunmuyor.';
 
     showDashboardJobs(dashboardJobsDay);
@@ -2260,19 +2444,19 @@ ${FIXED_BRAND}`.trim();
       const isUrgent = !!showUrgency && msUntil > 0 && msUntil <= 3 * 60 * 60 * 1000;
       const urgentBadge = isUrgent ? '<span class="urgent-badge">Yaklaşıyor</span>' : '';
       return `
-        <tr class="${isUrgent ? 'urgent-row' : ''}">
-          <td>${jobTimeHtml(job)}${urgentBadge}</td>
-          <td>${jobBadgeHtml(job)}</td>
-          <td>${row['Passenger Name'] || '-'}</td>
-          <td>${row.Phone || '-'}</td>
-          <td>${jobRoutePartHtml(job, 'from')}</td>
-          <td>${jobRoutePartHtml(job, 'to')}</td>
-          <td>${row.Car || '-'}</td>
-          <td>${jobPriceHtml(job)}</td>
-          <td><div class="row-actions">
-            <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
-            <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
-            <button class="btn-danger mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
+        <tr class="job-row job-row-${job.type}${isUrgent ? ' urgent-row' : ''}">
+          <td class="job-time-cell">${jobTimeHtml(job)}${urgentBadge}</td>
+          <td class="job-type-cell">${jobBadgeHtml(job)}</td>
+          <td class="job-passenger-cell">${row['Passenger Name'] || '-'}</td>
+          <td class="job-phone-cell">${row.Phone || '-'}</td>
+          <td class="job-route-cell">${jobRoutePartHtml(job, 'from')}</td>
+          <td class="job-route-cell">${jobRoutePartHtml(job, 'to')}</td>
+          <td class="job-vehicle-cell">${row.Car || '-'}</td>
+          <td class="job-price-cell">${jobPriceHtml(job)}</td>
+          <td class="job-actions-cell"><div class="row-actions">
+            <button class="btn-secondary mini-btn action-copy" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
+            <button class="btn-secondary mini-btn action-edit" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
+            <button class="btn-danger mini-btn action-delete" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
           </div></td>
         </tr>`;
     }).join('');
@@ -2443,11 +2627,28 @@ ${FIXED_BRAND}`.trim();
   loadSheetBtn.addEventListener('click', loadRows);
   loadAllBtn.addEventListener('click', loadRows);
   refreshDashboardBtn.addEventListener('click', loadRows);
-  revMonthPrev.addEventListener('click', () => {
+  statRevenueCard.addEventListener('click', event => {
+    if (event.target.closest('.month-nav-btn')) return;
+    toggleRevenueVisibility();
+  });
+  statRevenueCard.addEventListener('keydown', event => {
+    if (event.target.closest('button')) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggleRevenueVisibility();
+    }
+  });
+  toggleRevenueBtn.addEventListener('click', event => {
+    event.stopPropagation();
+    toggleRevenueVisibility();
+  });
+  revMonthPrev.addEventListener('click', event => {
+    event.stopPropagation();
     revenueViewDate.setMonth(revenueViewDate.getMonth() - 1);
     renderRevenueCard();
   });
-  revMonthNext.addEventListener('click', () => {
+  revMonthNext.addEventListener('click', event => {
+    event.stopPropagation();
     revenueViewDate.setMonth(revenueViewDate.getMonth() + 1);
     renderRevenueCard();
   });
@@ -2466,6 +2667,7 @@ ${FIXED_BRAND}`.trim();
   // ─── İlk render ─────────────────────────────────────────────────────────────
   updatePreview();
   setDashGreeting();
+  setRevenueVisibility(false);
   loadRows(); // YENİ: sayfa açılır açılmaz veriler otomatik çekilir, "Yükle" tuşuna basmaya gerek yok
 </script>
 </body>
