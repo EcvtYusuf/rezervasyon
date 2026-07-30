@@ -34,13 +34,14 @@
     }
 
     .app {
-      max-width: 1540px;
+      width: 100%;
+      max-width: none;
       min-height: 100vh;
-      margin: 0 auto;
-      padding: 22px;
+      margin: 0;
+      padding: 14px;
       display: grid;
-      grid-template-columns: 420px minmax(0, 1fr);
-      gap: 22px;
+      grid-template-columns: minmax(360px, 400px) minmax(0, 1fr);
+      gap: 14px;
     }
 
     .panel {
@@ -51,14 +52,18 @@
     }
 
     .form-panel {
-      padding: 22px;
+      padding: 20px;
       position: sticky;
-      top: 22px;
-      max-height: calc(100vh - 44px);
+      top: 14px;
+      max-height: calc(100vh - 28px);
       overflow: auto;
     }
 
-    .work-panel { padding: 22px; overflow: hidden; }
+    .work-panel {
+      min-width: 0;
+      padding: 18px;
+      overflow: hidden;
+    }
 
     h1 { margin: 0 0 8px; font-size: 26px; }
     .sub, .hint { color: var(--muted); font-size: 13px; line-height: 1.45; }
@@ -149,29 +154,6 @@
     .btn-warning   { background: rgba(245,158,11,.16); color: #fde68a; border: 1px solid rgba(245,158,11,.32); }
     .btn-danger    { background: rgba(239,68,68,.16); color: #fecaca; border: 1px solid rgba(239,68,68,.32); }
 
-    /* YENİ: WhatsApp butonu <a> etiketi olduğu için bare 'button' seçicisinden
-       (display/border-radius/cursor vb.) hiçbir şey miras almıyordu — kendi başına
-       tam bir buton görünümü + WhatsApp'ın yeşili ile diğerlerinden ayrışıyor. */
-    .btn-whatsapp {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      text-decoration: none;
-      appearance: none;
-      border-radius: 12px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: .15s;
-      background: rgba(37,211,102,.16);
-      color: #7ee8a3;
-      border: 1px solid rgba(37,211,102,.38);
-    }
-    .btn-whatsapp:hover { transform: translateY(-1px); background: rgba(37,211,102,.26); }
-
-    /* YENİ: Tek "WhatsApp" butonu yerine 3 küçük bayrak (TR/EN/DE) butonu — hangi dilde
-       gönderileceğine karar veremediğimiz için müşteriye göre seçim şansı veriyor. */
-    .wa-lang-group { display: inline-flex; gap: 4px; }
-    .wa-lang-btn { padding: 8px 9px; font-size: 15px; min-width: 0; }
 
     .topbar {
       display: flex;
@@ -197,6 +179,45 @@
       padding: 16px;
       margin-bottom: 14px;
     }
+
+    .card-head-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .card-head-row .section-title { margin: 0; flex: 1 1 220px; }
+    .compact-summary { min-height: 150px; margin-top: 12px; }
+    .output-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+
+    .job-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 10.5px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      white-space: nowrap;
+      background: rgba(59,130,246,.15);
+      color: #bfdbfe;
+      border: 1px solid rgba(59,130,246,.28);
+    }
+
+    .job-badge.return {
+      background: rgba(139,92,246,.16);
+      color: #ddd6fe;
+      border-color: rgba(139,92,246,.30);
+    }
+
+    .total-price-label { white-space: nowrap; font-weight: 800; }
+    .total-price-note { display: block; margin-top: 3px; color: #8b98b8; font-size: 10.5px; font-weight: 700; }
+    .row-actions { display: flex; gap: 6px; flex-wrap: wrap; min-width: 190px; }
+    .row-actions .mini-btn { flex: 1 1 56px; }
 
     .hidden { display: none !important; }
 
@@ -350,10 +371,25 @@
     .filter-btn        { padding: 9px 11px; font-size: 12px; }
     .filter-btn.active { background: rgba(217,181,109,.18); color: var(--gold2); border-color: rgba(217,181,109,.45); }
 
-    .table-wrap { overflow: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,.09); }
-    table { width: 100%; border-collapse: collapse; min-width: 1200px; font-size: 13px; }
+    .table-wrap {
+      overflow: auto;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.09);
+      max-height: min(68vh, 780px);
+    }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1180px; font-size: 13px; }
     th, td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,.08); text-align: left; vertical-align: top; }
-    th { color: var(--gold2); background: rgba(255,255,255,.05); font-size: 12px; text-transform: uppercase; letter-spacing: .05em; }
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      color: var(--gold2);
+      background: #252f45;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      box-shadow: 0 1px 0 rgba(255,255,255,.08);
+    }
     td { color: var(--text); }
     .empty { color: #8b98b8; padding: 16px; }
 
@@ -369,7 +405,7 @@
     .res-time  { font-weight: 900; color: var(--gold2); text-align: right; }
     .res-line  { color: #dbe5ff; margin: 7px 0; font-size: 13px; }
     .res-return{ color: #fde68a; margin: 5px 0; font-size: 12px; }
-    .res-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .res-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
     .mini-btn  { font-size: 12px; padding: 9px 10px; }
 
     iframe[name="sheetFrame"] { width: 0; height: 0; border: 0; position: absolute; opacity: 0; pointer-events: none; }
@@ -407,6 +443,9 @@
       /* YENİ: 4 işlem butonu (WhatsApp/Kopyala/Düzenle/Sil) artık tek sütunda alt alta
          uzayıp gitmiyor — 2x2 kompakt ızgara, kart daha kısa ve taranabilir oluyor */
       .res-actions { grid-template-columns: 1fr 1fr; }
+      .row-actions { min-width: 170px; }
+      .card-head-row { align-items: stretch; }
+      .card-head-row button { width: 100%; }
       .mini-btn { min-height: 40px; } /* daha rahat dokunma alanı */
       .res-card-head { flex-wrap: wrap; row-gap: 6px; }
       .text-output { min-height: 260px; }
@@ -601,19 +640,19 @@
 
         <div class="stat-grid">
           <div class="stat-card">
-            <div class="stat-label">Bugün</div>
+            <div class="stat-label">Bugünkü İşler</div>
             <div class="stat-value" id="statToday">–</div>
-            <div class="stat-sub">transfer</div>
+            <div class="stat-sub">iş</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Yarın</div>
+            <div class="stat-label">Yarının İşleri</div>
             <div class="stat-value" id="statTomorrow">–</div>
-            <div class="stat-sub">transfer</div>
+            <div class="stat-sub">iş</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Önümüzdeki 7 Gün</div>
             <div class="stat-value" id="statWeek">–</div>
-            <div class="stat-sub">transfer</div>
+            <div class="stat-sub">iş</div>
           </div>
           <div class="stat-card stat-card-revenue">
             <div class="stat-label-row">
@@ -628,19 +667,43 @@
       </div>
 
       <div class="card">
-        <div class="section-title" style="margin-top:0;">Bugünün Transferleri</div>
+        <div class="card-head-row">
+          <div class="section-title">Bugünün İşleri</div>
+          <span class="pill pill-green" id="todayJobsLabel">–</span>
+        </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>Saat</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
-                <th>Araç</th><th>Fiyat</th><th>İşlem</th>
+                <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
+                <th>Araç</th><th>Toplam Fiyat</th><th>İşlem</th>
               </tr>
             </thead>
-            <tbody id="todayTransfersBody"><tr><td colspan="8" class="empty">Yükleniyor...</td></tr></tbody>
+            <tbody id="todayTransfersBody"><tr><td colspan="9" class="empty">Yükleniyor...</td></tr></tbody>
           </table>
         </div>
         <div id="todayTransfersMobile" class="mobile-cards"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head-row">
+          <div class="section-title">Yarının İşleri</div>
+          <button type="button" class="btn-secondary" id="copyTomorrowJobsBtn">Yarının Liste Metnini Kopyala</button>
+        </div>
+        <div id="tomorrowJobsStatus" class="status-line">Yarının işleri hazırlanıyor...</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Saat</th><th>Tür</th><th>Ad Soyad</th><th>Telefon</th><th>From</th><th>To</th>
+                <th>Araç</th><th>Toplam Fiyat</th><th>İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="tomorrowTransfersBody"><tr><td colspan="9" class="empty">Yükleniyor...</td></tr></tbody>
+          </table>
+        </div>
+        <div id="tomorrowTransfersMobile" class="mobile-cards"></div>
+        <textarea id="tomorrowJobsSummary" class="summary-output compact-summary" readonly></textarea>
       </div>
     </section>
 
@@ -745,8 +808,21 @@
     <!-- Text Tab -->
     <section id="textTab" class="tab-panel">
       <div class="card">
+        <div class="section-title" style="margin-top:0;">Info / Rezervasyon Metni</div>
         <textarea id="reservationText" class="text-output" readonly></textarea>
-        <div id="copyStatus" class="status-line">Bu metin WhatsApp grupları için hazır.</div>
+        <div class="output-actions">
+          <button type="button" class="btn-secondary" id="copyInfoTextBtn">Info Metnini Kopyala</button>
+        </div>
+        <div id="copyStatus" class="status-line">Bu metin info grubuna yapıştırmaya hazır.</div>
+      </div>
+
+      <div class="card">
+        <div class="section-title" style="margin-top:0;">Hatırlatma Grubu Metni</div>
+        <textarea id="reminderGroupText" class="text-output" readonly></textarea>
+        <div class="output-actions">
+          <button type="button" class="btn-secondary" id="copyReminderGroupBtn">Hatırlatma Metnini Kopyala</button>
+        </div>
+        <div id="reminderCopyStatus" class="status-line">Bu metin ilk hatırlatma grubuna yapıştırmaya hazır.</div>
       </div>
     </section>
 
@@ -801,29 +877,6 @@
           <button type="button" class="btn-secondary" id="clearRangeBtn" style="align-self:flex-end;">Aralığı Temizle</button>
         </div>
 
-        <!-- YENİ: Toplu Hatırlatma Kuyruğu — şu an filtrelenmiş listeye göre çalışır -->
-        <div class="card" id="reminderCard" style="margin-bottom:14px;">
-          <div class="section-title" style="margin-top:0;">Toplu Hatırlatma Gönder</div>
-          <div class="hint" style="margin-bottom:10px;">Yukarıdaki filtreye göre çalışır (şu an ne seçiliyse — Bugün/Yarın/tarih aralığı/arama). Telefonu olmayan kayıtlar otomatik atlanır. WhatsApp'ın kendi kısıtı nedeniyle her mesajı sen WhatsApp içinde "Gönder"e basarak yollarsın, sistem sadece sıradakine geçmeni hızlandırır.</div>
-          <div class="toolbar" style="margin-bottom:0;">
-            <button type="button" class="btn-primary" id="startReminderBtn">📢 Hatırlatma Kuyruğu Başlat</button>
-            <span id="reminderEligibleCount" class="pill pill-orange">–</span>
-          </div>
-          <div id="reminderQueuePanel" class="hidden" style="margin-top:14px;">
-            <div class="ok-box" id="reminderQueueInfo"></div>
-            <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; align-items:center;">
-              <button type="button" class="btn-secondary" id="reminderPrevBtn">◀ Önceki</button>
-              <span style="display:flex; gap:6px;">
-                <a class="btn-whatsapp" id="reminderSendTR" target="wa_web_tab" rel="noopener" title="Türkçe gönder" style="padding:12px 16px; font-size:17px;">🇹🇷</a>
-                <a class="btn-whatsapp" id="reminderSendEN" target="wa_web_tab" rel="noopener" title="Send in English" style="padding:12px 16px; font-size:17px;">🇬🇧</a>
-                <a class="btn-whatsapp" id="reminderSendDE" target="wa_web_tab" rel="noopener" title="Auf Deutsch senden" style="padding:12px 16px; font-size:17px;">🇩🇪</a>
-              </span>
-              <button type="button" class="btn-secondary" id="reminderNextBtn">Sonraki ▶</button>
-              <button type="button" class="btn-danger" id="reminderCloseBtn">Kuyruğu Kapat</button>
-            </div>
-          </div>
-        </div>
-
         <div id="allStatus" class="status-line">Tüm rezervasyonları görmek için yükle.</div>
         <div class="table-wrap">
           <table>
@@ -865,6 +918,10 @@
   const copyDailySummaryBtn= $('copyDailySummaryBtn');
   const copyListSummaryBtn = $('copyListSummaryBtn');
   const reservationText    = $('reservationText');
+  const reminderGroupText  = $('reminderGroupText');
+  const copyInfoTextBtn    = $('copyInfoTextBtn');
+  const copyReminderGroupBtn = $('copyReminderGroupBtn');
+  const reminderCopyStatus = $('reminderCopyStatus');
   const copyStatus         = $('copyStatus');
   const sheetStatus        = $('sheetStatus');
   const allStatus          = $('allStatus');
@@ -893,18 +950,14 @@
   const revMonthSub        = $('revMonthSub');
   const revMonthPrev       = $('revMonthPrev');
   const revMonthNext       = $('revMonthNext');
-  const todayTransfersBody = $('todayTransfersBody');
+  const todayTransfersBody   = $('todayTransfersBody');
   const todayTransfersMobile = $('todayTransfersMobile');
-  const startReminderBtn      = $('startReminderBtn');
-  const reminderEligibleCount = $('reminderEligibleCount');
-  const reminderQueuePanel    = $('reminderQueuePanel');
-  const reminderQueueInfo     = $('reminderQueueInfo');
-  const reminderPrevBtn       = $('reminderPrevBtn');
-  const reminderNextBtn       = $('reminderNextBtn');
-  const reminderSendTR         = $('reminderSendTR');
-  const reminderSendEN         = $('reminderSendEN');
-  const reminderSendDE         = $('reminderSendDE');
-  const reminderCloseBtn      = $('reminderCloseBtn');
+  const todayJobsLabel       = $('todayJobsLabel');
+  const tomorrowTransfersBody   = $('tomorrowTransfersBody');
+  const tomorrowTransfersMobile = $('tomorrowTransfersMobile');
+  const tomorrowJobsSummary     = $('tomorrowJobsSummary');
+  const tomorrowJobsStatus      = $('tomorrowJobsStatus');
+  const copyTomorrowJobsBtn     = $('copyTomorrowJobsBtn');
 
   // ─── State ─────────────────────────────────────────────────────────────────
   let bookingNumber      = generateBookingNumber();
@@ -1105,6 +1158,37 @@ ${returnLine}
 ${FIXED_BRAND}`.trim();
   }
 
+  // İlk hatırlatma grubuna atılacak daha kısa operasyon özeti.
+  // Bu çıktı yalnızca tarayıcıda üretilir; Sheets kayıt yapısına dokunmaz.
+  function reminderGroupTxt(data) {
+    const main = `${formatDateTimeDots(data.dateTime) || '(tarih belirtilmedi)'} / ${data.flyCode || '-'}`;
+    const parts = [
+      'HATIRLATMA',
+      '',
+      main,
+      '',
+      data.nameSurname || '(isim belirtilmedi)',
+      data.phone || '(telefon belirtilmedi)',
+      '',
+      `From: ${data.pickup || '(belirtilmedi)'}`,
+      `To: ${data.dropoff || '(belirtilmedi)'}`,
+      `Person: ${data.passengerCount || '(belirtilmedi)'}`,
+      `Car: ${data.vehicle || '(belirtilmedi)'}`
+    ];
+
+    if (data.hasReturn) {
+      parts.push(
+        '',
+        `DÖNÜŞ: ${formatDateTimeDots(data.returnDateTime) || '(belirtilmedi)'}${data.returnFlyCode ? ` / ${data.returnFlyCode}` : ''}`,
+        `Return From: ${data.returnPickup || '(belirtilmedi)'}`,
+        `Return To: ${data.returnDropoff || '(belirtilmedi)'}`
+      );
+    }
+
+    parts.push('', FIXED_BRAND);
+    return parts.join('\n').trim();
+  }
+
   // ─── Preview güncellemesi ───────────────────────────────────────────────────
   function updatePreview() {
     const data        = getData();
@@ -1134,7 +1218,8 @@ ${FIXED_BRAND}`.trim();
     $('arrivalSection').classList.toggle('hidden',   !(arrivalRoute || data.dateTime || data.flyCode));
     $('passengerSection').classList.toggle('hidden', !(data.nameSurname || data.phone || data.note));
 
-    reservationText.value = reservationTxt(data);
+    reservationText.value   = reservationTxt(data);
+    reminderGroupText.value = reminderGroupTxt(data);
 
     const mis = missing(data);
     if (mis.length) {
@@ -1180,8 +1265,15 @@ ${FIXED_BRAND}`.trim();
   async function copyText() {
     updatePreview();
     await navigator.clipboard.writeText(reservationText.value);
-    copyStatus.textContent = 'Kopyalandı. WhatsApp grubuna yapıştırmaya hazır.';
-    setTimeout(() => copyStatus.textContent = 'Bu metin WhatsApp grupları için hazır.', 2200);
+    copyStatus.textContent = 'Info metni kopyalandı.';
+    setTimeout(() => copyStatus.textContent = 'Bu metin info grubuna yapıştırmaya hazır.', 2200);
+  }
+
+  async function copyReminderGroupText() {
+    updatePreview();
+    await navigator.clipboard.writeText(reminderGroupText.value);
+    reminderCopyStatus.textContent = 'Hatırlatma metni kopyalandı.';
+    setTimeout(() => reminderCopyStatus.textContent = 'Bu metin ilk hatırlatma grubuna yapıştırmaya hazır.', 2200);
   }
 
   // ─── Sheets'e gönderilecek payload ─────────────────────────────────────────
@@ -1415,6 +1507,82 @@ ${FIXED_BRAND}`.trim();
            !row.To   || !row.Person || !row.Car || !row.Price;
   }
 
+  function hasReturnLeg(row) {
+    return !!(row['Return Date'] || row['Return Time'] || row['Return From'] || row['Return To']);
+  }
+
+  function mainJobLabel(row) {
+    const service = String(row['Service Type'] || 'Transfer').toLowerCase();
+    if (service === 'tour') return 'TUR';
+    if (service === 'exit') return 'ÇIKIŞ';
+    return 'GİDİŞ';
+  }
+
+  // Bir rezervasyonu veri tabanında çoğaltmadan, yalnızca ekranda operasyon işlerine ayırır.
+  // Fiyat ve ciro rezervasyon satırında tek kalır; dönüş için ikinci ücret oluşturulmaz.
+  function buildTransferJobs(rows) {
+    const jobs = [];
+
+    rows.forEach(row => {
+      const mainDate = rowDate(row);
+      if (mainDate) {
+        jobs.push({
+          type: 'main',
+          typeLabel: mainJobLabel(row),
+          dateTime: mainDate,
+          date: row.Date || '',
+          time: row.Time || '',
+          from: row.From || '',
+          to: row.To || '',
+          flightCode: row['Flight Code'] || '',
+          row
+        });
+      }
+
+      const returnDate = rowReturnDate(row);
+      if (returnDate) {
+        jobs.push({
+          type: 'return',
+          typeLabel: 'DÖNÜŞ',
+          dateTime: returnDate,
+          date: row['Return Date'] || '',
+          time: row['Return Time'] || '',
+          from: row['Return From'] || '',
+          to: row['Return To'] || '',
+          flightCode: row['Return Flight Code'] || '',
+          row
+        });
+      }
+    });
+
+    return jobs.sort((a, b) => a.dateTime - b.dateTime);
+  }
+
+  function jobPriceHtml(job) {
+    const row = job.row;
+    const price = row.Price ? `${row.Price} ${row.Currency || ''}` : '-';
+    const note = hasReturnLeg(row) ? 'gidiş + dönüş toplamı' : 'rezervasyon toplamı';
+    return `<span class="total-price-label">${price}</span><span class="total-price-note">${note}</span>`;
+  }
+
+  function jobBadgeHtml(job) {
+    return `<span class="job-badge${job.type === 'return' ? ' return' : ''}">${job.typeLabel}</span>`;
+  }
+
+  function jobsForDay(jobs, key) {
+    return jobs.filter(job => dayKey(job.dateTime) === key);
+  }
+
+  function buildJobsSummary(jobs, title) {
+    if (!jobs.length) return `${title}: iş bulunamadı.`;
+
+    return `${title.toLocaleUpperCase('tr-TR')} — ${jobs.length} İŞ\n\n` + jobs.map(job => {
+      const row = job.row;
+      const flight = job.flightCode ? `\nUçuş: ${job.flightCode}` : '';
+      return `${job.time || '-'} — ${job.typeLabel}\n${row['Passenger Name'] || '-'}\n${row.Phone || '-'}\n${job.from || '-'} → ${job.to || '-'}${flight}\n${row.Person || '-'} kişi / ${row.Car || '-'}\nRezervasyon No: ${row['Booking No'] || '-'}`;
+    }).join('\n\n');
+  }
+
   // Bugün Alınanlar tablosu — transfer tarihine göre değil, kaydın SİSTEME düştüğü ana göre
   function renderDailyTable(rows, body) {
     if (!rows.length) {
@@ -1432,12 +1600,11 @@ ${FIXED_BRAND}`.trim();
         <td>${row.To   || '-'}</td>
         <td>${row.Car  || '-'}</td>
         <td>${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</td>
-        <td>
-          ${waButtonGroup(row)}
+        <td><div class="row-actions">
           <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
           <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
           <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
-        </td>
+        </div></td>
       </tr>`).join('');
   }
 
@@ -1466,12 +1633,11 @@ ${FIXED_BRAND}`.trim();
         <td>${row['Return Time'] || '-'}</td>
         <td>${row['Return From'] || '-'}</td>
         <td>${row['Return To']   || '-'}</td>
-        <td>
-          ${waButtonGroup(row)}
+        <td><div class="row-actions">
           <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
           <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
           <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
-        </td>
+        </div></td>
       </tr>`).join('');
   }
 
@@ -1495,7 +1661,6 @@ ${FIXED_BRAND}`.trim();
           <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
           ${returnInfo}
           <div class="res-actions">
-            ${waButtonGroup(row)}
             <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Metni Kopyala</button>
             <button class="btn-primary   mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
             <button class="btn-danger    mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1506,117 +1671,92 @@ ${FIXED_BRAND}`.trim();
 
   function esc(v) { return String(v || '').replace(/'/g,"&#39;"); }
 
-  // YENİ: Müşteriye WhatsApp'tan giden asıl mesaj — kısa, net, onay isteyen bir
-  // hatırlatma (kullanıcının verdiği İngilizce metin baz alındı, TR/DE çevirisi eklendi).
-  // NOT: reservationTxt() buradan tamamen ayrı — o hâlâ PDF/Rezervasyon Metni/iç ekip
-  // paylaşımı için AYNEN eskisi gibi çalışıyor. Sadece müşteriye giden WhatsApp mesajı
-  // bu yeni, kısa, onay isteyen formatı kullanıyor.
-  function reminderTxt(row, lang) {
-    const data = rowToData(row);
-    const name = data.nameSurname || '';
-    const dt   = formatDateTimeDots(data.dateTime) || '';
-    const dtPart = dt ? ` (${dt})` : '';
-
-    if (lang === 'tr') {
-      return `Merhaba${name ? ' ' + name : ''},
-
-Bu mesaj transfer rezervasyonunuzla${dtPart} ilgili bir hatırlatmadır. Sürücünüz sizi onaylanan alış noktasında karşılayacaktır. Görüşmek üzere.
-
-Lütfen onaylayınız. ✅
-
-PREMIUM VIP TRANSFER`;
-    }
-
-    if (lang === 'de') {
-      return `Hallo${name ? ' ' + name : ''},
-
-Dies ist eine Erinnerung an Ihre Transferbuchung${dtPart}. Ihr Fahrer wird Sie am bestätigten Abholort treffen. Bis bald.
-
-Bitte bestätigen Sie. ✅
-
-PREMIUM VIP TRANSFER`;
-    }
-
-    // varsayılan: İngilizce
-    return `Hello${name ? ' ' + name : ''},
-
-This is a reminder regarding your transfer reservation${dtPart}. Your driver will meet you at the confirmed pickup point. See you soon.
-
-Please confirm. ✅
-
-PREMIUM VIP TRANSFER`;
-  }
-
-  // YENİ: Telefon numarasından, seçilen dilde WhatsApp'ta mesaj açan link üretir.
-  // web.whatsapp.com/send kullanıyoruz (wa.me/api.whatsapp.com yerine) çünkü o format
-  // masaüstü uygulamasını açmak isteyip "WhatsApp açılsın mı?" diye soruyordu — bu format
-  // doğrudan zaten açık/giriş yapılmış olan WhatsApp Web sekmesine gidiyor, soru sormuyor.
-  function waLink(row, lang) {
-    const digits = String(row.Phone || '').replace(/[^\d]/g, '');
-    if (!digits) return '';
-    const text = encodeURIComponent(reminderTxt(row, lang));
-    return `https://web.whatsapp.com/send?phone=${digits}&text=${text}`;
-  }
-
-  // YENİ: Müşterinin diline karar veremeyeceğimiz için tek "WhatsApp" butonu yerine
-  // 3 küçük bayrak butonu — hangisine basarsan o dilde mesaj hazırlanıp WhatsApp açılıyor.
-  function waButtonGroup(row) {
-    const digits = String(row.Phone || '').replace(/[^\d]/g, '');
-    if (!digits) return '';
-    const trLink = waLink(row, 'tr');
-    const enLink = waLink(row, 'en');
-    const deLink = waLink(row, 'de');
-    return `<span class="wa-lang-group">
-      <a class="btn-whatsapp wa-lang-btn" href="${trLink}" target="wa_web_tab" rel="noopener" title="Türkçe gönder">🇹🇷</a>
-      <a class="btn-whatsapp wa-lang-btn" href="${enLink}" target="wa_web_tab" rel="noopener" title="Send in English">🇬🇧</a>
-      <a class="btn-whatsapp wa-lang-btn" href="${deLink}" target="wa_web_tab" rel="noopener" title="Auf Deutsch senden">🇩🇪</a>
-    </span>`;
-  }
-
   // ─── Filtreli satırlar ──────────────────────────────────────────────────────
   function filteredRows() {
     const query = (reservationSearch.value || '').toLowerCase().trim();
     const now   = new Date();
     const today = dayKey(now);
     const tmrw  = new Date(now); tmrw.setDate(now.getDate() + 1);
-    const p7    = new Date(now); p7.setDate(now.getDate() + 7);
+    const p7    = new Date(now); p7.setDate(now.getDate() + 7); p7.setHours(23,59,59,999);
     const start = new Date(today + 'T00:00');
 
-    // Manuel tarih aralığı (yeni, opsiyonel) - dolu ise preset butonların yerine geçer
     const rStartVal = (rangeStart && rangeStart.value) || '';
     const rEndVal   = (rangeEnd && rangeEnd.value) || '';
     const customRangeActive = !!(rStartVal || rEndVal);
     const rStart = rStartVal ? new Date(rStartVal + 'T00:00:00') : null;
     const rEnd   = rEndVal   ? new Date(rEndVal   + 'T23:59:59') : null;
 
-    return sheetRows.filter(row => {
+    const inRange = v => v && (!rStart || v >= rStart) && (!rEnd || v <= rEnd);
+    const matchingDates = row => {
       const d  = rowDate(row);
       const rd = rowReturnDate(row);
-      let ok   = true;
+      const candidates = [];
 
       if (customRangeActive) {
-        const inRange = v => v && (!rStart || v >= rStart) && (!rEnd || v <= rEnd);
-        ok = inRange(d) || inRange(rd);
+        if (inRange(d)) candidates.push(d);
+        if (inRange(rd)) candidates.push(rd);
       } else if (activeFilter === 'today') {
-        ok = (d && dayKey(d) === today) || (rd && dayKey(rd) === today);
+        if (d && dayKey(d) === today) candidates.push(d);
+        if (rd && dayKey(rd) === today) candidates.push(rd);
       } else if (activeFilter === 'tomorrow') {
-        ok = (d && dayKey(d) === dayKey(tmrw)) || (rd && dayKey(rd) === dayKey(tmrw));
+        const tomorrowKey = dayKey(tmrw);
+        if (d && dayKey(d) === tomorrowKey) candidates.push(d);
+        if (rd && dayKey(rd) === tomorrowKey) candidates.push(rd);
       } else if (activeFilter === 'week') {
-        ok = (d && d >= start && d <= p7) || (rd && rd >= start && rd <= p7);
+        if (d && d >= start && d <= p7) candidates.push(d);
+        if (rd && rd >= start && rd <= p7) candidates.push(rd);
       } else if (activeFilter === 'month') {
-        ok = (d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) ||
-             (rd && rd.getMonth() === now.getMonth() && rd.getFullYear() === now.getFullYear());
+        if (d && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) candidates.push(d);
+        if (rd && rd.getMonth() === now.getMonth() && rd.getFullYear() === now.getFullYear()) candidates.push(rd);
+      } else {
+        if (d) candidates.push(d);
+        else if (rd) candidates.push(rd);
       }
 
-      // Eksik filtresi kaldırıldı (artık kullanılmıyor)
+      return candidates.sort((a, b) => a - b);
+    };
+
+    return sheetRows.filter(row => {
+      const dates = matchingDates(row);
+      let ok = activeFilter === 'all' && !customRangeActive ? true : dates.length > 0;
 
       if (query) {
-        const text = [row['Passenger Name'], row.Phone, row.From, row.To, row.Car, row.Note,
-                      row['Return From'], row['Return To']].join(' ').toLowerCase();
-        ok = ok && text.includes(query);
+        const searchable = [row['Passenger Name'], row.Phone, row.From, row.To, row.Car, row.Note,
+                            row['Return From'], row['Return To'], row['Flight Code'], row['Return Flight Code']]
+          .join(' ').toLowerCase();
+        ok = ok && searchable.includes(query);
       }
       return ok;
-    }).sort((a, b) => (rowDate(a)||0) - (rowDate(b)||0));
+    }).sort((a, b) => {
+      const aDate = matchingDates(a)[0] || rowDate(a) || rowReturnDate(a) || 0;
+      const bDate = matchingDates(b)[0] || rowDate(b) || rowReturnDate(b) || 0;
+      return aDate - bDate;
+    });
+  }
+
+  function filteredJobs() {
+    const visibleRows = filteredRows();
+    const jobs = buildTransferJobs(visibleRows);
+    const now   = new Date();
+    const today = dayKey(now);
+    const tmrw  = new Date(now); tmrw.setDate(now.getDate() + 1);
+    const start = new Date(today + 'T00:00');
+    const p7    = new Date(now); p7.setDate(now.getDate() + 7); p7.setHours(23,59,59,999);
+    const rStartVal = (rangeStart && rangeStart.value) || '';
+    const rEndVal   = (rangeEnd && rangeEnd.value) || '';
+    const customRangeActive = !!(rStartVal || rEndVal);
+    const rStart = rStartVal ? new Date(rStartVal + 'T00:00:00') : null;
+    const rEnd   = rEndVal   ? new Date(rEndVal + 'T23:59:59') : null;
+
+    return jobs.filter(job => {
+      const d = job.dateTime;
+      if (customRangeActive) return d && (!rStart || d >= rStart) && (!rEnd || d <= rEnd);
+      if (activeFilter === 'today') return dayKey(d) === today;
+      if (activeFilter === 'tomorrow') return dayKey(d) === dayKey(tmrw);
+      if (activeFilter === 'week') return d >= start && d <= p7;
+      if (activeFilter === 'month') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      return true;
+    });
   }
 
   function renderAll() {
@@ -1624,67 +1764,6 @@ PREMIUM VIP TRANSFER`;
     renderAllTable(rows, allTableBody);
     renderCards(rows, allMobileCards);
     allStatus.textContent = `${sheetRows.length} kayıt yüklendi, ${rows.length} kayıt gösteriliyor.`;
-    updateReminderEligibleCount();
-  }
-
-  // ─── Toplu Hatırlatma Kuyruğu ───────────────────────────────────────────────
-  // WhatsApp gerçek toplu gönderimi desteklemiyor (kendi kısıtı) — bu yüzden şu an
-  // filtrelenmiş listeyi sırayla gezen, her kişi için WhatsApp'ı hazır mesajla açan
-  // ve otomatik sıradakine geçen bir "yarı-otomatik" kuyruk kuruyoruz.
-  let reminderQueue = [];
-  let reminderIndex = 0;
-
-  function eligibleForReminder(rows) {
-    return rows.filter(row => String(row.Phone || '').replace(/[^\d]/g, ''));
-  }
-
-  function updateReminderEligibleCount() {
-    const rows = eligibleForReminder(filteredRows());
-    reminderEligibleCount.textContent = `${rows.length} kişiye gönderilebilir`;
-  }
-
-  function startReminderQueue() {
-    reminderQueue = eligibleForReminder(filteredRows());
-    if (!reminderQueue.length) {
-      allStatus.textContent = 'Şu an filtrelenmiş listede telefonu olan kimse yok.';
-      return;
-    }
-    reminderIndex = 0;
-    reminderQueuePanel.classList.remove('hidden');
-    renderReminderStep();
-  }
-
-  function renderReminderStep() {
-    const row = reminderQueue[reminderIndex];
-    reminderQueueInfo.innerHTML =
-      `<strong>${reminderIndex + 1} / ${reminderQueue.length}</strong> — ${row['Passenger Name'] || '-'} (${row.Phone || '-'})<br>` +
-      `${row.Date || '-'} ${row.Time || '-'} • ${row.From || '-'} → ${row.To || '-'}`;
-    reminderSendTR.href = waLink(row, 'tr');
-    reminderSendEN.href = waLink(row, 'en');
-    reminderSendDE.href = waLink(row, 'de');
-    reminderPrevBtn.disabled = reminderIndex === 0;
-    reminderNextBtn.textContent = (reminderIndex === reminderQueue.length - 1) ? 'Bitir ✓' : 'Sonraki ▶';
-  }
-
-  function reminderGoNext() {
-    if (reminderIndex < reminderQueue.length - 1) {
-      reminderIndex++;
-      renderReminderStep();
-    } else {
-      reminderQueuePanel.classList.add('hidden');
-      allStatus.textContent = 'Hatırlatma kuyruğu tamamlandı.';
-    }
-  }
-
-  function reminderGoPrev() {
-    if (reminderIndex > 0) {
-      reminderIndex--;
-      renderReminderStep();
-    }
-  }
-
-  function closeReminderQueue() {
-    reminderQueuePanel.classList.add('hidden');
   }
 
   // "Bugün Alınanlar": rezervasyonun sisteme kaydedildiği an bugünse listeye girer.
@@ -1728,7 +1807,6 @@ PREMIUM VIP TRANSFER`;
         <div class="res-line"><strong>To:</strong>   ${row.To  ||'-'}</div>
         <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
         <div class="res-actions">
-          ${waButtonGroup(row)}
           <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Metni Kopyala</button>
           <button class="btn-primary   mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
           <button class="btn-danger    mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
@@ -1763,51 +1841,46 @@ PREMIUM VIP TRANSFER`;
 
   function renderDashboard() {
     setDashGreeting();
-    const now      = new Date();
-    const today    = dayKey(now);
-    const tmrw     = new Date(now); tmrw.setDate(now.getDate() + 1);
-    const p7       = new Date(now); p7.setDate(now.getDate() + 7);
-    const weekStart = new Date(today + 'T00:00');
+    const now       = new Date();
+    const todayKey  = dayKey(now);
+    const tomorrow  = new Date(now); tomorrow.setDate(now.getDate() + 1);
+    const tomorrowKey = dayKey(tomorrow);
+    const weekStart = new Date(todayKey + 'T00:00:00');
+    const weekEnd   = new Date(weekStart); weekEnd.setDate(weekEnd.getDate() + 7); weekEnd.setHours(23,59,59,999);
 
-    // YENİ: "Bugün" tanımı artık Tüm Rezervasyonlar sekmesiyle BİREBİR aynı —
-    // gidiş VEYA dönüş tarihi bugünse sayılır (round-trip'in dönüş ayağı da bir iş).
-    const isMainOn = (row, keyFn) => { const d = rowDate(row); return d && keyFn(d); };
-    const isRetOn  = (row, keyFn) => { const rd = rowReturnDate(row); return rd && keyFn(rd); };
+    const allJobs      = buildTransferJobs(sheetRows);
+    const todayJobs    = jobsForDay(allJobs, todayKey);
+    const tomorrowJobs = jobsForDay(allJobs, tomorrowKey);
+    const weekJobs     = allJobs.filter(job => job.dateTime >= weekStart && job.dateTime <= weekEnd);
 
-    const todayRows = sheetRows
-      .filter(row => isMainOn(row, d => dayKey(d) === today) || isRetOn(row, d => dayKey(d) === today))
-      .sort((a, b) => (todayLegDate(a, today) || 0) - (todayLegDate(b, today) || 0));
-
-    const tomorrowCount = sheetRows.filter(row =>
-      isMainOn(row, d => dayKey(d) === dayKey(tmrw)) || isRetOn(row, d => dayKey(d) === dayKey(tmrw))
-    ).length;
-
-    const weekCount = sheetRows.filter(row =>
-      isMainOn(row, d => d >= weekStart && d <= p7) || isRetOn(row, d => d >= weekStart && d <= p7)
-    ).length;
-
-    // Bu ay ciro — artık ok butonlarıyla farklı aylara gezilebilir (renderRevenueCard içinde)
     renderRevenueCard();
 
-    statToday.textContent        = String(todayRows.length);
-    statTomorrow.textContent     = String(tomorrowCount);
-    statWeek.textContent         = String(weekCount);
+    statToday.textContent    = String(todayJobs.length);
+    statTomorrow.textContent = String(tomorrowJobs.length);
+    statWeek.textContent     = String(weekJobs.length);
+    todayJobsLabel.textContent = `${todayJobs.length} iş`;
 
-    renderTodayTransfersTable(todayRows, todayTransfersBody, today);
-    renderTodayCards(todayRows, todayTransfersMobile, today);
+    renderJobTable(todayJobs, todayTransfersBody, 'Bugün için iş yok.', true);
+    renderJobCards(todayJobs, todayTransfersMobile, 'Bugün için iş yok.', true);
+
+    renderJobTable(tomorrowJobs, tomorrowTransfersBody, 'Yarın için iş yok.', false);
+    renderJobCards(tomorrowJobs, tomorrowTransfersMobile, 'Yarın için iş yok.', false);
+    tomorrowJobsSummary.value = buildJobsSummary(tomorrowJobs, `${formatDate(tomorrowKey)} yarının işleri`);
+    tomorrowJobsStatus.textContent = tomorrowJobs.length
+      ? `${tomorrowJobs.length} iş gerçek saat sırasına göre listelendi. Gidiş ve dönüş ayrı iştir; ücret rezervasyonda tek kalır.`
+      : 'Yarın için planlanmış iş bulunmuyor.';
   }
 
-  // YENİ: Ciro kartı artık istenen herhangi bir ayı gösterebilir (ok butonlarıyla gezilir).
-  let revenueViewDate = new Date(); // hangi ay/yıl gösteriliyor
-
+  // Ciro rezervasyon bazında hesaplanır. Gidiş ve dönüş ayrı iş görünse de fiyat yalnızca bir kez toplanır.
+  let revenueViewDate = new Date();
   const TR_MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 
   function renderRevenueCard() {
     const viewMonth = revenueViewDate.getMonth();
     const viewYear  = revenueViewDate.getFullYear();
-
     const monthRevenue = {};
     let count = 0;
+
     sheetRows.forEach(row => {
       const d = rowDate(row);
       if (d && d.getMonth() === viewMonth && d.getFullYear() === viewYear) {
@@ -1825,78 +1898,42 @@ PREMIUM VIP TRANSFER`;
 
     const now = new Date();
     const isCurrentMonth = viewMonth === now.getMonth() && viewYear === now.getFullYear();
-
     revMonthLabel.textContent    = `${TR_MONTHS[viewMonth]} ${viewYear}`.toUpperCase() + (isCurrentMonth ? ' (BU AY)' : '');
     statMonthRevenue.textContent = revenueText;
-    revMonthSub.textContent      = `${count} transfer • tahsilat dahil/hariç ayrımı yok`;
+    revMonthSub.textContent      = `${count} rezervasyon • ücret her rezervasyonda bir kez sayılır`;
   }
 
-  // Bir rezervasyonun "bugün" ile ilgili hangi ayağının (gidiş/dönüş) referans alınacağını
-  // ve o ayağın gerçek tarih/saatini döndürür — sıralama ve aciliyet hesapları için kullanılır.
-  function todayLegDate(row, todayKey) {
-    const d  = rowDate(row);
-    const rd = rowReturnDate(row);
-    if (d && dayKey(d) === todayKey) return d;
-    if (rd && dayKey(rd) === todayKey) return rd;
-    return null;
-  }
-
-  // Bugün için gösterilecek doğru bilgiyi (saat/from/to + gidiş mi dönüş mü) hesaplar.
-  // Round-trip'in HEM gidişi HEM dönüşü bugünse, ikisini de aynı satırda gösterir.
-  function todayLegInfo(row, todayKey) {
-    const mainToday = !!(rowDate(row) && dayKey(rowDate(row)) === todayKey);
-    const retToday  = !!(rowReturnDate(row) && dayKey(rowReturnDate(row)) === todayKey);
-
-    if (mainToday && retToday) {
-      return {
-        time: row.Time || '-', from: row.From || '-', to: row.To || '-',
-        badge: `<span class="urgent-badge" style="background:rgba(59,130,246,.18);color:#bfdbfe;">+ Dönüş ${row['Return Time']||'-'}</span>`,
-        legDate: rowDate(row)
-      };
-    }
-    if (mainToday) {
-      return { time: row.Time || '-', from: row.From || '-', to: row.To || '-', badge: '', legDate: rowDate(row) };
-    }
-    // sadece dönüş bugünse — dönüş bilgilerini göster, "Dönüş" etiketiyle
-    return {
-      time: row['Return Time'] || '-', from: row['Return From'] || '-', to: row['Return To'] || '-',
-      badge: '<span class="urgent-badge" style="background:rgba(139,92,246,.18);color:#ddd6fe;">Dönüş</span>',
-      legDate: rowReturnDate(row)
-    };
-  }
-
-  function renderTodayTransfersTable(rows, body, todayKey) {
-    if (!rows.length) {
-      body.innerHTML = '<tr><td colspan="8" class="empty">Bugün için transfer yok.</td></tr>';
+  function renderJobTable(jobs, body, emptyText, showUrgency) {
+    if (!jobs.length) {
+      body.innerHTML = `<tr><td colspan="9" class="empty">${emptyText}</td></tr>`;
       return;
     }
+
     const now = new Date();
-    body.innerHTML = rows.map(row => {
-      const leg = todayLegInfo(row, todayKey);
-      const msUntil = leg.legDate ? (leg.legDate - now) : null;
-      const isUrgent = msUntil !== null && msUntil > 0 && msUntil <= 3 * 60 * 60 * 1000;
+    body.innerHTML = jobs.map(job => {
+      const row = job.row;
+      const msUntil = job.dateTime - now;
+      const isUrgent = !!showUrgency && msUntil > 0 && msUntil <= 3 * 60 * 60 * 1000;
       const urgentBadge = isUrgent ? '<span class="urgent-badge">Yaklaşıyor</span>' : '';
       return `
         <tr class="${isUrgent ? 'urgent-row' : ''}">
-          <td>${leg.time}${urgentBadge}${leg.badge}</td>
+          <td>${job.time || '-'}${urgentBadge}</td>
+          <td>${jobBadgeHtml(job)}</td>
           <td>${row['Passenger Name'] || '-'}</td>
           <td>${row.Phone || '-'}</td>
-          <td>${leg.from}</td>
-          <td>${leg.to}</td>
-          <td>${row.Car  || '-'}</td>
-          <td>${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</td>
-          <td>
-            ${waButtonGroup(row)}
+          <td>${job.from || '-'}</td>
+          <td>${job.to || '-'}</td>
+          <td>${row.Car || '-'}</td>
+          <td>${jobPriceHtml(job)}</td>
+          <td><div class="row-actions">
             <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Kopyala</button>
             <button class="btn-secondary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
-            <button class="btn-danger mini-btn"    onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
-          </td>
+            <button class="btn-danger mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
+          </div></td>
         </tr>`;
     }).join('');
   }
 
-  // Kalan süreyi "1s 45dk kaldı" gibi okunaklı bir metne çevirir (sadece mobilde,
-  // ekstra bilgi olarak — masaüstündeki rozete dokunulmadı).
   function timeUntilLabel(ms) {
     const totalMin = Math.max(0, Math.round(ms / 60000));
     const h = Math.floor(totalMin / 60);
@@ -1904,17 +1941,19 @@ PREMIUM VIP TRANSFER`;
     return h > 0 ? `${h}s ${m}dk kaldı` : `${m}dk kaldı`;
   }
 
-  function renderTodayCards(rows, el, todayKey) {
-    if (!rows.length) { el.innerHTML = '<div class="empty">Bugün için transfer yok.</div>'; return; }
+  function renderJobCards(jobs, el, emptyText, showUrgency) {
+    if (!jobs.length) { el.innerHTML = `<div class="empty">${emptyText}</div>`; return; }
     const now = new Date();
-    el.innerHTML = rows.map(row => {
-      const leg = todayLegInfo(row, todayKey);
-      const msUntil = leg.legDate ? (leg.legDate - now) : null;
-      const isUrgent = msUntil !== null && msUntil > 0 && msUntil <= 3 * 60 * 60 * 1000;
+
+    el.innerHTML = jobs.map(job => {
+      const row = job.row;
+      const msUntil = job.dateTime - now;
+      const isUrgent = !!showUrgency && msUntil > 0 && msUntil <= 3 * 60 * 60 * 1000;
       const urgentBadge = isUrgent ? '<span class="urgent-badge">Yaklaşıyor</span>' : '';
-      const countdownLine = isUrgent
-        ? `<div class="res-line urgent-countdown">⏱ ${timeUntilLabel(msUntil)}</div>`
-        : '';
+      const countdownLine = isUrgent ? `<div class="res-line urgent-countdown">⏱ ${timeUntilLabel(msUntil)}</div>` : '';
+      const price = row.Price ? `${row.Price} ${row.Currency || ''}` : '-';
+      const priceNote = hasReturnLeg(row) ? 'gidiş + dönüş toplamı' : 'rezervasyon toplamı';
+
       return `
         <div class="res-card${isUrgent ? ' urgent-card' : ''}">
           <div class="res-card-head">
@@ -1922,17 +1961,17 @@ PREMIUM VIP TRANSFER`;
               <div class="res-name">${row['Passenger Name'] || '-'}</div>
               <div class="res-line">${row.Phone || '-'}</div>
             </div>
-            <div class="res-time">${leg.time}${urgentBadge}${leg.badge}</div>
+            <div class="res-time">${job.time || '-'} ${urgentBadge}<br>${jobBadgeHtml(job)}</div>
           </div>
           ${countdownLine}
-          <div class="res-line"><strong>From:</strong> ${leg.from}</div>
-          <div class="res-line"><strong>To:</strong>   ${leg.to}</div>
-          <div class="res-line"><strong>Car:</strong>  ${row.Car ||'-'} / <strong>Price:</strong> ${row.Price ? `${row.Price} ${row.Currency||''}` : '-'}</div>
+          <div class="res-line"><strong>From:</strong> ${job.from || '-'}</div>
+          <div class="res-line"><strong>To:</strong> ${job.to || '-'}</div>
+          <div class="res-line"><strong>Car:</strong> ${row.Car || '-'}</div>
+          <div class="res-line"><strong>Toplam:</strong> ${price} <span class="total-price-note">${priceNote}</span></div>
           <div class="res-actions">
-            ${waButtonGroup(row)}
             <button class="btn-secondary mini-btn" onclick="copyRowText('${esc(row['Booking No'])}')">Metni Kopyala</button>
-            <button class="btn-primary   mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
-            <button class="btn-danger    mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
+            <button class="btn-primary mini-btn" onclick="editReservation('${esc(row['Booking No'])}')">Düzenle</button>
+            <button class="btn-danger mini-btn" onclick="deleteReservation('${esc(row['Booking No'])}')">Sil</button>
           </div>
         </div>`;
     }).join('');
@@ -2030,6 +2069,12 @@ PREMIUM VIP TRANSFER`;
   newReservationBtn.addEventListener('click', resetNew);
   downloadPdfBtn.addEventListener('click', downloadPdf);
   copyTextBtn.addEventListener('click', copyText);
+  copyInfoTextBtn.addEventListener('click', copyText);
+  copyReminderGroupBtn.addEventListener('click', copyReminderGroupText);
+  copyTomorrowJobsBtn.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(tomorrowJobsSummary.value || '');
+    tomorrowJobsStatus.textContent = 'Yarının liste metni kopyalandı.';
+  });
   loadSheetBtn.addEventListener('click', loadRows);
   loadAllBtn.addEventListener('click', loadRows);
   refreshDashboardBtn.addEventListener('click', loadRows);
@@ -2042,15 +2087,6 @@ PREMIUM VIP TRANSFER`;
     renderRevenueCard();
   });
 
-  startReminderBtn.addEventListener('click', startReminderQueue);
-  reminderPrevBtn.addEventListener('click', reminderGoPrev);
-  reminderNextBtn.addEventListener('click', reminderGoNext);
-  reminderCloseBtn.addEventListener('click', closeReminderQueue);
-  // NOT: href'i hemen değiştirmiyoruz — tarayıcı tıklamadaki linki açtıktan HEMEN
-  // sonra (küçük bir gecikmeyle) sıradakine geçiyoruz, yoksa yanlış kişiye gidebilir.
-  reminderSendTR.addEventListener('click', () => setTimeout(reminderGoNext, 150));
-  reminderSendEN.addEventListener('click', () => setTimeout(reminderGoNext, 150));
-  reminderSendDE.addEventListener('click', () => setTimeout(reminderGoNext, 150));
 
   copyDailySummaryBtn.addEventListener('click', async () => {
     await navigator.clipboard.writeText(dailySummary.value || '');
@@ -2058,7 +2094,7 @@ PREMIUM VIP TRANSFER`;
   });
 
   copyListSummaryBtn.addEventListener('click', async () => {
-    await navigator.clipboard.writeText(buildSummary(filteredRows()));
+    await navigator.clipboard.writeText(buildSummary(filteredJobs()));
     allStatus.textContent = 'Liste özeti kopyalandı.';
   });
 
