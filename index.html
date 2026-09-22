@@ -35,6 +35,63 @@
       color: var(--text);
     }
 
+    body.auth-locked { overflow: hidden; }
+    body.auth-locked .app { display: none; }
+
+    .login-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(217,181,109,.18), transparent 34%),
+        radial-gradient(circle at 88% 0%, rgba(59,130,246,.12), transparent 30%),
+        linear-gradient(180deg, #09101d, #0f172a 52%, #0b1220);
+    }
+
+    .login-gate[hidden] { display: none; }
+
+    .login-card {
+      width: min(100%, 390px);
+      padding: 30px;
+      text-align: center;
+      background: rgba(17,26,46,.96);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 22px;
+      box-shadow: 0 28px 80px rgba(0,0,0,.42);
+    }
+
+    .login-mark {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      color: #1d1405;
+      font-size: 27px;
+      background: linear-gradient(135deg, var(--gold2), #b98c3a);
+      box-shadow: 0 12px 30px rgba(217,181,109,.20);
+    }
+
+    .login-card h1 { margin-bottom: 8px; }
+    .login-card .sub { margin: 0 0 22px; }
+    .login-card form { display: grid; gap: 12px; }
+    .login-card input { text-align: center; letter-spacing: .16em; font-size: 18px; }
+    .login-card button { width: 100%; }
+
+    .login-error {
+      min-height: 20px;
+      margin-top: 12px;
+      color: #fecaca;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .lock-btn { white-space: nowrap; }
+
     .app {
       width: 100%;
       max-width: none;
@@ -865,7 +922,19 @@
     }
   </style>
 </head>
-<body>
+<body class="auth-locked">
+<section class="login-gate" id="loginGate" aria-labelledby="loginTitle">
+  <div class="login-card">
+    <div class="login-mark" aria-hidden="true">◆</div>
+    <h1 id="loginTitle">Yönetim Paneli</h1>
+    <p class="sub">Rezervasyon sistemine erişmek için şifrenizi girin.</p>
+    <form id="loginForm" autocomplete="off">
+      <input id="loginPassword" type="password" inputmode="numeric" autocomplete="current-password" placeholder="Şifre" aria-label="Şifre" required autofocus>
+      <button type="submit" class="btn-primary" id="loginButton">Giriş Yap</button>
+    </form>
+    <div class="login-error" id="loginError" role="alert" aria-live="polite"></div>
+  </div>
+</section>
 <div class="app">
 
   <!-- ══════════════ FORM PANELİ ══════════════ -->
@@ -1027,6 +1096,7 @@
         <button type="button" class="tab-btn" data-tab="textTab">Rezervasyon Metni</button>
         <button type="button" class="tab-btn" data-tab="controlTab">Bugün Alınanlar</button>
         <button type="button" class="tab-btn" data-tab="allTab">Tüm Rezervasyonlar</button>
+        <button type="button" class="btn-secondary lock-btn" id="lockAppBtn">Kilitle</button>
       </div>
     </div>
 
@@ -1321,8 +1391,21 @@
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyDuoeiK-zh7gzjpB4ML44QgVcUsFdIHxbEbjho0VOHXDOuTLzXKSrXTIG0LK8RTjgk4A/exec';
   const FIXED_BRAND     = 'PREMIUM VIP TRANSFER';
 
+  // Şifre kaynak kodda düz metin tutulmaz. Girilen değer PBKDF2-SHA256 ile
+  // türetilir ve yalnızca aşağıdaki doğrulama değeriyle karşılaştırılır.
+  const AUTH_SALT       = 'tvs-admin-v1-9f3c7a2e';
+  const AUTH_ITERATIONS = 210000;
+  const AUTH_VERIFIER   = 'fcd8276c23abd692930a104dca7ff41f847f7497997f279e947ec50928cc34eb';
+  const AUTH_SESSION_KEY = 'transfer-panel-auth-v1';
+
   // ─── DOM referansları ───────────────────────────────────────────────────────
   const $  = id => document.getElementById(id);
+  const loginGate          = $('loginGate');
+  const loginForm          = $('loginForm');
+  const loginPassword      = $('loginPassword');
+  const loginButton        = $('loginButton');
+  const loginError         = $('loginError');
+  const lockAppBtn         = $('lockAppBtn');
   const form               = $('voucherForm');
   const hasReturn          = $('hasReturn');
   const returnFields       = $('returnFields');
@@ -1402,6 +1485,87 @@
   // ikinci Kaydet, güncelleme yerine yepyeni bir satır oluşturuyordu.
   let savedOnceBookingNo = '';
   let dashboardJobsDay   = 'today';
+  let applicationStarted = false;
+
+  // ─── Giriş koruması ───────────────────────────────────────────────────────
+  function bytesToHex(bytes) {
+    return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function derivePasswordVerifier(password) {
+    const encoder = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits']
+    );
+    const bits = await crypto.subtle.deriveBits({
+      name: 'PBKDF2',
+      salt: encoder.encode(AUTH_SALT),
+      iterations: AUTH_ITERATIONS,
+      hash: 'SHA-256'
+    }, key, 256);
+    return bytesToHex(new Uint8Array(bits));
+  }
+
+  function constantTimeEqual(a, b) {
+    if (a.length !== b.length) return false;
+    let difference = 0;
+    for (let i = 0; i < a.length; i++) difference |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    return difference === 0;
+  }
+
+  function startApplication() {
+    if (applicationStarted) return;
+    applicationStarted = true;
+    updatePreview();
+    setDashGreeting();
+    setRevenueVisibility(false);
+    loadRows();
+  }
+
+  function unlockApplication() {
+    document.body.classList.remove('auth-locked');
+    loginGate.hidden = true;
+    document.querySelector('.app').removeAttribute('inert');
+    sessionStorage.setItem(AUTH_SESSION_KEY, 'ok');
+    loginPassword.value = '';
+    loginError.textContent = '';
+    startApplication();
+  }
+
+  function lockApplication() {
+    sessionStorage.removeItem(AUTH_SESSION_KEY);
+    document.body.classList.add('auth-locked');
+    document.querySelector('.app').setAttribute('inert', '');
+    loginGate.hidden = false;
+    loginPassword.value = '';
+    loginError.textContent = '';
+    requestAnimationFrame(() => loginPassword.focus());
+  }
+
+  loginForm.addEventListener('submit', async event => {
+    event.preventDefault();
+    loginButton.disabled = true;
+    loginButton.textContent = 'Kontrol ediliyor...';
+    loginError.textContent = '';
+
+    try {
+      const verifier = await derivePasswordVerifier(loginPassword.value);
+      if (constantTimeEqual(verifier, AUTH_VERIFIER)) {
+        unlockApplication();
+      } else {
+        loginPassword.value = '';
+        loginError.textContent = 'Şifre hatalı. Lütfen tekrar deneyin.';
+        loginPassword.focus();
+      }
+    } catch (error) {
+      loginError.textContent = 'Bu tarayıcı güvenli şifre doğrulamasını desteklemiyor.';
+    } finally {
+      loginButton.disabled = false;
+      loginButton.textContent = 'Giriş Yap';
+    }
+  });
+
+  lockAppBtn.addEventListener('click', lockApplication);
 
   // ─── Util ──────────────────────────────────────────────────────────────────
   function generateBookingNumber() {
@@ -2701,10 +2865,12 @@ ${FIXED_BRAND}`.trim();
   });
 
   // ─── İlk render ─────────────────────────────────────────────────────────────
-  updatePreview();
-  setDashGreeting();
-  setRevenueVisibility(false);
-  loadRows(); // YENİ: sayfa açılır açılmaz veriler otomatik çekilir, "Yükle" tuşuna basmaya gerek yok
+  document.querySelector('.app').setAttribute('inert', '');
+  if (sessionStorage.getItem(AUTH_SESSION_KEY) === 'ok') {
+    unlockApplication();
+  } else {
+    lockApplication();
+  }
 </script>
 </body>
 </html>
